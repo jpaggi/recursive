@@ -1,0 +1,11 @@
+{
+	"folders": 
+	[
+		{
+			"path": "~Documents/recursive_splicing/code",
+			"folder_exclude_patterns": [
+				"*recursive.sublime-project", "*.pyc", "*.py~"
+			]
+		}
+	]
+}
