@@ -48,9 +48,7 @@ def descending_regression(x, start, end):
     if slope <= 0:
         return slope, intercept
     # otherwise return slope = 0 and intercept = mean
-    total = 0
-    for i in range(start, end):
-        total += x[i]
+    total = sum([x[i] for i in range(start, end)])
     return 0, total / float(end - start)
 
 def calculate_squared_dev(x, start, end):
@@ -71,8 +69,8 @@ def calculate_squared_dev(x, start, end):
 
 
 def init_squared_dev(x, k):
-    # n+1 x k arrays                                                                                                                                            
-    r = np.empty([len(x)+1, k], np.dtype('f8'))        # total squared deviation
+    # n+1 x k arrays
+    r = np.empty([len(x)+1, k], np.dtype('f8'))  # total squared deviation
     lookup = np.empty([len(x)+1, k], np.dtype('uint16')) # most recent subproblem used
 
     #initialize scores to infinity
@@ -140,7 +138,7 @@ def reduce_array(array, windows):
     create a new array with dimensionality reduced by a 
     factor of 'windows'
 
-    currently cuts of partial window at the end
+    currently cuts off partial window at the end
     
     averages entries in array up to this point.
     """
@@ -148,9 +146,7 @@ def reduce_array(array, windows):
     out = np.zeros(length)
     for i in range(length):
         start = i * windows
-        for j in range(windows):
-          out[i] += array[start + j]
-        out[i] = out[i] / windows 
+        out[i] = sum([array[start + j] for j in range(windows)]) / windows 
     return out
 
 def get_params(x, splices, window):
