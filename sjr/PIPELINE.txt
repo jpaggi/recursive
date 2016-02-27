@@ -18,3 +18,5 @@ Other useful commands
 Left to do:
 	get info about surrounding intron (i.e. the intron the RS introns occur in)
 	evaluate what are halmarks of genuine RS events
+
+	find overlap with Graveley study
