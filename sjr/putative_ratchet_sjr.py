@@ -1,6 +1,7 @@
 import pysam
 from get_anno_splices import get_jxns
 import sys
+MIN_INTRON_SIZE = 35
 
 """
 Finds all reads in the given samfile that are broken and have a
@@ -14,12 +15,13 @@ Need to tune expression for strand based on geometry of library.
 
 samfile = pysam.AlignmentFile(sys.argv[1], 'rb')
 sjr = pysam.AlignmentFile(sys.argv[2], 'wb', template = samfile)
+bed = open(sys.argv[3], 'w')
 
-ss = get_jxns('../data/anno.ss')
+ss = get_jxns('../../data/anno.ss')
 
 c = 0
 for read in samfile.fetch():
-        c += 1
+	c += 1
 	if not c % 10000: print c
 	blocks = read.get_blocks()
 	if len(blocks) > 1:
@@ -36,14 +38,18 @@ for read in samfile.fetch():
 				five, three = blocks[i][1] - 1, blocks[i+1][0]
 			else:
 				three, five = blocks[i][1] - 1, blocks[i+1][0]
-                        # Some insertion events align to 5'ss and cause false positives
-                        if abs(five - three) < MIN_INTRON_SIZE: continue
+			# Some insertion events align to 5'ss and cause false positives
+
+			if abs(five - three) < MIN_INTRON_SIZE: continue
+
 
 			chrom = 'chr' + samfile.getrname(read.reference_id)
 			strand_str = '+' if strand else '-'
 			if (chrom, strand_str, five) in ss:
 				if three not in ss[(chrom, strand_str, five)]:
 					if strand and three < max(ss[(chrom, strand_str, five)]):
+						bed.write('\t'.join(map(str, [chrom, five + 1, three, read.query_name, blocks, strand_str])) + '\n')
 						sjr.write(read)
 					elif not strand and three > min(ss[(chrom, strand_str, five)]):
+						bed.write('\t'.join(map(str,[chrom, three + 1, five, read.query_name, blocks, strand_str])) + '\n')
 						sjr.write(read)

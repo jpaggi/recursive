@@ -1,0 +1,20 @@
+
+# Extract sjr aligning to a known 5'ss but have a novel 3'ss
+python putative_ratchet_sjr.py ../../data/star_5_minute.bam test.sam test_reads.bed
+
+# Might want to sort (and index) both of the above output files at this point
+# Can get rid of below sort command if sort here
+
+# Group by 5' and 3' -- No need for this file after running the next command! (could pipeline)
+sort -k1,1 -k2n,3n test_reads.bed | python group_introns.py - test_groups.bed
+
+# Get the sequence of all the observed RS introns
+python seq_for_groups.py test_groups.bed ~/Downloads/dmel-all-chromosome-r5.57.fasta test_seq.bed
+
+Other useful commands
+  grep 'AG\tGT'
+  grep -v '\t1\t'
+
+Left to do:
+	get info about surrounding intron (i.e. the intron the RS introns occur in)
+	evaluate what are halmarks of genuine RS events

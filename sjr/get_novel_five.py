@@ -1,6 +1,13 @@
 import pysam
 from get_anno_splices import get_three_prime_jxns
 
+"""
+Gets novel five prime splice sites that are spliced to annotated
+three prime splice sites. This code currently only works for reads
+on the + strand. This analysis should be irrelevant to your project.
+Just here for a sanity check for numbers of novel jxns.
+"""
+
 samfile = pysam.AlignmentFile('../data/star_5_minute.bam', 'rb')
 sjr = pysam.AlignmentFile('../data/star_5_3_prime.sam', 'wb', template = samfile)
 

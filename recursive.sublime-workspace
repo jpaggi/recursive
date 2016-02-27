@@ -7,39 +7,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "get_anno_splices.py",
-			"settings":
-			{
-				"buffer_size": 609,
-				"line_ending": "Unix",
-				"name": "import pysam"
-			}
-		},
-		{
-			"file": "get_putative_ratchet_sjr.py",
-			"settings":
-			{
-				"buffer_size": 879,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "ratchets.py",
-			"settings":
-			{
-				"buffer_size": 1089,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "plot_fit.py",
-			"settings":
-			{
-				"buffer_size": 855,
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -77,6 +44,16 @@
 	],
 	"file_history":
 	[
+		"/Users/jpaggi/Documents/recursive_splicing/code/get_novel_five.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/group_introns.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/putative_ratchets_bed.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/ratchets.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/get_putative_ratchet_sjr.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/combine_sequence.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence_bed.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/length_dist.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/get_anno_splices.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/make_intron_bed.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/recursive.sublime-project",
 		"/Users/jpaggi/Documents/recursive_splicing/code/recurseive.sublime-project",
 		"/Users/jpaggi/Documents/recursive_splicing/code/simulate_ratchet_intron.py",
@@ -121,126 +98,8 @@
 	"groups":
 	[
 		{
-			"selected": 2,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "get_anno_splices.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 609,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								606,
-								606
-							]
-						],
-						"settings":
-						{
-							"auto_name": "import pysam",
-							"syntax": "Packages/Python/Python.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "get_putative_ratchet_sjr.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 879,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								879,
-								0
-							]
-						],
-						"settings":
-						{
-							"auto_name": "",
-							"syntax": "Packages/Python/Python.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "ratchets.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1089,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1089,
-								1089
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "plot_fit.py",
-					"semi_transient": true,
-					"settings":
-					{
-						"buffer_size": 855,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				}
 			]
 		}
 	],
@@ -325,7 +184,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 217.0,
+	"side_bar_width": 356.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
