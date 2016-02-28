@@ -22,7 +22,7 @@ ss = get_jxns('../../data/anno.ss')
 c = 0
 for read in samfile.fetch():
 	c += 1
-	if not c % 10000: print c
+	if not c % 10000000: print c
 	blocks = read.get_blocks()
 	if len(blocks) > 1:
 		i = 1
