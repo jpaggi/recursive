@@ -12,7 +12,7 @@ for line in graveley_file:
 
 for line in sys.stdin:
 	chrom, start, end, sample, entropy, strand, seq1, seq2 = line.strip().split('\t')
-	if not 0 < int(entropy): continue
+	if not int(entropy): continue
 	start, end = int(start), int(end)
 	overlap = False
 	seen = False
