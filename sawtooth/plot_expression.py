@@ -44,7 +44,7 @@ for line in data:
 
     for event in novel:
     	if chrom == event[0]:
-    		if strand == '+' and int(start) < int(event[2]) < int(end):
+    		if strand == '+' and int(start) < int(event[2]) < int(end) and int(start) == int(event[1]) + 1:
     			plt.axvline(int(event[2]) - int(start), linewidth=2, color='g')
     		elif strand == '-' and int(start) < int(event[1]) < int(end):
     			plt.axvline(int(end) - int(event[1]), linewidth=2, color='g')
