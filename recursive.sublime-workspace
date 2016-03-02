@@ -1,0 +1,243 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+		{
+			"contents": "import pysam\nimport sys\n\nsamfile = pysam.AlignmentFile(sys.argv[1], \"rb\")\nintrons =  open(sys.argv[2], 'r')\n\nfor intron in introns:\n    chrom, intron_start, intron_end, name1, name2, strand = intron.strip().split('\\t')\n    intron_start = int(intron_start)\n    intron_end = int(intron_end)\n    expression = [0] * (intron_end - intron_start)\n    for read in samfile.fetch(chrom, intron_start, intron_end):\n        for block in read.get_blocks():\n            start = max(intron_start, block[0])\n            end = min(intron_end, block[1])\n            for i in xrange(start, end):\n                expression[i - intron_start] += 1\n    if sum(expression):\n        print '\\t'.join(map(str, [chrom, intron_start, intron_end, name1, name2, strand]) + [','.join(map(str, expression))])",
+			"settings":
+			{
+				"buffer_size": 776,
+				"line_ending": "Unix",
+				"name": "import pysam"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/jpaggi/Documents/recursive_splicing/code",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth"
+	],
+	"file_history":
+	[
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/non_dected_graveley.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/compare_to_graveley.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/recursive.sublime-project",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/get_full_intron.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/group_introns.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/get_novel_five.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/sequence_bed.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/combine_sequence.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/ratchets.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/putative_ratchets_bed.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/get_putative_ratchet_sjr.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/get_novel_five.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/group_introns.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/putative_ratchets_bed.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/ratchets.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/get_putative_ratchet_sjr.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/combine_sequence.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence_bed.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/length_dist.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/get_anno_splices.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/make_intron_bed.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/recurseive.sublime-project",
+		"/Users/jpaggi/Documents/recursive_splicing/code/simulate_ratchet_intron.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/simulate_intron.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/broken_regression.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/plot_fit.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/plot_results.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/fit_analysis.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/plot_in_order.py",
+		"/Users/jpaggi/Documents/test.py"
+	],
+	"find":
+	{
+		"height": 23.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 776,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								776,
+								776
+							]
+						],
+						"settings":
+						{
+							"auto_name": "import pysam",
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "recursive.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"brk",
+				"broken_regression.py"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 219.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

@@ -28,9 +28,9 @@ for line in sys.stdin:
 			# if (end + 1 in g_rs) or (start in g_rs):
 			# 	print 'match'
 	if not overlap or not seen:
-		print chrom, start, end, sample, entropy, seq1, seq2, strand, 'novel'
+		print chrom, start, end, strand,  'novel'#, sample, entropy, seq1, seq2, strand, 'novel'
 	else:
-		print chrom, start, end, sample, entropy, seq1, seq2, strand, 'graveley'
+		print chrom, start, end, strand, 'graveley' #, sample, entropy, seq1, seq2, strand, 'graveley'
 	# 	pass
 	# else:
 	# 	print seq1 + seq2
