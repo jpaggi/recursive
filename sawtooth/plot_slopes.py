@@ -3,14 +3,39 @@ import sys
 
 data = open(sys.argv[1], 'r')
 
+
+import numpy as np
+from scipy import stats
+
+def lin_regression(x, start, end):
+    """
+    calculate slope and y-intercept of data x
+    beginning at start and ending at end
+    
+    requires that interval is at least length 2
+
+    start is inclusive, end is exculsive
+    """
+    assert(end > start + 1)
+    y = np.array(range(0, end - start))
+    slope, intercept, r_value, p_value, std_err = stats.linregress(y, x[start:end]) # O(n) list slice
+    return slope, intercept
+
 count = 0
 for line in data:
     #print line
-    expression = [float(i) for i in line.strip().split('\t')[-1].split(",")]
+    expression = [int(i) for i in line.strip().split('\t')[-1].split(",")]
 
     total = sum(expression)
 
     chrom, start, end, offsets, rs, strand = line.strip().split('\t')[:6]
+
+    if strand == '+':
+        begin = int(start)
+        for ratchet in sorted(map(int, rs.split(','))):
+            print lin_regression(expression, begin - int(start), ratchet - int(start))
+            begin = ratchet
+        print lin_regression(expression, begin - int(start), int(end) - int(start))
 
     for offset, ratchet in zip(offsets.split(','), rs.split(',')):
         if len(offset) > 3 and offset[:4] == 'grav':

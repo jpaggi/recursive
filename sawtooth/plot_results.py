@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from broken_regression import broken_regression
+import sys
 
 
 def plot_fit(splices, params, length):
@@ -17,7 +18,7 @@ def plot_fit(splices, params, length):
 
 
 
-data = open("merged_expression.bed", 'r')
+data = open(sys.argv[1], 'r')
 c = 0
 for line in data:
     expression = [int(i) for i in line.strip().split('\t')[-1].split(",")]
@@ -26,7 +27,7 @@ for line in data:
     if line.split('\t')[-2] == "-": 
         expression.reverse()
     try:
-        fit = broken_regression(expression, 13, 50)
+        fit = broken_regression(expression, 13, 500)
     except ValueError:
         # error when long run with same expression
         # these are generally strange looking so I think
