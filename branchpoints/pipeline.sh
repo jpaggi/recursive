@@ -22,4 +22,6 @@ hisat2 -p 12 --no-discordant <index> -1 split_reads1.fq -2 split_reads2.fq --un 
 
 # run findbps on nosplit%.fq reads
 
-# rocess split reads
+# process split reads
+# extend using linear algorithm
+# see if GT or GC close to where 5' end extends to...

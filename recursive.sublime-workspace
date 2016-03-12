@@ -3,17 +3,147 @@
 	{
 		"selected_items":
 		[
+			[
+				"st",
+				"strand"
+			],
+			[
+				"butter_lowpa",
+				"butter_lowpass_filter"
+			],
+			[
+				"lin",
+				"lin_regression"
+			],
+			[
+				"offs",
+				"offsets"
+			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"contents": "import pysam\nimport sys\n\nsamfile = pysam.AlignmentFile(sys.argv[1], \"rb\")\nintrons =  open(sys.argv[2], 'r')\n\nfor intron in introns:\n    chrom, intron_start, intron_end, name1, name2, strand = intron.strip().split('\\t')\n    intron_start = int(intron_start)\n    intron_end = int(intron_end)\n    expression = [0] * (intron_end - intron_start)\n    for read in samfile.fetch(chrom, intron_start, intron_end):\n        for block in read.get_blocks():\n            start = max(intron_start, block[0])\n            end = min(intron_end, block[1])\n            for i in xrange(start, end):\n                expression[i - intron_start] += 1\n    if sum(expression):\n        print '\\t'.join(map(str, [chrom, intron_start, intron_end, name1, name2, strand]) + [','.join(map(str, expression))])",
+			"file": "sawtooth/get_expression.py",
 			"settings":
 			{
 				"buffer_size": 776,
-				"line_ending": "Unix",
-				"name": "import pysam"
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "sawtooth/get_full_expression.py",
+			"settings":
+			{
+				"buffer_size": 842,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "sawtooth/filter_expression.py",
+			"settings":
+			{
+				"buffer_size": 711,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "\n#normal alignment!\n# might want to increase the max insert size here?\n# how does this work with transcriptome mapping???\nhisat2 -p 12 <index> -1 <in1.fq> -2 <in2.fq> --un-conc unaligning%.fq\n\n# get all discordantly aligning reads\n# set max insert length to be longest expected intron length\nhisat2 -p 12 --no-mixed --no-discordant -X 100000 <index> -1 unaligning2.fq -2 unaligning1.fq --un-conc nodiscordant%.fq\n\n# split reads such that LLLLLLLXXXXXXXXXXXXX--------------YYYYYYYYYYYYYYYYRRRRRRRRRRRRRRRRRRR\n# become:\n# XXXXXXXXXXXXXXX      YYYYYYYYYYYYRRRRRRRRRRRRRRR\n# YYYYYYYYYYYYYYRRRRRRRRRRRRRR     LLLLLLLLLLLLLLLLLL\n#\n# LLLLLLLLLLLLLLLLLLLLLXXXXXXXXXXXXXXXX     YYYYYYYYYYYYYYYYYYYY\n# RRRRRRRRRRRRR   LLLLLLLLLLLLLXXXXXXXXXXXXXXXXX\npython seperate.py no_discordant split_reads\n\nhisat2 -p 12 --no-discordant <index> -1 split_reads1.fq -2 split_reads2.fq --un nosplit%.fq\n\n\n# run findbps on nosplit%.fq reads\n\n# process split reads\n# extend using linear algorithm\n# see if GT or GC close to where 5' end extends to...\n",
+			"file": "branchpoints/pipeline.sh",
+			"file_size": 936,
+			"file_write_time": 131020108910000000,
+			"settings":
+			{
+				"buffer_size": 1023,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "sawtooth/plot_expression.py",
+			"settings":
+			{
+				"buffer_size": 2050,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "sawtooth/plot_merged.py",
+			"settings":
+			{
+				"buffer_size": 1320,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "sawtooth/plot_slopes.py",
+			"settings":
+			{
+				"buffer_size": 2100,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "sawtooth/broken_regression.py",
+			"settings":
+			{
+				"buffer_size": 5345,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "sawtooth/classify.py",
+			"settings":
+			{
+				"buffer_size": 1417,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "sjr/get_anno_splices.py",
+			"settings":
+			{
+				"buffer_size": 1227,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "sjr/make_intron_bed.py",
+			"settings":
+			{
+				"buffer_size": 415,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "sjr/create_ratchet_fasta.py",
+			"settings":
+			{
+				"buffer_size": 764,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "sawtooth/plot_results.py",
+			"settings":
+			{
+				"buffer_size": 1182,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "sjr/putative_ratchet_sjr.py",
+			"settings":
+			{
+				"buffer_size": 1764,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "sjr/non_dected_graveley.py",
+			"settings":
+			{
+				"buffer_size": 597,
+				"line_ending": "Unix"
 			}
 		}
 	],
@@ -50,12 +180,20 @@
 	"expanded_folders":
 	[
 		"/Users/jpaggi/Documents/recursive_splicing/code",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth"
+		"/Users/jpaggi/Documents/recursive_splicing/code/branchpoints",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr"
 	],
 	"file_history":
 	[
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/non_dected_graveley.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/compare_to_graveley.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/merge_with_graveley.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/format_like_graveley.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/fit_analysis.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/plot_results.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/format_like_graveley.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/get_expression.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/non_dected_graveley.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/recursive.sublime-project",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/get_full_intron.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/group_introns.py",
@@ -118,11 +256,12 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 3,
 			"sheets":
 			[
 				{
 					"buffer": 0,
+					"file": "sawtooth/get_expression.py",
 					"semi_transient": false,
 					"settings":
 					{
@@ -133,14 +272,13 @@
 						"selection":
 						[
 							[
-								776,
-								776
+								108,
+								108
 							]
 						],
 						"settings":
 						{
-							"auto_name": "import pysam",
-							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"syntax": "Packages/Python/Python.sublime-syntax",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
@@ -148,7 +286,421 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "sawtooth/get_full_expression.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 842,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								545,
+								545
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "sawtooth/filter_expression.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 711,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								602,
+								602
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "branchpoints/pipeline.sh",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1023,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1022,
+								1022
+							]
+						],
+						"settings":
+						{
+							"auto_name": "",
+							"syntax": "Packages/ShellScript/Shell-Unix-Generic.sublime-syntax"
+						},
+						"translation.x": 8.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
 					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "sawtooth/plot_expression.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2050,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								73,
+								73
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "sawtooth/plot_merged.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1320,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								142,
+								142
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "sawtooth/plot_slopes.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2100,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								775,
+								775
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "sawtooth/broken_regression.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5345,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1035,
+								561
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 94.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "sawtooth/classify.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1417,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1360,
+								1360
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "sjr/get_anno_splices.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1227,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								25,
+								25
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "sjr/make_intron_bed.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 415,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								87,
+								87
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 11,
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "sjr/create_ratchet_fasta.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 764,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								763,
+								763
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 12,
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"file": "sawtooth/plot_results.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1182,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								86,
+								86
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "sjr/putative_ratchet_sjr.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1764,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								562,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 13,
+					"type": "text"
+				},
+				{
+					"buffer": 14,
+					"file": "sjr/non_dected_graveley.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 597,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								250,
+								250
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 14,
 					"type": "text"
 				}
 			]
