@@ -1,25 +1,9 @@
-"""
-package to calculate optimal "broken" linear regressions
-
-primary function called should be broken_regression(data, k, window)
-
-where data is an array of integers, 
- k is a non-negative integer representing the number of splices made,
- and window is the size of bins used in averaging / size reduction
-
-
-returns a length k array of tuples
-
-each tuple corresponds to a (squared_dev, [list of splice sites]) pair
-
-where the ith entry uses i ratchet sites indexed by zero-indexed first base of the window
-where the break is made. Basically a list of 5'ss
-"""
-
 import numpy as np
 from scipy import stats
-from random import random, randrange, choice
-from math import exp
+from random import random, randrange, choice, gauss
+from math import exp, log
+
+REGULARIZER = 10
 
 def lin_regression(x, start, end):
     """
@@ -92,7 +76,7 @@ def init(x):
             slopes[i, j] = slope
             intercepts[i, j] = intercept
             devs[i, j] = dev
-    return slopes, intercepts, dev
+    return slopes, intercepts, devs
 
 def remove(l, r):
     out = []
@@ -103,7 +87,16 @@ def remove(l, r):
 
 
 def score(state, slopes, intercepts, dev):
-    return 1
+    params = 2 * len(state) + 2
+    num = len(intercepts[0])
+    if params == 2:
+        rss = dev[0, num - 1]
+    else:
+        rss = dev[0, state[0]]
+        for i in range(len(state) - 1):
+            rss += dev[state[i], state[i+1]]
+        rss += dev[state[-1], num-1]
+    return num * log(rss / num) + 2 * params * log(num)
 
 def mcmc(x, window):
 
@@ -115,10 +108,16 @@ def mcmc(x, window):
     old_score = score(state, slopes, intercepts, devs)
 
     samples = []
-
-    for i in xrange(100):
-        if random() < .5 and state:
+    print 'begin mcmc'
+    for i in xrange(1000000):
+        cutoff = random()
+        if cutoff < .4 and state:
             new_state = remove(state, choice(state))
+        elif cutoff < .6 and state:
+            change = choice(state)
+            new = int(gauss(change, 5))
+            if (new not in state) and 0 <= new < len(x):
+                new_state = sorted(remove(state, change) + [new])
         else:
             add = randrange(len(x - 1))
             if add in state: continue
@@ -126,13 +125,12 @@ def mcmc(x, window):
 
         new_score = score(new_state, slopes, intercepts, devs)
 
-        if exp(old_score - new_score) < random():
+        if exp(old_score - new_score) > random():
             old_score = new_score
             state = new_state
 
-        if not i % 10:
+        if i > 10000 and not i % 10:
             samples += [state]
-
     return samples
 
 
