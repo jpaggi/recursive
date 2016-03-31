@@ -1,4 +1,3 @@
-from mcmc import mcmc
 import sys
 import matplotlib.pyplot as plt
 WINDOWS = 100
