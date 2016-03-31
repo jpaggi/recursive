@@ -52,10 +52,18 @@
 			}
 		},
 		{
+			"file": "sawtooth/plot_merged.py",
+			"settings":
+			{
+				"buffer_size": 1320,
+				"line_ending": "Unix"
+			}
+		},
+		{
 			"file": "sawtooth/mcmc.py",
 			"settings":
 			{
-				"buffer_size": 4302,
+				"buffer_size": 4546,
 				"line_ending": "Unix"
 			}
 		},
@@ -63,7 +71,15 @@
 			"file": "sawtooth/run_mcmc.py",
 			"settings":
 			{
-				"buffer_size": 342,
+				"buffer_size": 2053,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "sawtooth/plot_mcmc.py",
+			"settings":
+			{
+				"buffer_size": 1865,
 				"line_ending": "Unix"
 			}
 		},
@@ -190,6 +206,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"log",
+			"ln"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -207,7 +225,7 @@
 	"groups":
 	[
 		{
-			"selected": 3,
+			"selected": 6,
 			"sheets":
 			[
 				{
@@ -237,7 +255,7 @@
 						"translation.y": 840.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
@@ -267,7 +285,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 6,
 					"type": "text"
 				},
 				{
@@ -283,8 +301,38 @@
 						"selection":
 						[
 							[
-								1171,
-								0
+								253,
+								253
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "sawtooth/plot_merged.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1320,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								201,
+								1037
 							]
 						],
 						"settings":
@@ -301,20 +349,20 @@
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 4,
 					"file": "sawtooth/mcmc.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4302,
+						"buffer_size": 4546,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3677,
-								3677
+								3221,
+								3221
 							]
 						],
 						"settings":
@@ -324,37 +372,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1582.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "sawtooth/run_mcmc.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 342,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								341,
-								341
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1350.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
@@ -362,6 +380,66 @@
 				},
 				{
 					"buffer": 5,
+					"file": "sawtooth/run_mcmc.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2053,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								689,
+								689
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 146.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "sawtooth/plot_mcmc.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1865,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								722,
+								722
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 161.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
 					"file": "sjr/putative_ratchet_sjr.py",
 					"semi_transient": false,
 					"settings":
@@ -386,11 +464,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 7,
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 8,
 					"file": "sjr/non_dected_graveley.py",
 					"semi_transient": false,
 					"settings":
@@ -415,7 +493,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 8,
 					"type": "text"
 				}
 			]
@@ -470,6 +548,10 @@
 		"selected_items":
 		[
 			[
+				"plot",
+				"sawtooth/plot_merged.py"
+			],
+			[
 				"brk",
 				"broken_regression.py"
 			]
@@ -501,7 +583,7 @@
 	"show_minimap": true,
 	"show_open_files": false,
 	"show_tabs": true,
-	"side_bar_visible": true,
+	"side_bar_visible": false,
 	"side_bar_width": 219.0,
 	"status_bar_visible": true,
 	"template_settings":

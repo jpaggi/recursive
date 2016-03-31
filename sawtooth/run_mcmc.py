@@ -1,4 +1,4 @@
-from mcmc import mcmc
+from const_slope_mcmc import mcmc
 import sys
 import matplotlib.pyplot as plt
 WINDOWS = 100
@@ -19,48 +19,50 @@ data = open(sys.argv[1], 'r')
 c = 0
 for line in data:
     c += 1
-    if c < 200: continue   
+    if c < 197: continue   
     expression = [int(i) for i in line.strip().split('\t')[-1].split(",")]
 
-    if len(expression) > 40000: continue
+    if len(expression) < 500: continue
     
     if line.split('\t')[-2] == "-":
         expression.reverse()
 
     samples = mcmc(expression, WINDOWS)
 
+    print line.strip() + '\t' + ','.join(map(str, get_probs(samples, expression)))
+
     # for ratchet in samples[-1]:
     #     plt.axvline(WINDOWS * ratchet, linewidth=2, color='r')
 
-    plt.plot(range(0, len(expression), WINDOWS), get_probs(samples, expression), linewidth=6, color= 'k')
+    # plt.plot(range(0, len(expression), WINDOWS), get_probs(samples, expression), linewidth=6, color= 'k')
 
 
-    total = sum(expression)
+    # total = sum(expression)
 
-    chrom, start, end, offsets, rs, strand = line.strip().split('\t')[:6]
+    # chrom, start, end, offsets, rs, strand = line.strip().split('\t')[:6]
 
-    for offset, ratchet in zip(offsets.split(','), rs.split(',')):
-        if len(offset) > 3 and offset[:4] == 'grav':
-            if len(offset) > 4:
-                count = int(offset[4:])
-            else:
-                count = 0
-            if strand == '+':
-                plt.axvline(int(ratchet) - int(start), linewidth=4, color='g')
-            elif strand == '-':
-                plt.axvline(int(end) - int(ratchet), linewidth=4, color='g')
-        else:
-            count = int(offset)
+    # for offset, ratchet in zip(offsets.split(','), rs.split(',')):
+    #     if len(offset) > 3 and offset[:4] == 'grav':
+    #         if len(offset) > 4:
+    #             count = int(offset[4:])
+    #         else:
+    #             count = 0
+    #         if strand == '+':
+    #             plt.axvline(int(ratchet) - int(start), linewidth=4, color='g')
+    #         elif strand == '-':
+    #             plt.axvline(int(end) - int(ratchet), linewidth=4, color='g')
+    #     else:
+    #         count = int(offset)
 
-        if count:
-            if strand == '+':
-                plt.axvline(int(ratchet) - int(start), linewidth=2, color='r')
-            elif strand == '-':
-                plt.axvline(int(end) - int(ratchet), linewidth=2, color='r')
+    #     if count:
+    #         if strand == '+':
+    #             plt.axvline(int(ratchet) - int(start), linewidth=2, color='r')
+    #         elif strand == '-':
+    #             plt.axvline(int(end) - int(ratchet), linewidth=2, color='r')
 
-    plt.plot(expression)
-    plt.show(block = False)
-    a = raw_input("enter to continue")
-    plt.close()
+    # plt.plot(expression)
+    # plt.show(block = False)
+    # a = raw_input("enter to continue")
+    # plt.close()
 
 
