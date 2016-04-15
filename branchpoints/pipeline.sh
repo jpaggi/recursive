@@ -1,38 +1,40 @@
-
-#normal alignment!
-# might want to increase the max insert size here?
-# how does this work with transcriptome mapping???
-hisat2 -p 12 <index> -1 <in1.fq> -2 <in2.fq> --un-conc unaligning%.fq
+# source of example unaligning reads
+#hisat2 -p 12 -u 1000000 -x indexes/dmel5.57/dmel5.57 -1 ../athma/Adelman/timecourse/recursive/TH_5_A_L1.D702_501_1.fastq.gz -2 ../athma/Adelman/timecourse/recursive/TH_5_A_L1.D702_501_2.fastq.gz -S temp/aligning.sam --un-conc temp/unaligning%.fq
 
 
+# align both ends individually
+hisat2 --sp 10,10 -x ~/Downloads/dmel-r5.57 -U $1 -S data/single_end1.sam
+hisat2 --sp 10,10 -x ~/Downloads/dmel-r5.57 -U $2 -S data/single_end2.sam
 
-# get all discordantly aligning reads
-# set max insert length to be longest expected intron length
-hisat2 -p 12 --no-mixed --no-discordant -X 100000 <index> -1 unaligning2.fq -2 unaligning1.fq --un-conc nodiscordant%.fq
+#sort each by ID
+sort -k1,1 data/single_end1.sam > data/sorted_single_end1.sam
+sort -k1,1 data/single_end2.sam > data/sorted_single_end2.sam
 
-# split reads such that LLLLLLLXXXXXXXXXXXXX--------------YYYYYYYYYYYYYYYYRRRRRRRRRRRRRRRRRRR
-# become:
-# XXXXXXXXXXXXXXX      YYYYYYYYYYYYRRRRRRRRRRRRRRR
-# YYYYYYYYYYYYYYRRRRRRRRRRRRRR     LLLLLLLLLLLLLLLLLL
-#
-# LLLLLLLLLLLLLLLLLLLLLXXXXXXXXXXXXXXXX     YYYYYYYYYYYYYYYYYYYY
-# RRRRRRRRRRRRR   LLLLLLLLLLLLLXXXXXXXXXXXXXXXXX
-python seperate.py no_discordant split_reads
+# merge each file together using merge_alignments.py
+python code/branchpoints/merge_alignments.py data/sorted_single_end1.sam > data/single_end_merged1.joe
+python code/branchpoints/merge_alignments.py data/sorted_single_end2.sam > data/single_end_merged2.joe
 
-hisat2 -p 12 --no-discordant <index> -1 split_reads1.fq -2 split_reads2.fq --un nosplit%.fq
+# separate out discordant and reads for which only one end aligns
+python code/branchpoints/merge_ends.py data/single_end_merged1.joe data/single_end_merged2.joe data/test_discordant.joe data/test1.fq data/test2.fq
 
-
-# run findbps on nosplit%.fq reads
-
-# process split reads
-# extend using linear algorithm
-# see if GT or GC close to where 5' end extends to...
+# align broken reads
+hisat2 --rf --no-discordant  --no-mixed -x ~/Downloads/dmel-r5.57 -1 data/test1.fq -2 data/test2.fq -S data/pe_findbps_aligning.sam
 
 
+# sort by ID (could use --reorder instead)
+sort -k1,1 data/pe_findbps_aligning.sam >  data/pe_sorted_findbps.sam 
 
-#align normally
-#hisat2 -u 1000000 -x Downloads/dmel-r5.57 -1 Downloads/TH_5_B_L1_1.fastq.gz -2 Downloads/TH_5_B_L1_2.fastq.gz -S Documents/recursive_splicing/data/five_minute_repB_aligning.sam --un-conc Documents/recursive_splicing/data/five_minute_repB_unaligning%.fq
+# extend alignments only working for broken read2 on + strand
+python code/branchpoints/parse_initial_mapping.py data/pe_sorted_findbps.sam ~/Downloads/dmel-all-chromosome-r5.57.fasta
 
-#align discordantly
 
-hisat2 -X 1500000 --rf --no-discordant --no-mixed -x Downloads/dmel-r5.57 -1 Documents/recursive_splicing/data/five_minute_repB_unaligning2.fq -2 Documents/recursive_splicing/data/five_minute_repB_unaligning1.fq -S Documents/recursive_splicing/data/five_minute_repB_discordant.sam --un-conc Documents/recursive_splicing/data/five_minute_repB_no_discordant%.fq
+# hisat2 very aggressively soft trims reads by default!!! should disable this behaviour for both the inital 
+# mapping and the intermediate mapping
+
+# also seems to be missing some alignments???? 
+
+# maybe should switch to bowtie for later alignments???
+
+
+
+

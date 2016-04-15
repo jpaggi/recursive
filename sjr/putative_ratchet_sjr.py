@@ -24,6 +24,7 @@ for read in samfile.fetch():
 	c += 1
 	if not c % 10000000: print c
 	blocks = read.get_blocks()
+	strand = (read.is_read1 == read.is_reverse)
 	if len(blocks) > 1:
 		i = 1
 		while i < len(blocks) - 1:
@@ -32,7 +33,7 @@ for read in samfile.fetch():
 				blocks.remove(blocks[i+1])
 			else:
 				i += 1
-		strand = (read.is_read1 == read.is_reverse)
+		
 		for i in xrange(len(blocks) - 1):
 			if strand:
 				five, three = blocks[i][1] - 1, blocks[i+1][0]

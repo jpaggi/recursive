@@ -50,7 +50,7 @@ def calculate_squared_dev(x, start, end):
     dev = 0
     for i in range(start, end):
         expect = intercept + slope * (i - start)
-        dev += (x[i] - expect) ** 2
+        dev += abs(x[i] - expect) ** 22
     return slope, intercept, dev
 
 def end_height(x, start, end):
@@ -97,31 +97,10 @@ def score(state, slopes, intercepts, dev):
             rss += dev[state[i], state[i+1]]
         rss += dev[state[-1], num-1]
 
-    #if state:
-        #rss -= log(len(state))
-        # last = intercepts[0, state[0]] + slopes[0, state[0]] * num
-        # for i in range(len(state)-1):
-        #     if last <= 0:
-        #         rss = float('inf')
-        #         break
-        #     current = intercepts[state[i], state[i+1]]
-        #     if current < last:
-        #         rss = float('inf')
-        #  #   else:
-        #  #       rss += log(current) - log(last)
-        #     last = current + slopes[state[i], state[i+1]]
-        # if last <= 0:
-        #     rss = float('inf')
-        # else:
-        #     current = intercepts[state[-1], num - 1]
-        #     if current < last:
-        #         rss = float('inf')
-          #  else:
-          #      rss += log(current) - log(last)
 
     if rss == 0 or num == 0 or rss / float(num) <= 0:
         return - float('inf')
-    return num * log(rss / float(num)) + 2 * params * log(num)
+    return num * log(rss) + 2 * params * log(num)
 
 def mcmc(x, window):
 
@@ -148,10 +127,12 @@ def mcmc(x, window):
             new_state = sorted(state + [add])
 
         new_score = score(new_state, slopes, intercepts, devs)
-        print x
-        print new_state, new_score, old_score
+        #print x
+        #print new_state, new_score, old_score
 
-        if old_score > new_score or (new_score == - float('inf') or (old_score != - float('inf') and exp(old_score - new_score) > random())):
+        thresh = exp(float(old_score - new_score))
+
+        if old_score > new_score or (new_score == - float('inf') or (old_score != - float('inf') and thresh > random())):
             old_score = new_score
             state = new_state
 
