@@ -35,6 +35,12 @@ python code/branchpoints/parse_initial_mapping.py data/pe_sorted_findbps.sam ~/D
 
 # maybe should switch to bowtie for later alignments???
 
+# 1 create test cases from reads found with findbps
+# 2 figure out best (efficiency/correctness) way to get unmapped reads
+# 3 think about what software to use for alignment of each end
+# 4 software / settings to use for PE alignment
+# 5 alignment requirementsm
+
 
 
 

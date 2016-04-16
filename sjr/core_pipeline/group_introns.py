@@ -8,7 +8,6 @@ introns = open(sys.argv[2], 'w')
 
 sample = sys.argv[3]
 
-
 offsets = set()
 cur_chrom, cur_start, cur_end, cur_strand = '', '', '', ''
 

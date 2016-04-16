@@ -13,6 +13,7 @@ SJR
  - Plot motif score versus number of reads
  - Potentially plan some sort of cutoff?
  - figure out why chrX:21082827-21152072 aligns improperly
+ ... seems to be an indel close to the sites? Or a micro exon???
  - seems that there can sometimes be slight mapping issues
     ... get around by looking a few bases on each side for motif?
 

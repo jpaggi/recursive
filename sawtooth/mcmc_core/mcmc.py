@@ -3,8 +3,6 @@ from scipy import stats
 from random import random, randrange, choice, gauss
 from math import exp, log
 
-REGULARIZER = 10
-
 def lin_regression(x, start, end):
     """
     calculate slope and y-intercept of data x

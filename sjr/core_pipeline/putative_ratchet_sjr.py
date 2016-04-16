@@ -13,36 +13,37 @@ Constrains that abs(5' - 3') is greater than MIN_INTRON_SIZE.
 Need to tune expression for strand based on geometry of library.
 """
 
+def merge_blocks(blocks):
+	"""
+	Removes short gaps in read that are likely indels
+	"""
+	i = 1
+	while i < len(blocks) - 1:
+		if blocks[i][0] - blocks[i-1][1] < 5:
+			blocks[i] = (blocks[i][0], blocks[i+1][1])
+			blocks.remove(blocks[i+1])
+		else:
+			i += 1
+	return blocks
+
+
 samfile = pysam.AlignmentFile(sys.argv[1], 'rb')
-sjr = pysam.AlignmentFile(sys.argv[2], 'wb', template = samfile)
-bed = open(sys.argv[3], 'w')
+bed = open(sys.argv[2], 'w')
 
-ss = get_jxns('../../data/anno.ss')
+ss = get_jxns(sys.argv[3])
 
-c = 0
 for read in samfile.fetch():
-	c += 1
-	if not c % 10000000: print c
-	blocks = read.get_blocks()
+	blocks = merge_blocks(read.get_blocks())
 	strand = (read.is_read1 == read.is_reverse)
 	if len(blocks) > 1:
-		i = 1
-		while i < len(blocks) - 1:
-			if blocks[i][0] - blocks[i-1][1] < 5:
-				blocks[i] = (blocks[i][0], blocks[i+1][1])
-				blocks.remove(blocks[i+1])
-			else:
-				i += 1
-		
 		for i in xrange(len(blocks) - 1):
 			if strand:
 				five, three = blocks[i][1] - 1, blocks[i+1][0]
 			else:
 				three, five = blocks[i][1] - 1, blocks[i+1][0]
+			
 			# Some insertion events align to 5'ss and cause false positives
-
 			if abs(five - three) < MIN_INTRON_SIZE: continue
-
 
 			chrom = 'chr' + samfile.getrname(read.reference_id)
 			strand_str = '+' if strand else '-'
@@ -50,7 +51,5 @@ for read in samfile.fetch():
 				if three not in ss[(chrom, strand_str, five)]:
 					if strand and three < max(ss[(chrom, strand_str, five)]):
 						bed.write('\t'.join(map(str, [chrom, five + 1, three, read.query_name, blocks, strand_str])) + '\n')
-						sjr.write(read)
 					elif not strand and three > min(ss[(chrom, strand_str, five)]):
 						bed.write('\t'.join(map(str,[chrom, three + 1, five, read.query_name, blocks, strand_str])) + '\n')
-						sjr.write(read)
