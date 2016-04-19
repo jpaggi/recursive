@@ -31,5 +31,5 @@ for line in introns:
 	fps_bits = (score_motif(fp_pwm, fps[:8]) - fp_min) / (fp_max - fp_min) 
 	tps_bits = (score_motif(tp_pwm, tps[-15:]) - tp_min) / (tp_max - tp_min)
 
-	if fps_bits > 0.9: print fps
+	if fps_bits > 0.8: print fps
 	out.write('\t'.join([chrom, start, end, sample, offsets, strand, tps, fps, str(fps_bits), str(tps_bits)]) + '\n')

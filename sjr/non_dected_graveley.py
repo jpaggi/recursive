@@ -12,7 +12,7 @@ for line in sys.stdin:
 
 
 
-graveley_file = open('../../data/recursiveintrons.bed')
+graveley_file = open('../data/recursiveintrons.bed')
 #graveley_file = open('../../data/expressed_graveley_rs_introns.bed', 'r')
 
 for line in graveley_file:
@@ -20,4 +20,4 @@ for line in graveley_file:
 	rs = map(int, rs.split(','))
 	for i in rs:
 		if not (chrom, strand, i) in detected:
-			print '\t'.join([chrom, start, end])
+			print '\t'.join([chrom, start, end, str(i), strand])

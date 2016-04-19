@@ -44,7 +44,7 @@ class Junctions:
 				self.ss[strand][chrom] += [(five, three)]
 			else:
 				self.ss[strand][chrom] = [(five, three)]
-		self.sort()a
+		self.sort()
 		
 	def sort(self):
 		for strand in ['+', '-']:
@@ -62,6 +62,6 @@ class Junctions:
 		up   = self._linear_search(chrom, strand, start)
 		down = self._linear_search(chrom, strand, end)
 
-		if up == down: return None
+		if up == down: return []
 
 		return self.ss[strand][chrom][min(up, down):max(up, down)]

@@ -84,4 +84,13 @@ def score_motif(pwm, seq):
 		bits += log(w[c] / 0.25, 2)
 	return bits
 
+def search_for_motif(pwm, seq, min_score, max_score):
+	best = (-1, 0)
+	for i in range(len(seq) - len(pwm) + 1):
+		p = score_motif(pwm, seq[i:i+len(pwm)])
+		if p > best[1]:
+			best = (i, p)
+
+	return best[0], (best[1] - min_score) / (max_score - min_score)
+
 
