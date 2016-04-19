@@ -28,6 +28,7 @@ SJR
  ... 3R	5701946	5756085	5718362	+  
  ... 3R	5701946	5756085	5727133	+  check 
  ... 3R	5701946	5756085	5745466	+  check read ID  1327:35050
+ ... 11 total (counting one from below)
 
 
  - 3R	4906745	4982839	4918040 has no support but in expressed intron
@@ -37,9 +38,30 @@ SJR
  ... 2L	17197087	17251508	17226473	- 
  ... X	21082827	21152072	21109455	- and straddling read in 5 minute sample
 
-- 2R	13163569	13238598	13193491	+ is an annotated 3'ss (ostensibly not in use though, very much detected)
+- 2R	13163569	13238598	13193491	+ is an annotated 3'ss (ostensibly not in use though, easily detected)
 
 - putative non-ratchet rs intron in middle of 3R:747,829-769,025
+
+threshold = 0.8
+novel [157, 68, 31, 34, 22, 18, 17, 16, 73] 436
+gravely [17, 4, 7, 5, 6, 7, 11, 9, 92] 158
+total [5366, 1732, 937, 561, 424, 291, 216, 150, 300] 9977
+
+threshold = 0.85
+novel [44, 25, 14, 15, 8, 6, 10, 10, 65] 197
+gravely [17, 4, 7, 5, 6, 7, 11, 9, 92] 158
+total [5366, 1732, 937, 561, 424, 291, 216, 150, 300] 9977
+
+threshold = 0.87  # min score of a graveley site
+novel [24, 15, 12, 9, 5, 6, 9, 8, 62] 150
+gravely [17, 4, 7, 5, 6, 7, 11, 9, 92] 158
+total [5366, 1732, 937, 561, 424, 291, 216, 150, 300] 9977
+
+threshold = 0.9
+novel   [16, 9, 9, 6, 3, 3, 6, 5, 52] 109
+gravely [16, 3, 6, 4, 5, 5, 10, 8, 82] 139
+total [5366, 1732, 937, 561, 424, 291, 216, 150, 300] 9977
+
 
 BPs
 
