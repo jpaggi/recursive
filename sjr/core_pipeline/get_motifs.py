@@ -1,6 +1,9 @@
 from load_genome import revcomp
 from math import log
 
+FP_LEN = 8
+TP_LEN = 20
+
 def get_pwm(seqs):
 	length = len(seqs[0])
 	pwm = [{'A': 1, 'C': 1, 'G': 1, 'T': 1} for i in range(length)]
@@ -43,20 +46,20 @@ def make_pwm(ss, genome):
 	tps = []
 	for chrom in fives['+']:
 		for pos in fives['+'][chrom]:	
-			fps += [genome[chrom][pos+1:pos+9]]
+			fps += [genome[chrom][pos+1:pos+FP_LEN+1]]
 
 	for chrom in threes['+']:
 		for pos in threes['+'][chrom]:
-			tps += [genome[chrom][pos-15: pos]]
+			tps += [genome[chrom][pos-TP_LEN: pos]]
 
 
 	for chrom in fives['-']:
 		for pos in fives['-'][chrom]:
-			fps += [revcomp(genome[chrom][pos-8: pos])]
+			fps += [revcomp(genome[chrom][pos-FP_LEN: pos])]
 
 	for chrom in threes['-']:
 		for pos in threes['-'][chrom]:
-			tps += [revcomp(genome[chrom][pos+1:pos+16])]
+			tps += [revcomp(genome[chrom][pos+1:pos+TP_LEN+1])]
 
 
 	return get_pwm(fps), get_pwm(tps)
