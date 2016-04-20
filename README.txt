@@ -1,18 +1,42 @@
 Do mapping with dmel r5.57
 
-Sawtooth
+Overall
+- Helpful to rule out rs as well as confirming it
+- Need to come up with set of genes to look in
+... based on expression cut offs
+... number of reads supporting intron being spliced
+... length of introns
+... presence in graveley study
+- trend towards global statistics instead of individual examples
 
+
+Sequence Motifs
+- Figure out what a bit score for an individual sequence means
+... try summing up information content of all characters of equal or greater probability???
+- Might want to cut off low scoring annotated motifs before including in consensus motif
+- Develop background model of rs site motifs
+... look around all AG dinucleotides in long introns
+... 
+
+
+Sawtooth
+ - go forward here despite being unsure
+ - increase temperature
  - Stick with current implementation now, improve if needed later
  - Look for overlaps between samples and time points
  - Need to determine exactly which set of genes to run this on!
    - Noticed higher false positive rates on 
 
+Sequence
+
 SJR
 
- - Do all alignments using HISAT2
- - Plot motif score versus number of reads
- - Potentially plan some sort of cutoff?
- - figure out why chrX:21082827-21152072 aligns improperly
+- incorporate PE read information to numbers
+- seems that should be able to count excessively long insert length PE
+... reads on equal footing as split reads
+- eventualy need to incorporate graveley data
+
+ - figure out why chrX:2108827-21152072 aligns improperly
  ... seems to be an indel close to the sites? Or a micro exon???
  - seems that there can sometimes be slight mapping issues
     ... get around by looking a few bases on each side for motif?
@@ -73,3 +97,4 @@ Combining Data
 
  - Lean towards high recovery rate in all individual analysis
  - Later filter based on agreement between data types
+ 
