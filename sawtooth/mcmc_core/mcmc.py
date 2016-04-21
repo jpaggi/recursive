@@ -2,6 +2,7 @@ import numpy as np
 from scipy import stats
 from random import random, randrange, choice, gauss
 from math import exp, log
+T = 1
 
 def lin_regression(x, start, end):
     """
@@ -48,7 +49,7 @@ def calculate_squared_dev(x, start, end):
     dev = 0
     for i in range(start, end):
         expect = intercept + slope * (i - start)
-        dev += abs(x[i] - expect) ** 22
+        dev += abs(x[i] - expect) ** 1
     return slope, intercept, dev
 
 def end_height(x, start, end):
@@ -128,7 +129,7 @@ def mcmc(x, window):
         #print x
         #print new_state, new_score, old_score
 
-        thresh = exp(float(old_score - new_score))
+        thresh = exp(float(old_score - new_score) / T)
 
         if old_score > new_score or (new_score == - float('inf') or (old_score != - float('inf') and thresh > random())):
             old_score = new_score
