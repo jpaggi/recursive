@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 BINS = 100
 TP_LEN = 20
-AG = False
+AG = True
 MIN_INTRON_LEN = 10000
 
 
@@ -22,8 +22,8 @@ min_score, max_score = get_min_score(pwm), get_max_score(pwm)
 
 scores = [0] * BINS
 for line in bed:
-	chrom, start, end, name, name2, strand = line.strip().split('\t')
-	chrom, start, end = chrom[3:], int(start), int(end)
+	chrom, start, end, strand = line.strip().split('\t')
+	start, end = int(start), int(end)
 
 	if end - start < MIN_INTRON_LEN: continue
 

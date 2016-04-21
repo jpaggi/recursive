@@ -31,6 +31,7 @@ for intron in introns:
     expression = [0] * (intron_end - intron_start)
     sjr_count = 0
     for read in samfile.fetch(chrom, intron_start-MAX_INSERT, intron_end+MAX_INSERT):
+        if read.is_unmapped: continue
         # look for reads straddling jxn
         if strand == '+' and read.is_read2:
             if read.rname != read.rnext: continue
