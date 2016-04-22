@@ -1,8 +1,41 @@
 import numpy as np
 from scipy import stats
 from random import random, randrange, choice, gauss
-from math import exp, log
-T = 1
+from math import exp, log, ceil
+
+
+class Fit:
+    def __init__(self, x):
+        self.x = x
+        self.slopes = np.empty([len(x), len(x)], np.dtype('f16'))
+        self.intercepts = np.empty([len(x), len(x)], np.dtype('f16'))
+        self.devs = np.empty([len(x), len(x)], np.dtype('f16'))
+        for i in range(len(x)):
+            for j in range(i + 2, len(x)):
+                self.slopes[i, j] = 0
+                self.intercepts[i, j] = 0
+                self.devs[i, j] = -1
+
+    def set(self, i, j):
+        if self.devs[i, j] == -1:
+            slope, intercept, dev = calculate_squared_dev(self.x, i, j)
+            self.slopes[i, j] = slope
+            self.intercepts[i, j] = intercept
+            self.devs[i, j] = dev
+
+    def get_dev(self, i, j):
+        self.set(i, j)
+        return self.devs[i, j]
+
+    def get_slope(self, i, j):
+        self.set(i, j)
+        return self.slopes(i, j)
+
+    def get_int(self, i, j):
+        self.set(i, j)
+        return self.intercepts(i, j)
+
+
 
 def lin_regression(x, start, end):
     """
@@ -49,7 +82,7 @@ def calculate_squared_dev(x, start, end):
     dev = 0
     for i in range(start, end):
         expect = intercept + slope * (i - start)
-        dev += abs(x[i] - expect) ** 1
+        dev += abs(x[i] - expect) ** 2
     return slope, intercept, dev
 
 def end_height(x, start, end):
@@ -64,19 +97,6 @@ def end_height(x, start, end):
     slope, intercept = descending_regression(x, start, end)
     return intercept, intercept + slope * (end - start)
 
-
-def init(x):
-    slopes = np.empty([len(x), len(x)], np.dtype('f8'))
-    intercepts = np.empty([len(x), len(x)], np.dtype('f8'))
-    devs = np.empty([len(x), len(x)], np.dtype('f8'))
-    for i in range(len(x)):
-        for j in range(i + 2, len(x)):
-            slope, intercept, dev = calculate_squared_dev(x, i, j)
-            slopes[i, j] = slope
-            intercepts[i, j] = intercept
-            devs[i, j] = dev
-    return slopes, intercepts, devs
-
 def remove(l, r):
     out = []
     for el in l:
@@ -85,58 +105,101 @@ def remove(l, r):
     return out
 
 
-def score(state, slopes, intercepts, dev):
+def score(state, fit, num):
     params = 2 * len(state) + 2
-    num = len(intercepts[0])
     if params == 2:
-        rss = dev[0, num - 1]
+        rss = fit.get_dev(0, num - 1)
     else:
-        rss = dev[0, state[0]]
+        rss = fit.get_dev(0, state[0])
         for i in range(len(state) - 1):
-            rss += dev[state[i], state[i+1]]
-        rss += dev[state[-1], num-1]
+            rss += fit.get_dev(state[i], state[i+1])
+        rss += fit.get_dev(state[-1], num-1)
 
 
     if rss == 0 or num == 0 or rss / float(num) <= 0:
         return - float('inf')
     return num * log(rss) + 2 * params * log(num)
 
-def mcmc(x, window):
+def close(i, l):
+    return any([(i+j in l) for j in range(-2, 3)])
 
+
+class State:
+    def __init__(self, length, state = ()):
+        assert type(state) == tuple
+        self.length = length
+        self.state = state
+
+    def __eq__(self, other):
+        return self.state == other.state
+
+    def remove(self):
+        if not self.state: return State(self.length, self.state)
+        leaving = choice(self.state)
+        new_state = tuple(x for x in self.state if x != leaving)
+        return State(self.length, new_state)
+
+    def add(self):
+        entering = randrange(2, self.length-3)
+        if any([(entering+j in self.state) for j in range(-1, 2)]):
+            new_state = self.state
+        else:
+            new_state = tuple(sorted(self.state + (entering, )))
+        return State(self.length, new_state)
+
+    def move(self):
+        if not self.state: return State(self.length, self.state)
+        change = int(ceil(abs(gauss(0, 2))) * choice((-1, 1)))
+        leaving = choice(self.state)
+        entering = leaving + change
+
+        if not 2 <= entering <= self.length - 3: 
+            return State(self.length, self.state)
+
+        temp_state = tuple(x for x in self.state if x != leaving)
+
+        if any([(entering+j in temp_state) for j in range(-1, 2)]):
+            new_state = self.state
+        else:
+            new_state = tuple(sorted(temp_state + (entering, )))
+        return State(self.length, new_state)
+
+
+    def get_state(self):
+        return self.state
+
+def mcmc(x, window, T):
     x = reduce_array(x, window)
-
-    state = []
-    slopes, intercepts, devs = init(x)
-
-    old_score = score(state, slopes, intercepts, devs)
-
+    state = State(len(x))
+    fit = Fit(x)
+    old_score = score(state.get_state(), fit, len(x))
     samples = []
     for i in xrange(1000000):
+        transition_factor = 1.0
         cutoff = random()
         if cutoff < .4 and state:
-            new_state = remove(state, choice(state))
+            new_state = state.remove()
         elif cutoff < .6 and state:
-            change = choice(state)
-            new = int(gauss(change, 5))
-            if (new not in state) and 0 <= new < len(x):
-                new_state = sorted(remove(state, change) + [new])
+            new_state = state.move()
         else:
-            add = randrange(len(x - 1))
-            if add in state: continue
-            new_state = sorted(state + [add])
+            new_state = state.add()
+            if len(new_state.get_state()) == 1: transition_factor = 2.0
 
-        new_score = score(new_state, slopes, intercepts, devs)
-        #print x
-        #print new_state, new_score, old_score
+        if state == new_state: continue
 
-        thresh = exp(float(old_score - new_score) / T)
+        new_score = score(new_state.get_state(), fit, len(x))
 
-        if old_score > new_score or (new_score == - float('inf') or (old_score != - float('inf') and thresh > random())):
+        if old_score > new_score or new_score == - float('inf'):
             old_score = new_score
             state = new_state
+        else:
+            thresh = (exp(float(old_score - new_score) / T) / transition_factor)
+            if thresh > random():
+                old_score = new_score
+                state = new_state
 
-        if i > 10000 and not i % 10:
-            samples += [state]
+        if i > 10000 and not i % 50:
+            samples += [state.get_state()]
 
     return samples
 

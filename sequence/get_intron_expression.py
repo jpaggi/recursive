@@ -4,6 +4,12 @@ import pysam
 """
 Currently asserting that all introns are much 
 longer than the insert length
+
+Don't take into account that straddling reads can come from
+other annotated introns... But relatively small problem
+especially for long introns, which is what we care about.
+
+***** Need to make strand specific!!!!!
 """
 
 MAX_INSERT = 300
@@ -32,6 +38,8 @@ for intron in introns:
     sjr_count = 0
     for read in samfile.fetch(chrom, intron_start-MAX_INSERT, intron_end+MAX_INSERT):
         if read.is_unmapped: continue
+        if (strand == '+') != (read.is_read1 == read.is_reverse): continue
+
         # look for reads straddling jxn
         if strand == '+' and read.is_read2:
             if read.rname != read.rnext: continue

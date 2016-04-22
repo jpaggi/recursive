@@ -8,6 +8,14 @@ Overall
 ... length of introns
 ... presence in graveley study
 - trend towards global statistics instead of individual examples
+- chr2L   2890915 2924913 + is clearly being used as a ratchet site!, but marked as annotated
+
+Need to be able to:
+1) compute overlap between sjr and mcmc reads
+2) look for nearest good motif / find best motif in a given range
+3) compare found sites with annotated ss and such
+4) 
+
 
 
 Sequence Motifs

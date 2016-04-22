@@ -24,12 +24,10 @@ for line in data:
     chrom, start, end, offsets, rs, strand = line.strip().split('\t')[:6]
 
     if line.split('\t')[5] == "-":
-        expression.reverse()
+            expression.reverse()
 
     if len(mcmc) != len(range(0, len(expression), WINDOWS)): continue
-
     begin = int(start) if strand == '+' else int(end)
-
     missed = False
     for r in map(int, rs.split(',')):
         p = get_prob(r, begin, mcmc, z)
@@ -39,12 +37,9 @@ for line in data:
         else:
             n += 1
             missed = True
-
     if missed:
         plt.plot(range(0, len(expression), WINDOWS), mcmc, linewidth=6, color= 'k')
-
         total = sum(expression)
-
         chrom, start, end, offsets, rs, strand = line.strip().split('\t')[:6]
 
         for offset, ratchet in zip(offsets.split(','), rs.split(',')):
@@ -65,7 +60,6 @@ for line in data:
                     plt.axvline(int(ratchet) - int(start), linewidth=2, color='r')
                 elif strand == '-':
                     plt.axvline(int(end) - int(ratchet), linewidth=2, color='r')
-
         plt.plot(expression)
         plt.show(block = False)
         print line
