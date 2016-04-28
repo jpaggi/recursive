@@ -3,7 +3,6 @@ from scipy import stats
 from random import random, randrange, choice, gauss
 from math import exp, log, ceil
 
-
 class Fit:
     def __init__(self, x):
         self.x = x
@@ -18,7 +17,7 @@ class Fit:
 
     def set(self, i, j):
         if self.devs[i, j] == -1:
-            slope, intercept, dev = calculate_squared_dev(self.x, i, j)
+            slope, intercept, dev = weighted_regression(self.x, i, j)
             self.slopes[i, j] = slope
             self.intercepts[i, j] = intercept
             self.devs[i, j] = dev
@@ -29,12 +28,36 @@ class Fit:
 
     def get_slope(self, i, j):
         self.set(i, j)
-        return self.slopes(i, j)
+        return self.slopes[i, j]
 
     def get_int(self, i, j):
         self.set(i, j)
-        return self.intercepts(i, j)
+        return self.intercepts[i, j]
 
+    def get_end_height(self, i, j):
+        return self.get_int(i, j) + self.get_slope(i, j) * (j -i)
+
+def weighted_regression(x, start, end):
+    y = np.array(range(0, end - start))
+    z = np.array(x[start:end])
+    slope, intercept = np.polyfit(y, z, 1)
+    if slope > 0:
+        slope = 0
+        intercept = sum(z) / float(len(z))
+        res = sum((e - intercept) ** 2 for e in z) / float(intercept + .01)
+        return slope, intercept, res
+    i = 0
+    while i < 5:
+        w = [1 / float(max(1, intercept + slope * j)) for j in y]
+        old_slope = slope
+        slope, intercept = np.polyfit(y, z, 1, w = w)
+        i += 1
+        if abs(slope - old_slope) < .01: break
+
+    w = [1 / float(max(1, intercept + slope * j)) for j in y]
+    fit, residuals = np.polyfit(y, z, 1, w = w, full = True)[:2]
+    res = residuals[0] if end - start > 2 else 0
+    return fit[0], fit[1], res
 
 
 def lin_regression(x, start, end):
@@ -85,43 +108,24 @@ def calculate_squared_dev(x, start, end):
         dev += abs(x[i] - expect) ** 2
     return slope, intercept, dev
 
-def end_height(x, start, end):
-    """
-    calculate the squared deviation of data x
-    from the best fit line.
-    No normalization not an r^2 value
-    Currently uses descending regression
-
-    start is inclusive, end is exclusive
-    """
-    slope, intercept = descending_regression(x, start, end)
-    return intercept, intercept + slope * (end - start)
-
-def remove(l, r):
-    out = []
-    for el in l:
-        if el != r:
-            out += [el]
-    return out
-
-
 def score(state, fit, num):
     params = 2 * len(state) + 2
     if params == 2:
         rss = fit.get_dev(0, num - 1)
     else:
         rss = fit.get_dev(0, state[0])
+        end_height = fit.get_end_height(0, state[0])
         for i in range(len(state) - 1):
             rss += fit.get_dev(state[i], state[i+1])
+            if fit.get_int(state[i], state[i+1]) < end_height * 1.5:
+                return float('inf')
+            end_height = fit.get_end_height(state[i], state[i+1])
         rss += fit.get_dev(state[-1], num-1)
-
-
+        if fit.get_int(state[-1], num-1) < end_height * 1.5:
+            return float('inf')
     if rss == 0 or num == 0 or rss / float(num) <= 0:
         return - float('inf')
     return num * log(rss) + 2 * params * log(num)
-
-def close(i, l):
-    return any([(i+j in l) for j in range(-2, 3)])
 
 
 class State:
@@ -164,9 +168,9 @@ class State:
             new_state = tuple(sorted(temp_state + (entering, )))
         return State(self.length, new_state)
 
-
     def get_state(self):
         return self.state
+
 
 def mcmc(x, window, T):
     x = reduce_array(x, window)
@@ -202,8 +206,6 @@ def mcmc(x, window, T):
             samples += [state.get_state()]
 
     return samples
-
-
 
 def reduce_array(array, windows):
     """

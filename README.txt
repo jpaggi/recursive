@@ -1,5 +1,12 @@
 Do mapping with dmel r5.57
 
+Could look for splicing accuracy using 4sU data
+Look for non-recursive splicing events that are present in 5 
+minute sample but not total (need to find background in total)
+
+Do not necessarily expect to see 'abherrant' spliced transcripts removed from
+total RNA-seq
+
 Overall
 - Helpful to rule out rs as well as confirming it
 - Need to come up with set of genes to look in
@@ -14,7 +21,15 @@ Need to be able to:
 1) compute overlap between sjr and mcmc reads
 2) look for nearest good motif / find best motif in a given range
 3) compare found sites with annotated ss and such
-4) 
+
+graveley
+[64, 13, 3, 6, 3, 4, 6, 8, 7, 83]
+
+All novel sjr
+[0, 5049, 1685, 911, 547, 420, 278, 206, 156, 290]
+
+Require AGGT
+[0, 319, 114, 63, 49, 35, 27, 26, 19, 155]
 
 
 

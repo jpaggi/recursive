@@ -18,7 +18,15 @@ def get_pwm(seqs):
 
 	return pwm
 
-def make_pwm(ss, genome):
+def get_scores(seqs, pwm):
+	min_score, max_score = get_min_score(pwm), get_max_score(pwm)
+	scores = []
+	for seq in seqs:
+		scores += [(score_motif(pwm, seq) - min_score) / (max_score - min_score)]
+	return scores
+
+
+def make_pwm(ss, genome, scores = False):
 	ss = open(ss, 'r')
 
 	fives = {'+': {}, '-': {}}
@@ -62,7 +70,11 @@ def make_pwm(ss, genome):
 			tps += [revcomp(genome[chrom][pos+1:pos+TP_LEN+1])]
 
 
-	return get_pwm(fps), get_pwm(tps)
+	fpwm, tpwm = get_pwm(fps), get_pwm(tps)
+	if scores:
+		fscores, tscores = get_scores(fps, fpwm), get_scores(tps, tpwm)
+		return fpwm, tpwm, fscores, tscores
+	return fpwm, tpwm
 
 def get_min_score(pwm):
 	bits = 0

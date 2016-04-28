@@ -1,4 +1,4 @@
-import numpy as np
+ximport numpy as np
 from scipy import stats
 from random import random, randrange, choice, gauss
 from math import exp, log

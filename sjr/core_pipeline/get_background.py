@@ -12,6 +12,7 @@ MIN_INTRON_LEN = 10000
 fasta_file = sys.argv[1]
 ss_file = sys.argv[2]
 bed = open(sys.argv[3], 'r')
+out = open(sys.argv[4], 'w')
 
 genome = load_genome(open(fasta_file, 'r'))
 fp_pwm, tp_pwm = make_pwm(ss_file, genome)
@@ -31,11 +32,13 @@ for line in bed:
 	if strand == '-': seq = revcomp(seq)
 
 	for i in range(0, len(seq) - len(pwm), 5):
-		if AG and seq[i+TP_LEN - 2:i+TP_LEN] != 'AG': continue
+		if AG and seq[i+TP_LEN - 2:i+TP_LEN+2] != 'AGGT': continue
 
 		score = (score_motif(pwm, seq[i:i+len(pwm)]) - min_score) / float(max_score - min_score)
 
 		scores[int(score * BINS)] += 1
+
+		out.write(str(score) + ',')
 
 total = float(sum(scores))
 print total
