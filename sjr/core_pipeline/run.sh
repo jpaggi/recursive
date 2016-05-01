@@ -3,6 +3,7 @@
 # 3 sample name
 # 4 splice site file
 # 5 fasta file of genome
+# 6 intron expression data
 
 # Gives directory of this file...
 # copied from http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in
@@ -18,6 +19,10 @@ cat $2'/sjr.bed' | sort -k1,1 -k2n,3n | python $DIR/group_introns.py - $2'/group
 
 echo 'made groups'
 
-python $DIR/seq_for_groups.py $2'/groups.bed' $5 $2'/seq.bed'
+python $DIR/seq_for_groups.py $2'/groups.bed' $5 $2'/seq.bed' $4
 
 echo 'got recursive site sequences'
+
+python $DIR/assign_introns.py $2'/seq.bed' $6 > $2'/introns.bed'
+
+echo 'assigned to introns'

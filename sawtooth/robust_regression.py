@@ -28,8 +28,8 @@ data = open(sys.argv[1], 'r')
 c = 0
 for line in data:
     c += 1
-    #if c < 197: continue
-    expression = [int(i) for i in line.strip().split('\t')[-1].split(",")]
+    if c < 1: continue
+    expression = [int(i) for i in line.strip().split('\t')[6].split(",")]
     if line.split('\t')[-2] == "-":
         expression.reverse()
 
@@ -41,11 +41,16 @@ for line in data:
     
 
     model = linear_model.LinearRegression()
+
+    
     model.fit(X, y)
 
     # Robustly fit linear model with RANSAC algorithm
     model_ransac = linear_model.RANSACRegressor(linear_model.LinearRegression())
-    model_ransac.fit(X, y)
+    try:
+        model_ransac.fit(X, y)
+    except ValueError:
+        continue
     inlier_mask = model_ransac.inlier_mask_
     outlier_mask = np.logical_not(inlier_mask)
 
@@ -62,5 +67,4 @@ for line in data:
     plt.plot(X[outlier_mask], y[outlier_mask], '.r', label='Outliers')
     plt.plot(line_X, line_y, '-k', label='Linear regressor')
     plt.plot(line_X, line_y_ransac, '-b', label='RANSAC regressor')
-    plt.legend(loc='lower right')
     plt.show()

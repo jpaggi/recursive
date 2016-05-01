@@ -8,8 +8,6 @@ longer than the insert length
 Don't take into account that straddling reads can come from
 other annotated introns... But relatively small problem
 especially for long introns, which is what we care about.
-
-***** Need to make strand specific!!!!!
 """
 
 MAX_INSERT = 300

@@ -99,9 +99,10 @@ def score_motif(pwm, seq):
 		bits += log(w[c] / 0.25, 2)
 	return bits
 
-def search_for_motif(pwm, seq, min_score, max_score):
+def search_for_motif(pwm, seq, min_score, max_score, AG = False):
 	best = (-1, 0)
 	for i in range(len(seq) - len(pwm) + 1):
+		if AG and seq[i + TP_LEN - 2: i + TP_LEN] != 'AG': continue
 		p = score_motif(pwm, seq[i:i+len(pwm)])
 		if p > best[1]:
 			best = (i, p)

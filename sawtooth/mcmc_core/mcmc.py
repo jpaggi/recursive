@@ -20,7 +20,18 @@ class Fit:
             slope, intercept, dev = weighted_regression(self.x, i, j)
             self.slopes[i, j] = slope
             self.intercepts[i, j] = intercept
-            self.devs[i, j] = dev
+            self.devs[i, j] = self.get_log_dev(i, j, slope, intercept)
+
+    def get_log_dev(self, i, j, slope, intercept):
+        avg = (slope*(1 + j - i)) / float(2)  + intercept
+        if avg <= 0: return float('inf')
+        dev = - sum(self.x[i:j]) * log((j - i) * avg)
+        for p in range(i, j):
+            height = slope*(p - i) + intercept
+            if height <= 0: return float('inf')
+            dev += self.x[p] * log(height)
+        return dev
+
 
     def get_dev(self, i, j):
         self.set(i, j)
@@ -125,8 +136,7 @@ def score(state, fit, num):
             return float('inf')
     if rss == 0 or num == 0 or rss / float(num) <= 0:
         return - float('inf')
-    return num * log(rss) + 2 * params * log(num)
-
+    return num * rss + 2 * params * log(num)
 
 class State:
     def __init__(self, length, state = ()):
@@ -178,7 +188,7 @@ def mcmc(x, window, T):
     fit = Fit(x)
     old_score = score(state.get_state(), fit, len(x))
     samples = []
-    for i in xrange(1000000):
+    for i in xrange(10000):
         transition_factor = 1.0
         cutoff = random()
         if cutoff < .4 and state:
@@ -193,6 +203,8 @@ def mcmc(x, window, T):
 
         new_score = score(new_state.get_state(), fit, len(x))
 
+#        print state.get_state(), new_state.get_state(), old_score, new_score
+
         if old_score > new_score or new_score == - float('inf'):
             old_score = new_score
             state = new_state
@@ -202,7 +214,7 @@ def mcmc(x, window, T):
                 old_score = new_score
                 state = new_state
 
-        if i > 10000 and not i % 50:
+        if i > 1000 and not i % 50:
             samples += [state.get_state()]
 
     return samples

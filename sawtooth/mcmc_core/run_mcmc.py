@@ -1,6 +1,6 @@
 from mcmc import mcmc
 import sys
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 #import numpy as np
 WINDOWS = 100
 T = 5.0

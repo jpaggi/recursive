@@ -1,5 +1,7 @@
 Do mapping with dmel r5.57
 
+something very strange is happening at 2L 20967746 21051772
+
 Could look for splicing accuracy using 4sU data
 Look for non-recursive splicing events that are present in 5 
 minute sample but not total (need to find background in total)
@@ -54,6 +56,7 @@ Sawtooth
  - Look for overlaps between samples and time points
  - Need to determine exactly which set of genes to run this on!
    - Noticed higher false positive rates on 
+
 
 Sequence
 

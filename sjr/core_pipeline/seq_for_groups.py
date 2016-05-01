@@ -1,11 +1,10 @@
 import sys
-from subprocess import Popen, PIPE
 from load_genome import load_genome, revcomp
 from get_motifs import make_pwm, score_motif, get_min_score, get_max_score
 
 SEQ_LENGTH = 30
 
-introns = open(sys.argv[1], 'r')
+introns = sys.stdin if sys.argv[1] == '-' else open(sys.argv[1], 'r')
 genome_seq = load_genome(open(sys.argv[2], 'r'))
 out = open(sys.argv[3], 'w')
 
@@ -28,8 +27,7 @@ for line in introns:
 	fps = seq[SEQ_LENGTH:]
 	tps = seq[:SEQ_LENGTH]
 
-	fps_bits = (score_motif(fp_pwm, fps[:8]) - fp_min) / (fp_max - fp_min) 
-	tps_bits = (score_motif(tp_pwm, tps[-15:]) - tp_min) / (tp_max - tp_min)
+	fps_score = (score_motif(fp_pwm, fps[:8]) - fp_min) / (fp_max - fp_min) 
+	tps_score = (score_motif(tp_pwm, tps[-20:]) - tp_min) / (tp_max - tp_min)
 
-	if fps_bits > 0.8: print fps
-	out.write('\t'.join([chrom, start, end, sample, offsets, strand, tps, fps, str(fps_bits), str(tps_bits)]) + '\n')
+	out.write('\t'.join([chrom, start, end, sample, offsets, strand, tps, fps, str(fps_score), str(tps_score)]) + '\n')
