@@ -3,7 +3,7 @@ from core_pipeline.get_motifs import *
 from core_pipeline.load_genome import *
 
 grav_file = open('../data/graveley.bed', 'r')
-data = open('../data/sjr_plus_pe.bed', 'r')
+data = open('../data/test_adel/merged.bed', 'r')
 
 random_scores = map(float, open('../data/full_motif_AGGT.csv', 'r').read().split(',')[:-1])
 

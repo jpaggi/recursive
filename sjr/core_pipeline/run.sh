@@ -11,18 +11,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 mkdir $2
 
-python $DIR/putative_ratchet_sjr.py $1 $2'/sjr.bed' $4
+sh $DIR/split_reads.sh $1 $2 'sjr_'$3 $4 $5 $6
 
-echo 'Finished extracting splice junction reads'
-
-cat $2'/sjr.bed' | sort -k1,1 -k2n,3n | python $DIR/group_introns.py - $2'/groups.bed' $3
-
-echo 'made groups'
-
-python $DIR/seq_for_groups.py $2'/groups.bed' $5 $2'/seq.bed' $4
-
-echo 'got recursive site sequences'
-
-python $DIR/assign_introns.py $2'/seq.bed' $6 > $2'/introns.bed'
-
-echo 'assigned to introns'
+sh $DIR/straddle_reads.sh $1 $2 'pe_'$3 $4 $5 $6
