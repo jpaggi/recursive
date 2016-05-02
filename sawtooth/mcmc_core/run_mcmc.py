@@ -3,7 +3,7 @@ import sys
 #import matplotlib.pyplot as plt
 #import numpy as np
 WINDOWS = 100
-T = 5.0
+T = 1000.0
 
 def get_probs(samples, expression):
     length = (len(expression) / WINDOWS) + 1
@@ -18,9 +18,11 @@ def get_probs(samples, expression):
 
 
 data = open(sys.argv[1], 'r')
-for line in data:  
+c = 0
+for line in data: 
     expression = [int(i) for i in line.strip().split('\t')[-1].split(",")]
-    
+    c+=1
+    if c < 2: continue
     if line.split('\t')[-2] == "-":
         expression.reverse()
 

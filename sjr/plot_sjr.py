@@ -20,7 +20,7 @@ for line in graveley:
     else:
         grav += [(chrom, strand, int(start))]
 
-novel = open('../data/all_joined.bed', 'r')
+novel = open('../data/all_sjr_seq.bed', 'r')
 
 nov = []
 for line in novel:
@@ -37,17 +37,17 @@ fp_pwm, tp_pwm = make_pwm('../data/anno.ss', genome_seq)
 pwm = tp_pwm + fp_pwm
 min_score, max_score = get_min_score(pwm), get_max_score(pwm)
 
-straddle = open('../data/pretty_big_straddle.bed', 'r')
+straddle = open('../data/all_straddle_seq.bed', 'r')
 
-strad = {}
+strad = []
 for line in straddle:
-    chrom, start, end, name, five, strand = line.strip().split('\t')
+    chrom, start, end, name, score, strand, seq1, seq2 = line.strip().split('\t')
 
-    if (chrom, strand, int(five) -1) in strad:
-        strad[(chrom, strand, int(five) - 1)] += [int(end) if strand == '+' else int(start)]
+    if seq1[-2:] != 'AG' or seq2[:2] != 'GT': continue
+    if strand == '+':
+        strad += [(chrom, strand, int(end))]
     else:
-        strad[(chrom, strand, int(five) - 1)] = [int(end) if strand == '+' else int(start)]
-print strad
+        strad += [(chrom, strand, int(start))]
 
 def color(p):
     if p > .9:
@@ -76,8 +76,6 @@ for line in data:
         plt.plot(expression)
         print chrom, start, end, strand, rs
 
-
-
         for gchrom, gstrand, grs in grav:
             if gchrom == chrom and gstrand == strand and int(start) < grs < int(end):
                 if strand == '+':
@@ -92,16 +90,15 @@ for line in data:
                     pos = grs - int(start)
                 elif strand == '-':
                     pos = int(end) - grs
-                plt.axvline(pos, linewidth=2, color='r')
+                plt.axvline(pos, ymin = 0, ymax = .5, linewidth=2, color='r')
 
-        five = int(start) if strand == '+' else int(end)
-        if (chrom, strand, five) in strad:
-            for e in strad[(chrom, strand, five)]:
+        for gchrom, gstrand, grs in strad:
+            if gchrom == chrom and gstrand == strand and int(start) < grs < int(end):
                 if strand == '+':
-                    pos = e - int(start)
+                    pos = grs - int(start)
                 elif strand == '-':
-                    pos = int(end) - e
-                plt.axvline(pos + 1000, linewidth=2, color='k')
+                    pos = int(end) - grs
+                plt.axvline(pos, ymin = .5, ymax = 1, linewidth=2, color='m')
 
         for i in range(30, len(seq) - 30):
             motif = seq[i - len(tp_pwm): i + len(fp_pwm)]
@@ -109,7 +106,8 @@ for line in data:
             score = (score_motif(pwm, motif) - min_score) / (max_score - min_score)
 
             if score > .8:
-                plt.scatter([i], [1], linewidths = [(score - .8) * 100], c = color(score))
+                marker = '*' if increased(i, expression) else 'o'
+                plt.scatter([i], [1], marker = marker, linewidths = [(score - .8) * 100], c = color(score))
 
         plt.autoscale(tight = True)
         plt.show(block = False)

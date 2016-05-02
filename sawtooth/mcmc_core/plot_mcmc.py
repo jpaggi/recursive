@@ -1,6 +1,6 @@
 import sys
 import matplotlib.pyplot as plt
-WINDOWS = 500
+WINDOWS = 100
 
 from get_motifs import *
 from load_genome import *
