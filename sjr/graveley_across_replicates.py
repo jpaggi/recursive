@@ -3,7 +3,7 @@ from core_pipeline.get_motifs import *
 from core_pipeline.load_genome import *
 
 grav_file = open('../data/graveley.bed', 'r')
-data = open('../data/test_adel/merged.bed', 'r')
+data = open('../data/all_sjr_seq.bed', 'r')
 
 random_scores = map(float, open('../data/full_motif_AGGT.csv', 'r').read().split(',')[:-1])
 
@@ -35,7 +35,6 @@ for line in data:
 		sample, total, a, b = graveley[(chrom, strand, rs)]
 		map(sample.add, samples.split(','))
 		graveley[(chrom, strand, rs)] = (sample, total + int(sjr), seq1, seq2)
-		print line
 
 	if (chrom, strand, rs) in novel:
 		sample, total, seq1, seq2 = novel[(chrom, strand, rs)]
@@ -46,10 +45,11 @@ for line in data:
 		map(sample.add, samples.split(','))
 		novel[(chrom, strand, rs)] = (sample, int(sjr), seq1, seq2)
 
+N_SAMPLES = 23
 
-totals = [0] * 13
-gt = [0] * 13
-scores = [[] for i in range(13)]
+totals = [0] * N_SAMPLES
+gt = [0] * N_SAMPLES
+scores = [[] for i in range(N_SAMPLES)]
 n = 0
 for key in novel:
 	samples, total, seq1, seq2 = novel[key]
@@ -64,7 +64,7 @@ for key in novel:
 
 
 scores += [[]]
-grav = [0] * 13
+grav = [0] * N_SAMPLES
 for key in graveley:
 	samples, total, seq1, seq2 = graveley[key]
 	grav[len(samples)] += 1
@@ -80,12 +80,12 @@ print n
 plt.title('Number of Samples Per Putative Recursive Site')
 plt.xlabel('Number of Samples')
 plt.ylabel('Number of Putative Recursive Sites')
-plt.xlim(-1, 13)
-plt.bar(range(13), totals, align = 'center')
-plt.bar(range(13), gt, align = 'center')
+plt.xlim(-1, N_SAMPLES)
+plt.bar(range(N_SAMPLES), totals, align = 'center')
+plt.bar(range(N_SAMPLES), gt, align = 'center')
 plt.show()
 
 plt.title('Motif Strength')
 plt.xlabel('Number of Samples')
-plt.boxplot(scores + [random_scores], labels = map(str, range(13)) + ['grav', 'random'])
+plt.boxplot(scores + [random_scores], labels = map(str, range(N_SAMPLES)) + ['grav', 'random'])
 plt.show()

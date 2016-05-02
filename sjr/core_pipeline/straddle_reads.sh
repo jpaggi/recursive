@@ -7,24 +7,24 @@
 
 # Gives directory of this file...
 # copied from http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+#DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-python $DIR/straddle_jxn.py $1 $4 $3 > $2'/straddle.bed'
+python straddle_jxn.py $1 $4 $3 > $2'/straddle.bed'
 
 echo 'Finished extracting splice junction reads'
 
-python $DIR/straddle_motif.py $2'/straddle.bed' $4 $5 > $2'/straddle_rs.bed' 
+python straddle_motif.py $2'/straddle.bed' $4 $5 > $2'/straddle_rs.bed' 
 
 echo 'assigned recursive sites'
 
-cat $2'/straddle_rs.bed' | sort -k1 -k2n,3n | python $DIR/straddle_group.py > $2'/straddle_groups.bed'
+cat $2'/straddle_rs.bed' | sort -k1 -k2n,3n | python straddle_group.py > $2'/straddle_groups.bed'
 
 echo 'made groups'
 
-python $DIR/seq_for_groups.py $2'/straddle_groups.bed' $5 $2'/straddle_seq.bed' $4
+python seq_for_groups.py $2'/straddle_groups.bed' $5 $2'/straddle_seq.bed' $4
 
 echo 'got recursive site sequences'
 
-python $DIR/assign_introns.py $2'/straddle_seq.bed' $6 > $2'/straddle_introns.bed'
+python assign_introns.py $2'/straddle_seq.bed' $6 > $2'/straddle_introns.bed'
 
 echo 'assigned to introns'
