@@ -3,7 +3,7 @@ from core_pipeline.get_motifs import *
 from core_pipeline.load_genome import *
 
 grav_file = open('../data/graveley.bed', 'r')
-data = open('../data/all_sjr_seq.bed', 'r')
+data = open('../data/all_AGGT.bed', 'r')
 
 random_scores = map(float, open('../data/full_motif_AGGT.csv', 'r').read().split(',')[:-1])
 
@@ -59,6 +59,7 @@ for key in novel:
 		if key not in graveley:
 			n +=1
 	if seq2[:2] == 'GT':
+
 		scores[len(samples)] += [tps]
 		gt[len(samples)] += 1
 

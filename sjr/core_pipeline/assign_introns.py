@@ -49,9 +49,9 @@ for line in sjr:
 				if rs < three: continue
 				if three < best[0] or juncs > best[1]: best = (three, juncs)
 		if strand == '+':
-			begin, stop = start, best[0]
+			begin, stop = five, best[0]
 		else:
-			begin, stop = best[0], start
+			begin, stop = best[0], five
 		print '\t'.join(map(str, [chrom, begin, stop, samples, rs, strand, count, best[1], seq1, seq2, score1, score2]))
 	else:
 		# introns less than 1000 not present in express file

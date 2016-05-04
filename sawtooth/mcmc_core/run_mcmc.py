@@ -3,7 +3,7 @@ import sys
 #import matplotlib.pyplot as plt
 #import numpy as np
 WINDOWS = 100
-T = 1000.0
+T = 4.0
 
 def get_probs(samples, expression):
     length = (len(expression) / WINDOWS) + 1

@@ -25,8 +25,8 @@ for read in samfile.fetch():
 		# check if consistent with any anno splice
 		consistent = False
 		for five, three in splices:
-			cassette = five >= inner_left and three <= inner_right
-			if cassette and five - inner_left + inner_right - three < 450:
+			cassette = five + 10 >= inner_left and three - 10 <= inner_right
+			if cassette and five - inner_left + inner_right - three < 600:
 				consistent = True
 		if consistent: continue
 
@@ -40,7 +40,7 @@ for read in samfile.fetch():
 
 		for five in fives:
 			three = fives[five]
-			if five - read.pos < 300 and read.pnext < three:
+			if five - read.pos < 300 and inner_right + 10 < three:
 				print '\t'.join(map(str, [chrom, inner_left, inner_right, sample, five + 1, strand_str]))
 
 	elif not strand and 1000 < read.pos - read.pnext:
@@ -50,8 +50,8 @@ for read in samfile.fetch():
 
 		consistent = False
 		for five, three in splices:
-			cassette = three >= inner_left and five <= inner_right
-			if cassette and three - inner_left + inner_right - five < 450:
+			cassette = three + 10 >= inner_left and five - 10 <= inner_right
+			if cassette and three - inner_left + inner_right - five < 600:
 				consistent = True
 		if consistent: continue
 
@@ -65,5 +65,5 @@ for read in samfile.fetch():
 
 		for five in fives:
 			three = fives[five]
-			if inner_right - five < 300 and inner_left > three:
+			if inner_right - five < 300 and inner_left > three + 10:
 				print '\t'.join(map(str, [chrom, inner_left, inner_right, sample, five, strand_str]))

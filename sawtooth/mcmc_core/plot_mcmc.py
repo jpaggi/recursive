@@ -104,7 +104,7 @@ for line in data:
     #print c
     #if c < 200: continue 
     chrom, start, end, offsets, rs, strand = line.strip().split('\t')[:6]
-    expression = [int(i) for i in line.strip().split('\t')[6].split(",")]
+    expression = [int(float(i)) for i in line.strip().split('\t')[6].split(",")]
     mcmc = [float(i) for i in line.strip().split('\t')[7].split(",")]
 
 

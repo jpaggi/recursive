@@ -20,19 +20,7 @@ class Fit:
             slope, intercept, dev = weighted_regression(self.x, i, j)
             self.slopes[i, j] = slope
             self.intercepts[i, j] = intercept
-            self.devs[i, j] = self.get_log_dev(i, j, slope, intercept)
-
-    def get_log_dev(self, i, j, slope, intercept):
-        # avg = (slope*(1 + j - i)) / float(2)  + intercept
-        # if avg <= 0: return float('inf')
-        # dev = - sum(self.x[i:j]) * log((j - i) * avg)
-        dev = 0
-        for p in range(i, j):
-            height = slope*(p - i) + intercept
-            if height <= 0: return float('inf')
-            dev += self.x[p] * log(height)
-        return dev
-
+            self.devs[i, j] = dev
 
     def get_dev(self, i, j):
         self.set(i, j)
@@ -48,9 +36,6 @@ class Fit:
 
     def get_end_height(self, i, j):
         return self.get_int(i, j) + self.get_slope(i, j) * (j -i)
-
-    def get_sum_heights(self, i, j):
-        return (self.get_int(i, j) + self.get_end_height(i, j)) / float(2)  * (j - i)
 
 def weighted_regression(x, start, end):
     y = np.array(range(0, end - start))
@@ -74,78 +59,25 @@ def weighted_regression(x, start, end):
     res = residuals[0] if end - start > 2 else 0
     return fit[0], fit[1], res
 
-
-def lin_regression(x, start, end):
-    """
-    calculate slope and y-intercept of data x
-    beginning at start and ending at end
-    
-    requires that interval is at least length 2
-
-    start is inclusive, end is exculsive
-    """
-    assert(end > start + 1)
-    y = np.array(range(0, end - start))
-    slope, intercept, r_value, p_value, std_err = stats.linregress(y, x[start:end]) # O(n) list slice
-    return slope, intercept
-
-def descending_regression(x, start, end):
-    """
-    Calculate slope and intercept of data x
-    beginning at start and ending at end, 
-    ensuring that the slope is non-positive
-
-    requires that interval is at least length 2 
-
-    start is inclusive, end is exclusive
-    """
-    #do normal linear regression and check if slope is non-positive
-    slope, intercept = lin_regression(x, start, end)
-    if slope <= 0:
-        return slope, intercept
-    # otherwise return slope = 0 and intercept = mean
-    total = sum([x[i] for i in range(start, end)])
-    return 0, total / float(end - start)
-
-def calculate_squared_dev(x, start, end):
-    """
-    calculate the squared deviation of data x
-    from the best fit line.
-    No normalization not an r^2 value
-    Currently uses descending regression
-
-    start is inclusive, end is exclusive
-    """
-    slope, intercept = descending_regression(x, start, end)
-    dev = 0
-    for i in range(start, end):
-        expect = intercept + slope * (i - start)
-        dev += abs(x[i] - expect) ** 2
-    return slope, intercept, dev
-
-def score(state, fit, length, num):
+def score(state, fit, num):
     params = 2 * len(state) + 2
     if params == 2:
-        rss = fit.get_dev(0, length - 1)
-        heights = fit.get_sum_heights(0, length-1)
+        rss = fit.get_dev(0, num - 1)
     else:
         rss = fit.get_dev(0, state[0])
-        heights = fit.get_sum_heights(0, state[0])
         end_height = fit.get_end_height(0, state[0])
         for i in range(len(state) - 1):
             rss += fit.get_dev(state[i], state[i+1])
-            heights += fit.get_sum_heights(state[i], state[i+1])
             if fit.get_int(state[i], state[i+1]) < end_height * 1.5:
                 return float('inf')
             end_height = fit.get_end_height(state[i], state[i+1])
-        rss += fit.get_dev(state[-1], length-1)
-        heights += fit.get_sum_heights(state[-1], length-1)
-        if fit.get_int(state[-1], length-1) < end_height * 1.5:
+        rss += fit.get_dev(state[-1], num-1)
+        if fit.get_int(state[-1], num-1) < end_height * 1.5:
             return float('inf')
-    # if rss == 0 or num == 0 or rss / float(num) <= 0:
-    #     return - float('inf')
-    rss = rss - num * log(heights)
-    return - 2 * rss + params * log(num)
+    if rss == 0 or num == 0 or rss / float(num) <= 0:
+        return - float('inf')
+    return num * log(rss / float(num)) + 2 * params * log(num)
+
 
 class State:
     def __init__(self, length, state = ()):
@@ -190,14 +122,13 @@ class State:
     def get_state(self):
         return self.state
 
-
 def mcmc(x, window, T):
     x = reduce_array(x, window)
     state = State(len(x))
     fit = Fit(x)
-    old_score = score(state.get_state(), fit, len(x), sum(x))
+    old_score = score(state.get_state(), fit, len(x))
     samples = []
-    for i in xrange(10000):
+    for i in xrange(1000000):
         transition_factor = 1.0
         cutoff = random()
         if cutoff < .4 and state:
@@ -210,10 +141,7 @@ def mcmc(x, window, T):
 
         if state == new_state: continue
 
-        new_score = score(new_state.get_state(), fit, len(x), sum(x))
-
-
- #       print state.get_state(), new_state.get_state(), old_score, new_score
+        new_score = score(new_state.get_state(), fit, len(x))
 
         if old_score > new_score or new_score == - float('inf'):
             old_score = new_score
@@ -224,7 +152,7 @@ def mcmc(x, window, T):
                 old_score = new_score
                 state = new_state
 
-        if i > 1000 and not i % 50:
+        if i > 10000 and not i % 50:
             samples += [state.get_state()]
 
     return samples

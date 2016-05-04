@@ -24,7 +24,7 @@ novel = open('../data/all_sjr_seq.bed', 'r')
 
 nov = []
 for line in novel:
-    chrom, start, end, name, score, strand, seq1, seq2 = line.strip().split('\t')
+    chrom, start, end, name, score, strand, seq1, seq2 = line.strip().split('\t')[:8]
 
     if seq1[-2:] != 'AG' or seq2[:2] != 'GT': continue
     if strand == '+':
@@ -41,7 +41,7 @@ straddle = open('../data/all_straddle_seq.bed', 'r')
 
 strad = []
 for line in straddle:
-    chrom, start, end, name, score, strand, seq1, seq2 = line.strip().split('\t')
+    chrom, start, end, name, score, strand, seq1, seq2 = line.strip().split('\t')[:8]
 
     if seq1[-2:] != 'AG' or seq2[:2] != 'GT': continue
     if strand == '+':
@@ -61,19 +61,23 @@ def color(p):
 
 
 data = open(sys.argv[1], 'r')
-for line in data:
+data2 = open(sys.argv[2], 'r')
+for line, line2 in zip(data, data2):
 
     chrom, start, end, offsets, rs, strand = line.strip().split('\t')[:6]
     expression = [int(i) for i in line.strip().split('\t')[6].split(",")]
+    expression2 = [int(i) for i in line2.strip().split('\t')[6].split(",")]
     start, end = int(start), int(end)
     
     seq = genome_seq[chrom][int(start):int(end)]
     if strand == "-":
         expression.reverse()
+        expression2.reverse()
         seq = revcomp(seq)
 
     if True:
         plt.plot(expression)
+        plt.plot(expression2)
         print chrom, start, end, strand, rs
 
         for gchrom, gstrand, grs in grav:

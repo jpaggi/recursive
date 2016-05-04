@@ -13,12 +13,22 @@ def get_prob(pos, mcmc, z):
         except IndexError: pass
     return score / float(z)
 
+def get_peaks(probs, z):
+    WIDTH = 5
+    peaks = []
+    for i in xrange(WIDTH, len(probs)-WIDTH):
+        if probs[i] / z < .5: continue
+        if all(probs[i-j] < probs[i] and probs[i] > probs[i+j] for j in range(1, WIDTH)):
+            peaks += [i]
+    return peaks
+
 def increased(peak, expression):
     WIDTH = 100
     before = sum(expression[peak - WIDTH: peak])
     after = sum(expression[peak:peak + WIDTH])
 
     return after > 2 * before
+
 graveley = open('../data/graveley.bed', 'r')
 
 grav = []
@@ -33,7 +43,7 @@ novel = open('../data/all_sjr_seq.bed', 'r')
 
 nov = []
 for line in novel:
-    chrom, start, end, name, score, strand, seq1, seq2 = line.strip().split('\t')
+    chrom, start, end, name, score, strand, seq1, seq2 = line.strip().split('\t')[:8]
 
     if seq1[-2:] != 'AG' or seq2[:2] != 'GT': continue
     if strand == '+':
@@ -50,7 +60,7 @@ straddle = open('../data/all_straddle_seq.bed', 'r')
 
 strad = []
 for line in straddle:
-    chrom, start, end, name, score, strand, seq1, seq2 = line.strip().split('\t')
+    chrom, start, end, name, score, strand, seq1, seq2 = line.strip().split('\t')[:8]
 
     if seq1[-2:] != 'AG' or seq2[:2] != 'GT': continue
     if strand == '+':
@@ -73,17 +83,25 @@ data = open(sys.argv[1], 'r')
 
 probs = []
 
-for line in data:
+t_g, f, n, g, t_n, o, t_o = 0, 0, 0, 0, 0, 0, 0
 
+for line in data:
     chrom, start, end, offsets, rs, strand, expression, mcmc = line.strip().split('\t')
     expression = map(int, expression.split(","))
     mcmc = map(float, mcmc.split(','))
     start, end = int(start), int(end)
+
+    #if sum(expression) / len(expression) < 5: continue
     
     seq = genome_seq[chrom][int(start):int(end)]
     if strand == "-":
         expression.reverse()
         seq = revcomp(seq)
+
+    if sum(expression) / float(int(end) - int(start)) < 1: continue
+
+    peaks = get_peaks(mcmc, max(expression))
+    seen = 0
 
     for gchrom, gstrand, grs in grav:
         if gchrom == chrom and gstrand == strand and int(start) < grs < int(end):
@@ -92,13 +110,33 @@ for line in data:
             elif strand == '-':
                 pos = int(end) - grs
             probs += [get_prob(pos, mcmc, max(expression))]
+            g += 1
+            for peak in peaks:
+                s = (peak-1) * WINDOWS
+                e = (peak+3) * WINDOWS
+                if s < pos < e:
+                    t_g += 1
+            if (gchrom, gstrand, grs) in nov:
+                o += 1
+                for peak in peaks:
+                    s = (peak-1) * WINDOWS
+                    e = (peak+3) * WINDOWS
+                    if s < pos < e:
+                        t_o += 1
+
 
     for gchrom, gstrand, grs in nov:
         if gchrom == chrom and gstrand == strand and int(start) < grs < int(end):
+            n += 1
             if strand == '+':
                 pos = grs - int(start)
             elif strand == '-':
                 pos = int(end) - grs
+            for peak in peaks:
+                s = (peak-1) * WINDOWS
+                e = (peak+3) * WINDOWS
+                if s < pos < e:
+                    t_n += 1
 
     for gchrom, gstrand, grs in strad:
         if gchrom == chrom and gstrand == strand and int(start) < grs < int(end):
@@ -112,5 +150,19 @@ for line in data:
 
         score = (score_motif(pwm, motif) - min_score) / (max_score - min_score)
 
+    f += len(peaks)
+
 print probs
+print 'w/ p', len(filter(lambda x: x > .1, probs))
+print 'grav hits:', t_g
+print 'total peaks:', f
+print 'graveley total', g
+
+print 'novel hits:', t_n
+print 'total peaks:', f
+print 'novel total', n
+
+print 'overlap hits:', t_o
+print 'total peaks:', f
+print 'overlap total', o
 
