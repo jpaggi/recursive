@@ -39,7 +39,7 @@ do
 		cat $f | sort -k1,1 -k2n,3n | python merge.py > $2$bin'_'$time'_merged.bed'
 		python mask_repeats.py $2'/'$bin'_'$time'_merged.bed' $5 > $2$bin'_'$time'_merged_masked.bed'
 	done
-
-	cat $2$bin'*merged.bed' | sort -k1,1 -k2n,3n | python merge.py > $2$bin'_all_merged.bed'
+	f=$2$bin'*merged.bed'
+	cat $fs | sort -k1,1 -k2n,3n | python merge.py > $2$bin'_all_merged.bed'
 	python mask_repeats.py $2$bin'_all_merged.bed' $5 > $2$bin'_all_merged_masked.bed'
 done

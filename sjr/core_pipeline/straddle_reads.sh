@@ -4,20 +4,17 @@
 # 4 splice site file
 # 5 fasta file of genome
 # 6 intron expression data
+# 7 sjr file
 
 # Gives directory of this file...
 # copied from http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in
 #DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-python straddle_jxn.py $1 $4 $3 > $2'/straddle.bed'
+#python straddle_jxn.py $1 $4 $3 > $2'/straddle.bed'
 
 echo 'Finished extracting splice junction reads'
 
-python straddle_motif.py $2'/straddle.bed' $4 $5 > $2'/straddle_rs.bed' 
-
-echo 'assigned recursive sites'
-
-cat $2'/straddle_rs.bed' | sort -k1 -k2n,3n | python straddle_group.py > $2'/straddle_groups.bed'
+python straddle_assign.py $2'/straddle.bed' $7 $4 $5 | sort -k1 -k2n,3n > $2'/straddle_groups.bed'
 
 echo 'made groups'
 

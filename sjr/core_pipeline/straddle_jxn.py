@@ -37,7 +37,6 @@ for read in samfile.fetch():
 			else:
 				fives[five] = three
 
-
 		for five in fives:
 			three = fives[five]
 			if five - read.pos < 300 and inner_right + 10 < three:
@@ -61,7 +60,6 @@ for read in samfile.fetch():
 				fives[five] = min(three, fives[five])
 			else:
 				fives[five] = three
-
 
 		for five in fives:
 			three = fives[five]

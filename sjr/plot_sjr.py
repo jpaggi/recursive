@@ -61,23 +61,19 @@ def color(p):
 
 
 data = open(sys.argv[1], 'r')
-data2 = open(sys.argv[2], 'r')
-for line, line2 in zip(data, data2):
+for line in data:
 
     chrom, start, end, offsets, rs, strand = line.strip().split('\t')[:6]
     expression = [int(i) for i in line.strip().split('\t')[6].split(",")]
-    expression2 = [int(i) for i in line2.strip().split('\t')[6].split(",")]
     start, end = int(start), int(end)
     
     seq = genome_seq[chrom][int(start):int(end)]
     if strand == "-":
         expression.reverse()
-        expression2.reverse()
         seq = revcomp(seq)
 
     if True:
         plt.plot(expression)
-        plt.plot(expression2)
         print chrom, start, end, strand, rs
 
         for gchrom, gstrand, grs in grav:
@@ -94,15 +90,15 @@ for line, line2 in zip(data, data2):
                     pos = grs - int(start)
                 elif strand == '-':
                     pos = int(end) - grs
-                plt.axvline(pos, ymin = 0, ymax = .5, linewidth=2, color='r')
+                plt.axvline(pos, ymin = 0, ymax = .5, linewidth=4, color='r')
 
-        for gchrom, gstrand, grs in strad:
-            if gchrom == chrom and gstrand == strand and int(start) < grs < int(end):
-                if strand == '+':
-                    pos = grs - int(start)
-                elif strand == '-':
-                    pos = int(end) - grs
-                plt.axvline(pos, ymin = .5, ymax = 1, linewidth=2, color='m')
+        # for gchrom, gstrand, grs in strad:
+        #     if gchrom == chrom and gstrand == strand and int(start) < grs < int(end):
+        #         if strand == '+':
+        #             pos = grs - int(start)
+        #         elif strand == '-':
+        #             pos = int(end) - grs
+        #         plt.axvline(pos, ymin = .5, ymax = 1, linewidth=2, color='m')
 
         for i in range(30, len(seq) - 30):
             motif = seq[i - len(tp_pwm): i + len(fp_pwm)]
@@ -110,10 +106,12 @@ for line, line2 in zip(data, data2):
             score = (score_motif(pwm, motif) - min_score) / (max_score - min_score)
 
             if score > .8:
-                marker = '*' if increased(i, expression) else 'o'
+ #               marker = '*' if increased(i, expression) else 'o'
+                marker = 'o'
                 plt.scatter([i], [1], marker = marker, linewidths = [(score - .8) * 100], c = color(score))
 
         plt.autoscale(tight = True)
         plt.show(block = False)
         a = raw_input("enter to continue")
+        if a: plt.savefig('../data/coverage_example/' + a + '.png')
         plt.close()

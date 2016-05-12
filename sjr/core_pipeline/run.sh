@@ -11,6 +11,6 @@
 
 mkdir $2
 
-sh split_reads.sh $1 $2 'sjr_'$3 $4 $5 $6
+#sh split_reads.sh $1 $2 'sjr_'$3 $4 $5 $6
 
-sh straddle_reads.sh $1 $2 'pe_'$3 $4 $5 $6
+sh straddle_reads.sh $1 $2 'pe_'$3 $4 $5 $6 ../reads/jxns/all_sjr_seq.bed

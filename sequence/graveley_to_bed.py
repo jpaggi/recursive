@@ -5,7 +5,7 @@ for line in graveley:
 
 	for r in map(int, rs.split(',')):
 		if strand == '+':
-			begin, stop = start, r
+			begin, stop = start, r-1
 		else:
 			begin, stop = r, end
 		print '\t'.join(map(str, [chrom, begin, stop, name, '.', strand]))

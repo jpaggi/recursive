@@ -1,4 +1,5 @@
 import sys
+import matplotlib.pyplot as plt
 
 class IntronRS:
 	def __init__(self, line):
@@ -45,14 +46,35 @@ class IntronRS:
 				self.score2
 			]))
 
+	def length(self):
+		return max(self.end - self.start, 0)
 
+	def good_motifs(self):
+		return self.score1 > .8 and self.score2 > .8
 
-cur = IntronRS(sys.stdin.readline())
-for line in sys.stdin:
-	intron = IntronRS(line)
-	if cur.same(intron):
-		cur.merge(intron)
-	else:
-		print cur
-		cur = intron
-print cur
+	def great_motifs(self):
+		return self.score1 > .9 and self.score2 > .9
+
+	def motifs_above_thresh(self, thresh):
+		return self.score1 > thresh and self.score2 > thresh
+
+	def motif_strengths(self):
+		return self.score1, self.score2
+
+	def aggt(self):
+		return self.seq1[-2:] == 'AG' and self.seq2[:2] == 'GT'
+
+	def motif_str(self, tp_len = 25, fp_len = 10):
+		return self.seq1[-tp_len:] + self.seq2[:fp_len]
+
+	def read_count(self):
+		return self.sjr
+
+	def num_samples(self):
+		return len(self.samples)
+
+	def expression(self):
+		return self.intron
+
+	def recursive_index(self):
+		return self.sjr / float(self.intron)

@@ -19,15 +19,55 @@ def increased(peak, expression):
 
     return after > 2 * before
 
+class Peak:
+    def __init__(self, start, end):
+        self.start = (start-1) * WINDOWS
+        self.end = end * WINDOWS
+
+    def inside(self, pos):
+        return self.start <= pos <= self.end
+
+    def close(self, pos, dist):
+        return self.start - dist <= pos <= self.end + dist
+
+    def length(self):
+        return self.end - self.start
+
+    def random(self, length):
+        start = randrange(100, length)
+
+    def plot(self, length):
+        start_p = self.start / float(length)
+        end_p = self.end / float(length)
+        plt.axvline(self.start, c = 'm')
+        plt.axvline(self.end, c = 'm')
+
+    def mergable(self, end):
+        end = end * WINDOWS
+        return end < self.end + 500
+
+    def merge(self, end):
+        self.end = end * WINDOWS
 
 def get_peaks(probs, z):
-    WIDTH = 5
+    """
+    Given probs in reduced space
+    Return Peaks in genome space
+    """
     peaks = []
-    avg = sum(probs) / float(len(probs))
-    for i in xrange(WIDTH, len(probs)-WIDTH):
-        if probs[i] / z < .1: continue
-        if all(probs[i-j] < probs[i] and probs[i] > probs[i+j] for j in range(1, WIDTH)):
-            peaks += [i]
+    peak_start = None
+    THRESH = .1
+    for i in xrange(len(probs)):
+        p = probs[i] / float(z)
+        # make new peak
+        if peak_start != None and p < THRESH:
+            if peaks and peaks[-1].mergable(i):
+                peaks[-1].merge(i)
+            else:
+                peaks += [Peak(peak_start, i)]
+            peak_start = None
+        elif peak_start == None and p >= THRESH:
+            peak_start = i
     return peaks
 
 
@@ -71,11 +111,11 @@ for line in graveley:
     else:
         grav += [(chrom, strand, int(start))]
 
-novel = open('../data/all_joined.bed', 'r')
+novel = open('../data/all_sjr_seq.bed', 'r')
 
 nov = []
 for line in novel:
-    chrom, start, end, name, score, strand, seq1, seq2 = line.strip().split('\t')
+    chrom, start, end, name, score, strand, seq1, seq2 = line.strip().split('\t')[:8]
 
     if seq1[-2:] != 'AG' or seq2[:2] != 'GT': continue
     if strand == '+':
@@ -84,17 +124,17 @@ for line in novel:
         nov += [(chrom, strand, int(start))]
 
 
-straddle = open('../data/pretty_big_straddle.bed', 'r')
+straddle = open('../data/all_straddle_seq.bed', 'r')
 
-strad = {}
+strad = []
 for line in straddle:
-    chrom, start, end, name, five, strand = line.strip().split('\t')
+    chrom, start, end, name, five, strand, seq1, seq2 = line.strip().split('\t')[:8]
 
-    if (chrom, strand, five) in strad:
-        strad[(chrom, strand, int(five) - 1)] += [int(end) if strand == '+' else int(start)]
+    if seq1[-2:] != 'AG' or seq2[:2] != 'GT': continue
+    if strand == '+':
+        strad += [(chrom, strand, int(end))]
     else:
-        strad[(chrom, strand, int(five) - 1)] = [int(end) if strand == '+' else int(start)]
-
+        strad += [(chrom, strand, int(start))]
 
 data = open(sys.argv[1], 'r')
 c = 0
@@ -170,6 +210,13 @@ for line in data:
 
     if True:
         print chrom, start, end, strand, rs
+
+        x = range(0, len(expression), WINDOWS)
+        if len(mcmc) != len(x): x = range(0, len(expression)+1, WINDOWS)
+        plt.plot(x, mcmc, linewidth=6, color= 'k')
+
+        plt.plot(expression)
+
         for gchrom, gstrand, grs in grav:
             if gchrom == chrom and gstrand == strand and int(start) < grs < int(end):
                 if strand == '+':
@@ -178,36 +225,24 @@ for line in data:
                     pos = int(end) - grs
                 plt.axvline(pos, linewidth=4, color='g')
 
-        for peak in peaks:
-            if increased(peak * WINDOWS, expression):
-                plt.axvline(peak * WINDOWS, linewidth=2, color='k')
-            else:
-                plt.axvline(peak * WINDOWS, linewidth=2, color='m')
-
         for gchrom, gstrand, grs in nov:
             if gchrom == chrom and gstrand == strand and int(start) < grs < int(end):
                 if strand == '+':
                     pos = grs - int(start)
                 elif strand == '-':
                     pos = int(end) - grs
-                plt.axvline(pos, linewidth=2, color='r')
+                plt.axvline(pos, ymax = .5, linewidth=4, color='r')
 
-        five = int(start) if strand == '+' else int(end)
-        if (chrom, strand, five) in strad:
-            for e in strad[(chrom, strand, five)]:
-                if strand == '+':
-                    pos = e - int(start)
-                elif strand == '-':
-                    pos = int(end) - e
-                plt.axvline(pos + 1000, linewidth=2, color='k')
+        # for gchrom, gstrand, grs in strad:
+        #     if gchrom == chrom and gstrand == strand and int(start) < grs < int(end):
+        #         if strand == '+':
+        #             pos = grs - int(start)
+        #         elif strand == '-':
+        #             pos = int(end) - grs
+        #         plt.axvline(pos, ymax = .33, linewidth=2, color='r')
 
-
-        x = range(0, len(expression), WINDOWS)
-        if len(mcmc) != len(x): x = range(0, len(expression)+1, WINDOWS)
-        plt.plot(x, mcmc, linewidth=6, color= 'k')
-
-        plt.plot(expression)
-
+        # for peak in peaks:
+        #     peak.plot(len(expression))
 
         for i in range(30, len(seq) - 30):
             motif = seq[i - len(tp_pwm): i + len(fp_pwm)]
@@ -215,10 +250,13 @@ for line in data:
             score = (score_motif(pwm, motif) - min_score) / (max_score - min_score)
 
             if score > .8:
-                plt.scatter([i], [max(expression)], linewidths = [(score - .8) * 100], c = color(score))
+ #               marker = '*' if increased(i, expression) else 'o'
+                marker = 'o'
+                plt.scatter([i], [max(expression)], marker = marker, linewidths = [(score - .8) * 100], c = color(score))
 
         plt.autoscale(tight = True)
         plt.show(block = False)
         a = raw_input("enter to continue")
+        if a: plt.savefig('../data/coverage_example/' + a + '.png')
         plt.close()
 print y, n

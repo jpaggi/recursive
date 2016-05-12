@@ -1,30 +1,40 @@
+import sys
+import matplotlib.pyplot as plt
+from intron_rs import IntronRS
 
-from core_pipeline.get_motifs import *
-from core_pipeline.load_genome import *
+lengths = [0]
+lengths_good_motif = [0]
+lengths_great_motif = [0]
+n, b, t = 0, 0, 0
+for line in sys.stdin:
+	intron = IntronRS(line)
+	if not intron.expressed(): continue
+	if not intron.aggt(): continue
+	t += 1
+	lengths += [intron.length()]
+	if intron.length() >= 30000:
+		pass
+	if intron.recursive_index() > .05:
+		print intron.motif_str()
+		if intron.good_motifs():
+			n += 1
+		else:
+			b += 1
+	if intron.good_motifs():
+		lengths_good_motif += [intron.length()]
+	if intron.great_motifs():
+		lengths_great_motif += [intron.length()]
 
-data = open('../data/all_introns.bed', 'r')
+print n, b, t
+plt.title('Recursively Spliced Intron Lengths')
+plt.xlabel('Intron Length')
+plt.ylabel('Number of Recursive Sites')
+plt.hist(lengths, bins = 50)
+plt.hist(lengths_good_motif, color = 'r', bins = 50)
+plt.hist(lengths_great_motif, color = 'g', bins = 50)
 
-genome_seq = load_genome(open('../data/downloaded/dmel-all-chromosome-r5.57.fasta', 'r'))
+print len(lengths_good_motif)
+print len(lengths_great_motif)
 
-fp_pwm, tp_pwm= make_pwm('../data/anno.ss', genome_seq)
-
-pwm = tp_pwm + fp_pwm
-
-p_min, p_max = get_min_score(pwm), get_max_score(pwm)
-
-for line in data:
-	chrom, start, end, samples, rs, strand, sjr, include, exclude, seq1, seq2, score1, score2 = line.strip().split('\t')
-
-	if seq1[-2:] != 'AG' or seq2[:2] != 'GT': continue
-
-	motif = seq1[-20:] + seq2[:8]
-
-	full_score = (score_motif(pwm, motif) - p_min) / (p_max - p_min)
-
-	length = int(end) - int(start)
-
-	samples = samples.split(',')
-
-	recursive_index = float(include) / (float(exclude) + 1)
-
-	print full_score, score1, score2, len(samples), recursive_index, include, length
+plt.ylim([0, 130])
+plt.show()
