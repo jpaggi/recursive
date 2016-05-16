@@ -8,7 +8,33 @@ fp_pwm, tp_pwm = make_pwm(sys.argv[3], genome_seq)
 pwm = tp_pwm + fp_pwm
 min_score, max_score = get_min_score(pwm), get_max_score(pwm)
 
-sjr_file = open(sys.argv[2])
+
+class Intron:
+	def __init__(self, chrom, five, strand):
+		self.chrom = self.chrom
+		self.five = self.five
+		self.strand = self.strand
+		self.per = []
+		self.sjr = {}
+		self.pi = None
+		self.seq = None
+
+	def key(self):
+		return (self.chrom, self.five, self.strand)
+
+	def add_sjr(self, three, count):
+		i = abs(self.five - three)
+		self.sjr[i] = count
+
+	def add_per(self, three, five_insert):
+		i = abs(self.five - three)
+		self.per += [(i, five_insert)]
+
+	def get_downstream_end(self):
+		ends = map(lambda x: x[0], self.per)
+		return max(ends) if self.strand == '+' else min(ends)
+
+
 
 class Group:
 	def __init__(self, chrom, five, three, strand, sample, five_insert = None, count = None):
@@ -99,7 +125,7 @@ class Group:
 		else:
 			self.ss = max(self.ss, other.ss)
 
-
+sjr_file = open(sys.argv[2])
 sjr = {}
 for line in sjr_file:
 	chrom, start, end, samples, count, strand = line.strip().split('\t')[:6]
@@ -116,27 +142,9 @@ for line in sjr_file:
 	else:
 		sjr[key] = [(three, int(count))]
 
-graveley = open('../data/graveley.bed', 'r')
-for line in graveley:
-	chrom, start, end, samples, count, strand = line.strip().split('\t')[:6]
-
-	if strand == '+':
-		five, three = int(start), int(end)
-	else:
-		five, three = int(end), int(start)
-
-	key = (chrom, five, strand)
-
-	if key in sjr:
-		sjr[key] += [(three, 1000)]
-	else:
-		sjr[key] = [(three, 1000)]
-
 
 per_file = open(sys.argv[1], 'r')
-
 per = {}
-
 for line in per_file:
 	chrom, inner_left, inner_right, sample, five, strand = line.strip().split('\t')
 	inner_left, inner_right, five = int(inner_left), int(inner_right), int(five)

@@ -1,5 +1,3 @@
-Do mapping with dmel r5.57
-
 something very strange is happening at 2L 20967746 21051772
 
 Do we get all here: X 21082826 21152071
@@ -14,30 +12,9 @@ total RNA-seq
 
 Overall
 - Helpful to rule out rs as well as confirming it
-- Need to come up with set of genes to look in
-... based on expression cut offs
-... number of reads supporting intron being spliced
-... length of introns
-... presence in graveley study
 - trend towards global statistics instead of individual examples
 - chr2L   2890915 2924913 + is clearly being used as a ratchet site!, but marked as annotated
 
-Need to be able to:
-1) compute overlap between sjr and mcmc reads
-2) look for nearest good motif / find best motif in a given range
-3) compare found sites with annotated ss and such
-
-
-Sawtooth
- - go forward here despite being unsure
- - increase temperature
- - Stick with current implementation now, improve if needed later
- - Look for overlaps between samples and time points
- - Need to determine exactly which set of genes to run this on!
-   - Noticed higher false positive rates on 
-
-
-Sequence
 
 SJR
 
@@ -75,15 +52,3 @@ SJR
 - 2R	13163569	13238598	13193491	+ is an annotated 3'ss (ostensibly not in use though, easily detected)
 
 - putative non-ratchet rs intron in middle of 3R:747,829-769,025
-
-
-BPs
-
- - Write software, ignoring inverted reads for now
- - Later cut things out based on intronic location or motif information
-
-
-Combining Data
-
- - Lean towards high recovery rate in all individual analysis
- - Later filter based on agreement between data types
