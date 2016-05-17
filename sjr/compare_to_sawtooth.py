@@ -39,7 +39,7 @@ class Samples:
 				self.samples[time] = other.samples[time]
 
 def main(data, plot = True, directory = ''):
-	grav_file = open('../data/graveley_expression.bed', 'r')
+	grav_file = open('../data/graveley.bed', 'r')
 	genome_seq = load_genome(open('../data/downloaded/dmel-all-chromosome-r5.57.fasta', 'r'))
 	fp_pwm, tp_pwm= make_pwm('../data/anno.ss', genome_seq)
 	pwm = tp_pwm + fp_pwm
@@ -52,18 +52,19 @@ def main(data, plot = True, directory = ''):
 		rs = int(start) if strand == '-' else int(end)
 		graveley[(chrom, strand, rs)] = (1, 0, 0)
 
-	sawtooth_file = open('../data/high_confidence_sawtooth.bed')
+	sawtooth_file = open('../data/straddle_groups.bed')
 	sawtooth = {}
 	for line in sawtooth_file:
 		chrom, start, end, name, score, strand = line.strip().split('\t')
-		if float(score) < .0000000001: continue
-		key = (chrom, strand, int(start))
+		# if float(score) < .0000000001: continue
+		rs = int(start) if strand == '-' else int(end)
+		key = (chrom, strand, rs)
 
-		motif = genome_seq[chrom][int(start) - 30: int(start) + 30]
-		if strand == '-': motif = revcomp(motif)
-		motif = motif[10:38]
-		motif_score = (score_motif(pwm, motif) - p_min) / (p_max - p_min)
-		if motif_score < .8: continue
+		# motif = genome_seq[chrom][rs - 30: rs + 30]
+		# if strand == '-': motif = revcomp(motif)
+		# motif = motif[10:38]
+		# motif_score = (score_motif(pwm, motif) - p_min) / (p_max - p_min)
+		# if motif_score < .85: continue
 
 		if key in graveley:
 			graveley[key] = (1, 1, 0)
@@ -71,16 +72,25 @@ def main(data, plot = True, directory = ''):
 		else:
 			sawtooth[key] = (0, 1, 0)
 
+	# for chrom, strand, rs in graveley:
+	# 	closest = float('inf')
+	# 	for s_chrom, s_strand, s_rs in sawtooth:
+	# 		if chrom == s_chrom and strand == s_strand and abs(rs - s_rs) < abs(closest):
+	# 			closest = rs - s_rs
+	# 	if chrom == '2L':
+	# 		print closest, rs, chrom, strand
+
+
 	detected = {}
 	for intron in data:
 		if not intron.aggt(): continue
 		#if intron.expression() < 0: continue
-		key = (intron.chrom, intron.strand, intron.rs)
-		motif = genome_seq[intron.chrom][int(intron.rs) - 30: int(intron.rs) + 30]
-		if intron.strand == '-': motif = revcomp(motif)
-		motif = motif[10:38]
-		motif_score = (score_motif(pwm, motif) - p_min) / (p_max - p_min)
-		if motif_score < .8: continue
+		# key = (intron.chrom, intron.strand, intron.rs)
+		# motif = genome_seq[intron.chrom][int(intron.rs) - 30: int(intron.rs) + 30]
+		# if intron.strand == '-': motif = revcomp(motif)
+		# motif = motif[10:38]
+		# motif_score = (score_motif(pwm, motif) - p_min) / (p_max - p_min)
+		# if motif_score < .85: continue
 		if key in graveley:
 			a, b, c = graveley[(intron.chrom, intron.strand, intron.rs)]
 			graveley[key] = (a, b, 1)
@@ -91,6 +101,7 @@ def main(data, plot = True, directory = ''):
 			detected[key] = (a, b, 1)
 		if key not in graveley and key not in sawtooth:
 			detected[key] = (0, 0, 1)
+
 
 	All = len(filter(lambda x: x == (1, 1, 1), graveley.values()))
 	print 'All            ', All

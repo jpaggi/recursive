@@ -8,4 +8,5 @@ for line in graveley:
 			begin, stop = start, r-1
 		else:
 			begin, stop = r, end
+		if chrom == '2R' and strand == '+' and stop == 13193490: stop += 1 
 		print '\t'.join(map(str, [chrom, begin, stop, name, '.', strand]))

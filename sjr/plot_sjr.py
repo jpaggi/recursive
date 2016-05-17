@@ -37,17 +37,13 @@ fp_pwm, tp_pwm = make_pwm('../data/anno.ss', genome_seq)
 pwm = tp_pwm + fp_pwm
 min_score, max_score = get_min_score(pwm), get_max_score(pwm)
 
-straddle = open('../data/all_straddle_seq.bed', 'r')
+straddle = open('../data/test_all_straddle_rs.bed', 'r')
 
 strad = []
 for line in straddle:
-    chrom, start, end, name, score, strand, seq1, seq2 = line.strip().split('\t')[:8]
+    chrom, start, end, name, score, strand = line.strip().split('\t')
 
-    if seq1[-2:] != 'AG' or seq2[:2] != 'GT': continue
-    if strand == '+':
-        strad += [(chrom, strand, int(end))]
-    else:
-        strad += [(chrom, strand, int(start))]
+    strad += [(chrom, strand, int(start))]
 
 def color(p):
     if p > .9:
@@ -92,13 +88,13 @@ for line in data:
                     pos = int(end) - grs
                 plt.axvline(pos, ymin = 0, ymax = .5, linewidth=4, color='r')
 
-        # for gchrom, gstrand, grs in strad:
-        #     if gchrom == chrom and gstrand == strand and int(start) < grs < int(end):
-        #         if strand == '+':
-        #             pos = grs - int(start)
-        #         elif strand == '-':
-        #             pos = int(end) - grs
-        #         plt.axvline(pos, ymin = .5, ymax = 1, linewidth=2, color='m')
+        for gchrom, gstrand, grs in strad:
+            if gchrom == chrom and gstrand == strand and int(start) < grs < int(end):
+                if strand == '+':
+                    pos = grs - int(start)
+                elif strand == '-':
+                    pos = int(end) - grs
+                plt.axvline(pos, ymin = .5, ymax = 1, linewidth=2, color='m')
 
         for i in range(30, len(seq) - 30):
             motif = seq[i - len(tp_pwm): i + len(fp_pwm)]
