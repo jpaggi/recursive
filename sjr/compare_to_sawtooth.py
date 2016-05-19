@@ -39,7 +39,7 @@ class Samples:
 				self.samples[time] = other.samples[time]
 
 def main(data, plot = True, directory = ''):
-	grav_file = open('../data/graveley.bed', 'r')
+	grav_file = open('../data/graveley_expression.bed', 'r')
 	genome_seq = load_genome(open('../data/downloaded/dmel-all-chromosome-r5.57.fasta', 'r'))
 	fp_pwm, tp_pwm= make_pwm('../data/anno.ss', genome_seq)
 	pwm = tp_pwm + fp_pwm
@@ -48,7 +48,7 @@ def main(data, plot = True, directory = ''):
 	graveley = {}
 	for line in grav_file:
 		chrom, start, end, name, score, strand = line.strip().split('\t')
-		#if int(score) < 1: continue
+		if int(score) < 1: continue
 		rs = int(start) if strand == '-' else int(end)
 		graveley[(chrom, strand, rs)] = (1, 0, 0)
 
@@ -85,7 +85,7 @@ def main(data, plot = True, directory = ''):
 	for intron in data:
 		if not intron.aggt(): continue
 		#if intron.expression() < 0: continue
-		# key = (intron.chrom, intron.strand, intron.rs)
+		key = (intron.chrom, intron.strand, intron.rs)
 		# motif = genome_seq[intron.chrom][int(intron.rs) - 30: int(intron.rs) + 30]
 		# if intron.strand == '-': motif = revcomp(motif)
 		# motif = motif[10:38]

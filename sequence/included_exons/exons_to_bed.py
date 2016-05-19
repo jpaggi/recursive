@@ -11,7 +11,10 @@ Prints introns in bed format to stdout.
 Introns are defined as being regions between neightboring exons.
 
 Run with below command..
-cat ../data/downloaded/dmel-allElements-r5.57.gtf | python sequence/get_introns.py | sort -u -k1,1 -k2,2n -k3,3n
+sort -k10,10 ../data/downloaded/dmel-allElements-r5.57.gtf | python sequence/included_exons/exons_to_bed.py | sort
+
+
+
 """
 
 import sys
@@ -34,14 +37,20 @@ class Exon:
 # asserts that exons don't overlap and prints regions between them as introns
 def print_transcript(transcript_name, transcript_exons):
     transcript_exons = sorted(transcript_exons, key = lambda x: x.start)
-    for i in range(1, len(transcript_exons)):
-        assert(transcript_exons[i- 1].end < transcript_exons[i].start)
-        if transcript_exons[i].start - 2 - transcript_exons[i - 1].end < 8000: continue
-        print '\t'.join([transcript_exons[i].chrom, str(transcript_exons[i - 1].end), str(transcript_exons[i].start - 2), transcript_exons[i].transcript_name, 
-                         transcript_exons[i].gene_name, transcript_exons[i].strand])
+    if transcript_exons and transcript_exons[0].strand == '-': transcript_exons.reverse()
+    for i, exon in enumerate(transcript_exons):
+        if i == 0 and i + 1 == len(transcript_exons):
+            position = 'single'
+        elif i == 0:
+            position = 'first'
+        elif i + 1 == len(transcript_exons):
+            position = 'last'
+        else:
+            position = 'middle'
+        print '\t'.join([exon.chrom, str(exon.start - 1), str(exon.end), position, '0', exon.strand])
 
 #if transcript not contiguous in input will miss introns!
-exons = sys.stdin
+exons = sys.stdin   
 transcript_name = ''
 transcript_exons = []
 for line in exons:

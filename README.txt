@@ -1,3 +1,15 @@
+
+Defining set of expressed genes
+... the fact that there are "unexpressed genes" that get detected indicates that
+you are potentially not doing something right...
+
+But it could indicate that there is simply a large subset of genes with RS
+that are at low coverage levels. In fact, this seems like the most sensible choice?
+
+44 -> 14 not detected and 153 -> 143 detected. This seems like a pretty good enrichment?
+Certainly goes along with the "there is a lot of RS hypothesis"
+
+
 something very strange is happening at 2L 20967746 21051772
 
 Do we get all here: X 21082826 21152071
