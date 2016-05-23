@@ -18,6 +18,11 @@
 
 mkdir $2
 
+echo $1
+echo $2
+echo $3
+echo $4
+
 # # Extract introns over 1000 bps
 sort -k10,10 $1 | python sequence/get_introns.py | sort -u -k1,1 -k2,3n > $2'/long_introns.bed'
 

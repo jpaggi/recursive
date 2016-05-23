@@ -20,7 +20,7 @@ for line in introns:
 	if strand == '+':
 		five, three = start, end
 	else:
-		five, three = end, start
+		five, three = end+1, start
 	key = (chrom, five, strand)
 
 	if key in anno:
@@ -28,14 +28,13 @@ for line in introns:
 	else:
 		anno[key] = [(three, juncs)]
 
-
 for line in sjr:
-	chrom, start, end, samples, count, strand, seq1, seq2, score1, score2 = line.strip().split('\t')
-	start, end, count = int(start), int(end), int(count)
+	chrom, start, end, dot, counts, strand = line.strip().split('\t')
+	start, end = int(start), int(end)
 	if strand == '+':
 		five, rs = start, end
 	else:
-		five, rs = end-1, start
+		five, rs = end, start
 	key = (chrom, five, strand)
 
 	if key in anno:
@@ -52,7 +51,7 @@ for line in sjr:
 			begin, stop = five, best[0]
 		else:
 			begin, stop = best[0], five
-		print '\t'.join(map(str, [chrom, begin, stop, samples, rs, strand, count, best[1], seq1, seq2, score1, score2]))
+		print '\t'.join(map(str, [chrom, begin, stop, rs, counts, strand, best[1]]))
 	else:
-		# introns less than 1000 not present in express file
+		# introns less than 1000 not present in expression file
 		assert abs(five - rs) < 1000

@@ -2,13 +2,23 @@ from load_genome import load_genome, revcomp
 from get_motifs import make_pwm, score_motif, get_min_score, get_max_score, search_for_motif
 import sys
 from math import exp
+from intron_rs import IntronRS
 
-genome_seq = load_genome(open(sys.argv[4], 'r'))
-fp_pwm, tp_pwm = make_pwm(sys.argv[3], genome_seq)
+"""
+1) SJR file
+2) PER file
+3) motif junction file
+4) genome fasta file
+"""
+
+SAMPLES = ['sjr_5', 'pe_5', 'sjr_10', 'pe_10', 'sjr_20', 'pe_20', 'sjr_total', 'pe_total']
+index = lambda x: SAMPLES.index(x)
+
+genome_seq = load_genome(open(sys.argv[3], 'r'))
+fp_pwm, tp_pwm = make_pwm(sys.argv[2], genome_seq)
 
 pwm = tp_pwm + fp_pwm
 min_score, max_score = get_min_score(pwm), get_max_score(pwm)
-
 
 class Intron:
 	def __init__(self, chrom, five, strand):
@@ -44,9 +54,9 @@ class Intron:
 		i = abs(self.five - three)
 		self.sjr[i] = count
 
-	def add_per(self, three, five_insert):
+	def add_per(self, three, five_insert, sample):
 		i = abs(self.five - three)
-		self.per += [(i, five_insert)]
+		self.per += [(i, five_insert, sample)]
 
 	def length(self):
 		return abs(self.five - self._get_downstream_end())
@@ -96,7 +106,7 @@ class Intron:
 		    self.counts[pos] += self.sjr[pos]
 
 		# per are assigned based on prob of generation
-		for three, five_insert in self.per:
+		for three, five_insert, sample in self.per:
 		    total = 0.0
 		    for pos in xrange(max(0, three - self.max_insert), three + self.allowed_overhang):
 		        if self.pi[pos] == 0: continue
@@ -110,7 +120,7 @@ class Intron:
 
 	def _assign_per(self):
 		self.assignments = []
-		for three, five_insert in self.per:
+		for three, five_insert, sample in self.per:
 			best = (-1, 0)
 			for pos in xrange(max(0, three - self.max_insert), three + self.allowed_overhang):
 				inferred_insert = five_insert + three - pos
@@ -118,7 +128,7 @@ class Intron:
 				if p > best[1]:
 					best = (pos, p)
 			if best[0] != -1:
-				self.assignments += [(three, five_insert, best[0], best[1])]
+				self.assignments += [(three, five_insert, best[0], sample)]
 
 	def _m_step(self):
 		pi = [max(0, self.counts[i] - self.a_s + self.a_m[i]) for i in xrange(len(self.counts))]
@@ -158,16 +168,15 @@ class Intron:
 	def get_assignments(self):
 		self._em()
 		ends = {}
-		for three, insert, prediction, score in self.assignments:
-			if prediction in ends:
-				ends[prediction] += 1
-			else:
-				ends[prediction] = 1
-		return [(self.chrom, self.five, self.i_to_g(end), ends[end],
+		for three, insert, prediction, sample in self.assignments:
+			if prediction not in ends:
+				ends[prediction] = [0] * len(SAMPLES)
+			ends[prediction][index(sample)] += 1
+		return [(self.chrom, self.five, self.i_to_g(end), ','.join(map(str, ends[end])),
 				 self.pi[end], self.strand) for end in ends]
 
 
-per_file = open(sys.argv[1], 'r')
+per_file = sys.stdin
 introns = {}
 for line in per_file:
 	chrom, inner_left, inner_right, sample, five, strand = line.strip().split('\t')
@@ -178,27 +187,22 @@ for line in per_file:
 	else:
 		five_insert = inner_right - five
 		three = inner_left
+	sample = '_'.join(sample.split('_')[:2])
 	key = (chrom, five, strand)
 
 	if key not in introns: introns[key] = Intron(chrom, five, strand)
 
-	introns[key].add_per(three, five_insert)
+	introns[key].add_per(three, five_insert, sample)
 
-sjr_file = open(sys.argv[2])
+sjr_file = open(sys.argv[1])
 for line in sjr_file:
-	chrom, start, end, samples, count, strand, seq1, seq2 = line.strip().split('\t')[:8]
-	if seq1[-2:] != 'AG' or seq2[:2] != 'GT': continue
-	if strand == '+':
-		five, three = int(start), int(end)
-	else:
-		five, three = int(end), int(start)
-	key = (chrom, five, strand)
-
-	if key in introns: introns[key].add_sjr(three, int(count))
+	sjr = IntronRS(line, genome_seq)
+	if not sjr.aggt(): continue
+	if sjr.key() in introns: introns[sjr.key()].add_sjr(sjr.three(), sjr.read_count())
 
 for intron in introns:
 	assignments = introns[intron].get_assignments()
 	for chrom, five, three, count, pi, strand in assignments:
 		if strand == '+': start, end = five, three
 		else: start, end = three, five
-		print '\t'.join(map(str, [chrom, start, end, count, pi, strand]))
+		print '\t'.join(map(str, [chrom, start, end, pi, count, strand]))

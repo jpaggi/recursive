@@ -13,18 +13,15 @@ class Entry:
 		self.up = int(a[6])
 		self.down = int(a[7])
 
-five   = open(sys.argv[1])
-ten    = open(sys.argv[2])
-twenty = open(sys.argv[3])
-total  = open(sys.argv[4])
 
-for lines in zip(five, ten, twenty, total):
+reps = map(open, sys.argv[1:])
+
+for lines in zip(*reps):
 	entries = map(Entry, lines)
 
-
-	bodies = ','.join(map(lambda x: str(x.body), entries))
-	ups    = ','.join(map(lambda x: str(x.up)  , entries))
-	downs  = ','.join(map(lambda x: str(x.down), entries))
+	bodies = sum(map(lambda x: x.body, entries))
+	ups    = sum(map(lambda x: x.up  , entries))
+	downs  = sum(map(lambda x: x.down, entries))
 
 	first = entries[0]
 

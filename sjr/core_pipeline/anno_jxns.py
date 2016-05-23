@@ -52,16 +52,14 @@ class Junctions:
 				self.ss[strand][chrom] = sorted(self.ss[strand][chrom], key=lambda x: x[0])
 
 
-	def _linear_search(self, chrom, strand, pos):
-		for i, jxn in enumerate(self.ss[strand][chrom]):
-			if jxn[0] > pos:
+	def _linear_search(self, chrom, strand, pos, start = 0):
+		for i in xrange(start, len(self.ss[strand][chrom])):
+			if self.ss[strand][chrom][i][0] > pos:
 				return i
+		return len(self.ss[strand][chrom])
 
 
 	def search(self, chrom, strand, start, end):
-		up   = self._linear_search(chrom, strand, start)
-		down = self._linear_search(chrom, strand, end)
-
-		if up == down: return []
-
-		return self.ss[strand][chrom][min(up, down):max(up, down)]
+		up = self._linear_search(chrom, strand, start)
+		down = self._linear_search(chrom, strand, end, up)
+		return [] if up == down else self.ss[strand][chrom][min(up, down):max(up, down)]

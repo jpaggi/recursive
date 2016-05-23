@@ -4,26 +4,41 @@ if sys.argv[1] == '-':
 	reads = sys.stdin
 else:
 	reads = open(sys.argv[1], 'r')
-introns = open(sys.argv[2], 'w')
 
-sample = sys.argv[3]
+SAMPLE = sys.argv[2]
 
-offsets = set()
-cur_chrom, cur_start, cur_end, cur_strand = '', '', '', ''
+class Group:
+	def __init__(self, read):
+		a = read.strip().split('\t')
+		self.chrom = a[0]
+		self.start = int(a[1])
+		self.end = int(a[2])
+		self.name = a[3]
+		blocks = eval(a[4])
+		self.offsets = set()
+		self.offsets.add((blocks[0][0], blocks[-1][1]))
+		self.strand = a[5]
+		self.total = 1
 
+	def same(self, other):
+		return (self.chrom  == other.chrom
+			and self.start  == other.start
+			and self.end    == other.end
+			and self.strand == other.strand)
+
+	def merge(self, other):
+		self.offsets |= other.offsets
+		self.total += other.total
+
+	def __str__(self):
+		return '\t'.join(map(str, [self.chrom, self.start, self.end, SAMPLE, self.total, self.strand]))
+
+cur = Group(reads.readline())
 for read in reads:
-	chrom, start, end, name, blocks, strand = read.strip().split('\t')
-	chrom = chrom[3:]
-	blocks = eval(blocks)
-	if cur_chrom and chrom == cur_chrom and start == cur_start and end == cur_end and strand == cur_strand:
-		offsets.add((blocks[0][0], blocks[-1][1]))
+	entry = Group(read)
+	if cur.same(entry):
+		cur.merge(entry)
 	else:
-		if cur_chrom:
-			introns.write('\t'.join(map(str, [cur_chrom, cur_start, cur_end, sample, len(offsets), cur_strand])) + '\n')
-
-		cur_chrom, cur_start, cur_end, cur_strand = chrom, start, end, strand
-		offsets = set()
-		offsets.add((blocks[0][0], blocks[-1][1]))
-
-introns.write('\t'.join(map(str, [cur_chrom, cur_start, cur_end, sample, len(offsets), strand])) + '\n')
-introns.close()
+		print cur
+		cur = entry
+print cur

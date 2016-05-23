@@ -1,16 +1,15 @@
 # 1 sorted, indexed bam file of reads
 # 2 output directory name
 # 3 sample name
-# 4 splice site file
+# 4 long intron splice site file
 # 5 fasta file of genome
-# 6 intron expression data
-
-# Gives directory of this file...
-# copied from http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in
-#DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# 6 all intron splice site file
 
 mkdir $2
 
-#sh split_reads.sh $1 $2 'sjr_'$3 $4 $5 $6
+python straddle_jxn.py $1 $6 'pe_'$3 $5 > $2'/straddle.bed' &
 
-sh straddle_reads.sh $1 $2 'pe_'$3 $4 $5 $6 ../reads/jxns/all_sjr_seq.bed
+python putative_ratchet_sjr.py $1 $4 $5 > $2'/sjr.bed'
+cat $2'/sjr.bed' | sort -k1,1 -k2n,3n | python group_introns.py - 'sjr_'$3 > $2'/sjr_groups.bed'
+
+wait
