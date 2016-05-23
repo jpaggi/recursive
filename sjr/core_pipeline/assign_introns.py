@@ -42,10 +42,10 @@ for line in sjr:
 		for three, juncs in anno[key]:
 			if juncs < best[1]: continue
 			if strand == '+':
-				if rs > three: continue
+				if rs >= three: continue
 				if three > best[0] or juncs > best[1]: best = (three, juncs)
 			if strand == '-':
-				if rs < three: continue
+				if rs <= three: continue
 				if three < best[0] or juncs > best[1]: best = (three, juncs)
 		if strand == '+':
 			begin, stop = five, best[0]

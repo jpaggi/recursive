@@ -2,7 +2,7 @@ ss="../genomes/dmel/long_introns.bed"
 fa="../genomes/dmel/downloaded/dmel-all-chromosome-r5.57.fasta"
 exp="../reads/coverage/all_merged.bed"
 short_ss="../genomes/dmel/dmel-splice-sites-r5.57.ss"
-DIR="../reads/rs_jxns"
+DIR="../reads/junctions"
 
 samples='5_repA
 5_repB

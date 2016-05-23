@@ -3,6 +3,7 @@ from matplotlib import pyplot as plt
 from core_pipeline.get_motifs import *
 from core_pipeline.load_genome import *
 
+genome_seq = load_genome(open('../data/downloaded/dmel-all-chromosome-r5.57.fasta', 'r'))
 
 class Samples:
 	def __init__(self, samples = ''):
@@ -40,7 +41,6 @@ class Samples:
 
 def main(data, plot = True, directory = ''):
 	grav_file = open('../data/graveley_expression.bed', 'r')
-	genome_seq = load_genome(open('../data/downloaded/dmel-all-chromosome-r5.57.fasta', 'r'))
 	fp_pwm, tp_pwm= make_pwm('../data/anno.ss', genome_seq)
 	pwm = tp_pwm + fp_pwm
 	p_min, p_max = get_min_score(pwm), get_max_score(pwm)
@@ -48,16 +48,17 @@ def main(data, plot = True, directory = ''):
 	graveley = {}
 	for line in grav_file:
 		chrom, start, end, name, score, strand = line.strip().split('\t')
-		if int(score) < 1: continue
+		#if int(score) < 1: continue
 		rs = int(start) if strand == '-' else int(end)
 		graveley[(chrom, strand, rs)] = (1, 0, 0)
 
 	sawtooth_file = open('../data/straddle_groups.bed')
 	sawtooth = {}
 	for line in sawtooth_file:
-		chrom, start, end, name, score, strand = line.strip().split('\t')
+		chrom, start, end, score, rs, strand = line.strip().split('\t')[:6]
 		# if float(score) < .0000000001: continue
 		rs = int(start) if strand == '-' else int(end)
+		#rs = int(rs)
 		key = (chrom, strand, rs)
 
 		# motif = genome_seq[chrom][rs - 30: rs + 30]
@@ -71,14 +72,6 @@ def main(data, plot = True, directory = ''):
 			sawtooth[key] = (1, 1, 0)
 		else:
 			sawtooth[key] = (0, 1, 0)
-
-	# for chrom, strand, rs in graveley:
-	# 	closest = float('inf')
-	# 	for s_chrom, s_strand, s_rs in sawtooth:
-	# 		if chrom == s_chrom and strand == s_strand and abs(rs - s_rs) < abs(closest):
-	# 			closest = rs - s_rs
-	# 	if chrom == '2L':
-	# 		print closest, rs, chrom, strand
 
 
 	detected = {}
@@ -119,9 +112,9 @@ def main(data, plot = True, directory = ''):
 	S = len(filter(lambda x: x == (0, 1, 0), sawtooth.values()))
 	print 'Sawtooth Only  ', S
 
-	print filter(lambda x: sawtooth[x] == (1, 1, 0), sawtooth.keys())
+	print filter(lambda x: sawtooth[x] == (1, 1, 0), sawtooth.keys()):
 
-	G += -1
+	print filter(lambda x: detected[x] == (1, 0, 1), detected.keys())
 
 	venn3(subsets = (G, SJR, GSJR, S, GS, SSJR, All), set_labels = ('Graveley', 'SJR', 'Sawtooth'))
 
@@ -131,7 +124,7 @@ def main(data, plot = True, directory = ''):
 
 if __name__ == "__main__":
 	import sys
-	from intron_rs import IntronRS
+	from core_pipeline.intron_rs import IntronRS
 	data = open(sys.argv[1], 'r')
-	rs = [IntronRS(line) for line in data]
+	rs = [IntronRS(line, genome_seq) for line in data]
 	print main(rs, True)

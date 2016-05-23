@@ -9,6 +9,38 @@ that are at low coverage levels. In fact, this seems like the most sensible choi
 44 -> 14 not detected and 153 -> 143 detected. This seems like a pretty good enrichment?
 Certainly goes along with the "there is a lot of RS hypothesis"
 
+New pipeline misses [('2R', '-', 6940011), ('3R', '-', 4918040)]
+... first has an unmappable region, second is likely not actually used
+... both only supported by pe r
+
+
+Removing unannotated exons
+ - annotations
+ - sequence
+ - junction reads
+ - coverage trend in time course
+
+
+ Two options
+ 	1) Define potential exons based on splice sites and
+
+
+ 	2) get reads in downstream area, look for sjr or reads with long insert lengths
+ 	   can also use sequence to identify 5'ss
+ 	   could be useful to get info about first / middle / last exon
+
+1a) For all exons          *** Can use existing code, but add in straddle reads > 1000
+	- get outgoing sjr
+	- position in intron
+	- reads aligning to body
+1b) Join sjr to exons
+2) if no exon...
+	- go through all reads and find sjr
+	- use either sjr or sequence to define exons
+2b) for all with exon      **** SAME as above!!!!     **** DO this first....
+	- get outgoing sjr
+	- reads aligning to body
+
 
 something very strange is happening at 2L 20967746 21051772
 
