@@ -1,5 +1,4 @@
 import sys
-import matplotlib.pyplot as plt
 from load_genome import revcomp
 
 class IntronRS:

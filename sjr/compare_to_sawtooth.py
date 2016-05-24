@@ -52,13 +52,13 @@ def main(data, plot = True, directory = ''):
 		rs = int(start) if strand == '-' else int(end)
 		graveley[(chrom, strand, rs)] = (1, 0, 0)
 
-	sawtooth_file = open('../data/straddle_groups.bed')
+	sawtooth_file = open('../data/high_confidence_sawtooth.bed')
 	sawtooth = {}
 	for line in sawtooth_file:
-		chrom, start, end, score, rs, strand = line.strip().split('\t')[:6]
+		chrom, start, end,rs, score, strand = line.strip().split('\t')[:6]
 		# if float(score) < .0000000001: continue
-		rs = int(start) if strand == '-' else int(end)
-		#rs = int(rs)
+		#rs = int(start) if strand == '-' else int(end)
+		rs = int(start)
 		key = (chrom, strand, rs)
 
 		# motif = genome_seq[chrom][rs - 30: rs + 30]
@@ -112,7 +112,7 @@ def main(data, plot = True, directory = ''):
 	S = len(filter(lambda x: x == (0, 1, 0), sawtooth.values()))
 	print 'Sawtooth Only  ', S
 
-	print filter(lambda x: sawtooth[x] == (1, 1, 0), sawtooth.keys()):
+	print filter(lambda x: sawtooth[x] == (1, 1, 0), sawtooth.keys())
 
 	print filter(lambda x: detected[x] == (1, 0, 1), detected.keys())
 

@@ -1,6 +1,6 @@
 import sys
 import matplotlib.pyplot as plt
-from intron_rs import IntronRS
+from core_pipeline.intron_rs import IntronRS
 from core_pipeline.get_motifs import *
 from core_pipeline.load_genome import *
 
@@ -15,7 +15,7 @@ c = 0
 
 expression = open('../data/all_merged.bed', 'r')
 e = []
-good = open('../data/medium_motifs_manual.bed', 'w')
+good = open('../data/filtered_manual.bed', 'w')
 
 for line in expression:
 	chrom, start, end, name, count, strand, expression = line.strip().split('\t')
@@ -31,13 +31,13 @@ print 'finsihed reading'
 data = open(sys.argv[1], 'r')
 for line in data:
 	intron = IntronRS(line)
-	if not intron.aggt(): continue
+	#if not intron.aggt(): continue
 
-	motif = genome_seq[intron.chrom][int(intron.rs) - 30: int(intron.rs) + 30]
-	if intron.strand == '-': motif = revcomp(motif)
-	motif = motif[10:38]
-	motif_score = (score_motif(pwm, motif) - p_min) / (p_max - p_min)
-	if not .83 < motif_score <= .87: continue
+	# motif = genome_seq[intron.chrom][int(intron.rs) - 30: int(intron.rs) + 30]
+	# if intron.strand == '-': motif = revcomp(motif)
+	# motif = motif[10:38]
+	# motif_score = (score_motif(pwm, motif) - p_min) / (p_max - p_min)
+	# if not .83 < motif_score <= .87: continue
 
 	coverage = None
 	for chrom, start, end, strand, expression in e:
@@ -47,7 +47,7 @@ for line in data:
 			break
 
 	if coverage != None:
-		print motif_score, motif
+		#print motif_score, motif
 		if intron.strand == '-':
 			coverage = coverage[::-1]
 		plt.plot(coverage)
@@ -61,6 +61,6 @@ for line in data:
 		plt.close()
 
 	else:
-		print motif_score, motif, intron.strand
+		print 'no expression???'#motif_score, motif, intron.strand
 print c
 

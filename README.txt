@@ -62,11 +62,6 @@ Overall
 
 SJR
 
-- incorporate PE read information to numbers
-- seems that should be able to count excessively long insert length PE
-... reads on equal footing as split reads
-- eventualy need to incorporate graveley data
-
  - figure out why chrX:2108827-21152072 aligns improperly
  ... seems to be an indel close to the sites? Or a micro exon???
  - seems that there can sometimes be slight mapping issues
