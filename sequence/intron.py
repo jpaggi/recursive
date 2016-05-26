@@ -34,3 +34,12 @@ class Intron:
 		expectation = lambda x: sum(x) / float(len(x))
 		average = expectation(lengths)
 		return sqrt(expectation(map(lambda x: (x - average) ** 2 , lengths))) / average
+
+	def __str__(self):
+		return '\t'.join(map(str, [
+			self.chrom,
+			self.start,
+			self.end,
+			'.',
+			','.join(map(str, self.rs)),
+			self.strand]))

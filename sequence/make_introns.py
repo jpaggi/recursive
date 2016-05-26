@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 def main(entries):
 	introns = []
-	for line in open('long_highly_expressed.bed'):
+	for line in open('../data/long_highly_expressed.bed'):
 		chrom, start, end, name, counts, strand = line.strip().split('\t')[:6]
 		introns += [Intron(chrom, int(start), int(end), strand, int(counts))]
 
@@ -14,6 +14,12 @@ def main(entries):
 			if intron.compatible(chrom, strand, rs):
 				intron.add(rs)
 
+	rs_introns = filter(lambda x: x.rs, introns)
+	for intron in rs_introns:
+		print intron
+
+	return
+
 	not_rs = filter(lambda x: not x.rs, introns)
 
 	print "Introns over 400000 with no RS"
@@ -21,7 +27,7 @@ def main(entries):
 		if intron.length() > 40000:
 			print intron.chrom, intron.start, intron.end
 
-	rs_introns = filter(lambda x: x.rs, introns)
+	
 
 	plt.title('Recursive Intron Lengths')
 	plt.hist(map(lambda x: x.length(), introns),    bins = 50)
@@ -51,4 +57,4 @@ def main(entries):
 if __name__ == '__main__':
 	import sys
 	from standard_table_reader import Entry
-	print main([Entry(line) for line in open(sys.argv[1], 'r')])
+	main([Entry(line) for line in open(sys.argv[1], 'r')])
