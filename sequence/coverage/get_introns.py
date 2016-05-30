@@ -13,6 +13,8 @@ Introns are defined as being regions between neightboring exons.
 
 import sys
 
+MIN_INTRON = 1000
+
 class Exon:
     def __init__(self, line):
         sep = line.split('\t')
@@ -33,7 +35,7 @@ def print_transcript(transcript_name, transcript_exons):
     transcript_exons = sorted(transcript_exons, key = lambda x: x.start)
     for i in range(1, len(transcript_exons)):
         assert(transcript_exons[i- 1].end < transcript_exons[i].start)
-        if transcript_exons[i].start - 2 - transcript_exons[i - 1].end < 1000: continue
+        if transcript_exons[i].start - 2 - transcript_exons[i - 1].end < MIN_INTRON: continue
         print '\t'.join([transcript_exons[i].chrom, str(transcript_exons[i - 1].end), str(transcript_exons[i].start - 2), transcript_exons[i].transcript_name, 
                          transcript_exons[i].gene_name, transcript_exons[i].strand])
 
