@@ -12,7 +12,7 @@ from intron_rs import IntronRS
 from load_genome import *
 from get_motifs import *
 MAX_EXON = 500
-MIN_MOTIF_SCORE = .7
+MIN_MOTIF_SCORE = .5
 
 def merge_blocks(blocks):
     """
@@ -94,12 +94,15 @@ class RS:
 
 	def __str__(self):
 		if not self.three: self._assign_three()
-		return '\t'.join(map(str,[self.rs, self.three]))
+		return '\t'.join(map(str,[self.rs, self.three, max([0] + self.sjr.values())]))
 
 files = ["reads/timecourse/10_repA.bam", "reads/timecourse/20_repA.bam", "reads/timecourse/5_repA.bam",
 		 "reads/timecourse/total_repA.bam", "reads/timecourse/10_repB.bam", "reads/timecourse/20_repB.bam",
 		 "reads/timecourse/5_repB.bam", "reads/timecourse/total_repB.bam", "reads/timecourse/10_repC.bam",
 		 "reads/timecourse/20_repC.bam", "reads/timecourse/5_repC.bam"]
+
+
+files = ['../data/Adelman_4sU_RNA-seq_total_rep1.bam']
 
 
 genome_seq = load_genome(open(sys.argv[2], 'r'))
@@ -108,8 +111,12 @@ f_min, f_max = get_min_score(fp_pwm), get_max_score(fp_pwm)
 jxns = [RS(IntronRS(line), genome_seq) for line in open(sys.argv[1], 'r')]
 samfiles = [pysam.AlignmentFile(f) for f in files]
 
-MIN_INTRON = 35
+MIN_INTRON = 100
 INDEL_LEN = 5
+
+# TODO:
+# Make sure both splice sites have GT AG motifs
+# check that sjr are going to the same place?
 
 for samfile in samfiles:
 	for jxn in jxns:
@@ -120,9 +127,12 @@ for samfile in samfiles:
 			for i, j in zip(blocks[:-1], blocks[1:]):
 				begin, stop = i[1], j[0]
 				if stop - begin < MIN_INTRON: continue
+				b_m, s_m = genome_seq[jxn.rs.chrom][begin:begin+2], genome_seq[jxn.rs.chrom][stop-2:stop]
 				if jxn.rs.strand == '+':
+					if b_m != 'GT' or s_m != 'AG': continue
 					five, three = begin, stop
 				else:
+					if revcomp(s_m) != 'GT' or revcomp(b_m) != 'AG': continue
 					five, three = stop, begin
 
 				jxn.add_sjr(five)

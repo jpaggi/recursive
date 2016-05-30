@@ -19,6 +19,38 @@ def logistic(x, k, x_0):
     if abs(x - x_0) > 2000: return 0
     return 1 / float(1 + exp(-k * (x - x_0)))
 
+def call_peak(peak, k, scores):
+    best = (-1, 0)
+
+    # left
+    x_0 = peak.start - 6 / k
+    for i in range(peak.start):
+        score = max(0, scores[i] - .8) * logistic(i, k, x_0)
+        if score > best[1]:
+            best = (i, score)
+
+    # right
+    x_0 = peak.end + 6 / k
+    for i in range(peak.end, len(expression)):
+        score = max(0, scores[i] - .8) * logistic(i, -k, x_0)
+        if score > best[1]:
+            best = (i, score)
+
+    # center
+    for i in range(peak.start, peak.end):
+        score = max(0, scores[i] - .8) * logistic(i, -k, x_0)
+        if score > best[1]:
+            best = (i, score)
+
+    # arithmatic
+    if best[1] > 0:
+        if strand == '+':
+            rs = start + best[0]
+        else:
+            rs = end - best[0]
+        return (rs, best[1])
+    return None
+
 def call_peaks(peaks, k, scores):
     sites = []
     for peak in peaks:
@@ -78,7 +110,12 @@ for line in data:
 
     peaks = get_peaks(mcmc, max(expression), .08)
 
-    random_peaks = map(lambda x: x.random(len(expression)), peaks)
 
-    for rs, score in call_peaks(random_peaks, k, scores):
-        print '\t'.join(map(str, [chrom, rs, rs+1, count, score, strand]))
+    # comment this line out to get real peaks!!!!!!!!
+    # peaks = map(lambda x: x.random(len(expression)), peaks)
+
+    for peak in peaks:
+        call = call_peak(peak, k , scores)
+        if call:
+            rs, score = call
+            print '\t'.join(map(str, [chrom, rs, rs+1, peak.best_prob, score, strand]))

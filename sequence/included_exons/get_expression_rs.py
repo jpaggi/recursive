@@ -99,7 +99,7 @@ for time in TIMES:
 				if inner_right - inner_left < 1000: continue
 				if not (inner_left - OVERHANG < three < inner_right + OVERHANG): continue
 
-				if (strand == '+') and end - inner_left < 300:
+				if (strand == '+') and end - inner_left < 100:
 					entry.add_per(time)
 				elif (not (strand == '+')) and inner_right - start < 300:
 					entry.add_per(time)

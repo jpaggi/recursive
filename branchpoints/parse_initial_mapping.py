@@ -49,7 +49,7 @@ def extend(read1, read2, genome):
 
 	if read1.is_reverse == read2.is_reverse: return False
 	if read1.qname != read2.qname: return False
-	#print read1.qname
+	if read1.rname in ['U', 'Uextra', 'dmel_mitochondrion_genome']: return False
 
 	genome_seq = genome[read1.rname]
 	broken_seq = revcomp(read1.qname.strip().split('-')[-1])
@@ -71,7 +71,7 @@ def extend(read1, read2, genome):
 				if j >= i:
 					for x in range(i, j+1):
 						if broken_seq[x:x+2] == 'GT':
-							print '1+', broken_seq[:x], broken_seq[x:], read1.rname, read1.pos, read2.pos+SHORT_READ_LENGTH-x, shift+x
+							print '1+', broken_seq[:x], broken_seq[x:], read1.rname, read1.pos, read2.pos+SHORT_READ_LENGTH-x-1, shift+x
 		elif read1.is_reverse and 0 < read2.pos - read1.pos < MAX_INTRON_LENGTH:
 			# intron on minus strand
 			i = extend_from_end(revcomp(genome_seq[read2.pos:read2.pos+READ_LENGTH]), broken_seq)
@@ -82,7 +82,7 @@ def extend(read1, read2, genome):
 				if j >= i:
 					for x in range(i, j+1):
 						if broken_seq[x:x+2] == 'GT':
-							print '1-', broken_seq[:x], broken_seq[x:], read1.rname, read1.pos, read2.pos+x, shift-x	
+							print '1-', broken_seq[:x], broken_seq[x:], read1.rname, read1.pos, read2.pos+READ_LENGTH-x, shift-x	
 
 	# read1 broken
 	elif len(read2.seq) == READ_LENGTH:
@@ -96,7 +96,7 @@ def extend(read1, read2, genome):
 				if j >= i:
 					for x in range(i, j+1):
 						if broken_seq[x-2:x] == 'AC':
-							print '2-', broken_seq[:x], broken_seq[x:], read1.rname, read2.pos, read1.pos+SHORT_READ_LENGTH-x, shift+x
+							print '2-', broken_seq[:x], broken_seq[x:], read1.rname, read2.pos, read1.pos+SHORT_READ_LENGTH-x-3, shift+x
 		elif read2.is_reverse and 0 < read1.pos - read2.pos < MAX_INTRON_LENGTH:
 			# intron is on plus strand
 			i = extend_from_end(revcomp(genome_seq[read1.pos:read1.pos+READ_LENGTH]), broken_seq)
@@ -107,7 +107,7 @@ def extend(read1, read2, genome):
 				if j >= i:
 					for x in range(i, j+1):
 						if broken_seq[x-2:x] == 'AC':
-							print '2+', broken_seq[:x], broken_seq[x:], read1.rname, read2.pos, read1.pos+x, shift-x
+							print '2+', broken_seq[:x], broken_seq[x:], read1.rname, read2.pos, read1.pos+READ_LENGTH-x, shift-x
 
 
 

@@ -31,7 +31,7 @@ for line in bed:
 	seq = genome[chrom][start+20: end-20]
 	if strand == '-': seq = revcomp(seq)
 
-	for i in range(0, len(seq) - len(pwm), 5):
+	for i in range(0, len(seq) - len(pwm)):
 		if AG and seq[i+TP_LEN - 2:i+TP_LEN+2] != 'AGGT': continue
 
 		score = (score_motif(pwm, seq[i:i+len(pwm)]) - min_score) / float(max_score - min_score)
@@ -43,7 +43,9 @@ for line in bed:
 total = float(sum(scores))
 print total
 print scores
-scores = map(lambda x: x / total, scores)
+#scores = map(lambda x: x / total, scores)
+
+scores = [sum(scores[x:]) / total for x in xrange(len(scores))]
 
 print scores
 

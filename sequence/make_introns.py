@@ -25,7 +25,7 @@ def main(entries):
 	print "Introns over 400000 with no RS"
 	for intron in not_rs:
 		if intron.length() > 40000:
-			print intron.chrom, intron.start, intron.end
+			print intron.chrom, intron.start, intron.endte
 
 	
 

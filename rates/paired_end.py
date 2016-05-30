@@ -49,7 +49,7 @@ class Intron:
 		self.start  = int(a[1])
 		self.end    = int(a[2]) + 2
 		self.name   = a[3]
-		self.rs     = map(lambda x: int(x) + 1, a[4].split(','))
+		self.rs     = map(lambda x: int(x) + 1 if self.strand == '+' else int(x), a[4].split(','))
 
 		self.exon_start = None
 		self.exon_end   = None
@@ -137,48 +137,58 @@ class Intron:
 		down_start, down_end = coords[-2:]
 		gene_name = self._get_name(i)
 
-		sites = coords[1:-1]
+		sites = coords[1:-1]  # all sites bounding recursive segments
 
 		rs_start, rs_end = sites[i:i+2]
-		exc = sites[i+1:]
+		exc = sites[i+1:]     # exclusion isoform splice sites
 
-		s_three = self.smush(i)[2]
+		s_three = self.smush(i)[2]    # transformed exclusion isoform splice site
 
 		entries = {}
 		for read in reads.fetch(self.chrom, self.exon_start, self.exon_end):
 			if read.is_unmapped: continue
+			r_len = len(read.seq) - 1
 			blocks = self.transfer_block(merge_blocks(read.get_blocks()))
 			conditional = False
 			new_blocks = None
 			for k in range(len(blocks) -1):
 				five, three = blocks[k][1], blocks[k+1][0]
 				if five == up_end:
-					up_length = sum(blocks[j][1] - blocks[j][0] + 1 for j in range(k+1))
+					# since blocks are merged, could theoretically be greater than r_len
+					up_length = min(r_len - 5, sum(blocks[j][1] - blocks[j][0] + 1 for j in range(k+1)))
 					if three in exc:
-						new_blocks = [(five - up_length, up_end), (s_three, s_three + 50 - up_length)]
+						new_blocks = [(five - up_length, up_end), (s_three, s_three + r_len - up_length)]
 					elif three == rs_start:
-						new_blocks = [(five - up_length, five - up_length + 50)]
+						# gets turned into not a junction read
+						new_blocks = [(five - up_length, five - up_length + r_len)]
 
 			if not new_blocks:
 				start, end = blocks[0][0], blocks[-1][1]
 				# check if read entirely in upstream exon
-				if up_start < end < up_end:
-					new_blocks = [(end - 50, end)]
-					conditional = exc[0] < self.index(read.pos) < down_start
+				if up_start < end <= up_end:
+					new_blocks = [(end - r_len, end)]
+					# make conditional if mate is in exclusion region
+					# ... might be different indexing for + vs. -???
+					conditional = exc[0] < self.index(read.pnext) < down_start
 				# check if read entirely in downstream exon
-				elif down_start < start < down_end:
+				elif down_start <= start < down_end:
 					start -= down_start - s_three
-					new_blocks = [(start, start+50)]
-				# check if overlaps recursive segment
+					new_blocks = [(start, start+r_len)]
 
+			# a bit limiting that we require blocks to be 1, but
+			# ... not that bad because we aggressively merge close blocks
 			if not new_blocks and len(blocks) == 1:
+				start, end = blocks[0][0], blocks[-1][1]
+				# check if overlaps recursive segment
 				if start < rs_end and end > rs_start:
 					start -= rs_start - up_end
-					new_blocks = [(start, start+50)]
+					new_blocks = [(start, start+r_len)]
+
+				# putative straddle read
 				elif any(0 < start-p < 300 for p in exc) and self.index(read.pos) < up_end:
 					base = [0 < start-p < 300 for p in exc][0]
 					start -= base - s_three
-					new_blocks = [(start, start+50)]
+					new_blocks = [(start, start+r_len)]
 					conditional = True
 
 			if new_blocks:
@@ -205,29 +215,30 @@ class SamEntry:
 		"""
 		Initialize as being single end aligning to reverse strand
 		"""
+		r_len = len(read.seq)
 		self.blocks  = blocks
 		self.ID      = read.query_name
 		self.flag    = 1 + 8 + 64 # mulitple segs, mate unmapped, reversed, first
 		self.chrom   = name
-		self.pos     = max(0, blocks[0][0])
+		self.pos     = blocks[0][0]
 		self.mapq    =  255
 
 		first_len = blocks[0][1] - self.pos
 		if len(blocks) == 1:
-			self.cigar = '51M'
-			self.end = self.pos + 51
+			self.cigar = '{}M'.format(r_len)
+			self.end = self.pos + r_len
 		else:
 			assert len(blocks) == 2
-			second_length = 51 - first_len
+			second_length = r_len - first_len
 			intron_length = blocks[1][0] - blocks[0][1] - 1
 			self.cigar = "{}M{}N{}M".format(first_len, intron_length, second_length)
-			self.end = self.pos + 51 + intron_length
+			self.end = self.pos + r_len + intron_length
 
 		self.rnext   = '='
 		self.pnext   = self.pos
 		self.tlen    =  0
-		self.seq     = 'A' * 51
-		self.quality = 'A' * 51
+		self.seq     = 'A' * r_len
+		self.quality = 'A' * r_len
 
 	def phantom_mate(self):
 		return '\t'.join(map(str, [
@@ -271,9 +282,7 @@ class Pair:
 			self.read1, self.read2 = sam_entry, self.read1
 
 		# if conditional check if good
-		if self.conditional:
-			# at the moment just getting the other read through is enough!
-			self.conditional = False
+		self.conditional = False
 
 		# set tlen
 		self.read1.tlen = self.read2.end - self.read1.pos
@@ -288,7 +297,7 @@ class Pair:
 		self.read2.rnext = self.read2.chrom
 
 		# set flag
-		self.read1.flag = 1 + 2 + 64 + 32  # multiple, proper, first, reverse
+		self.read1.flag = 1 + 2 + 64 + 32  # multiple, proper, first, reversed
 		self.read2.flag = 1 + 2 + 128 + 16 # multiple, proper, first, mate reverse
 
 	def is_valid(self):
@@ -301,7 +310,7 @@ class Pair:
 			return str(self.read1) + '\n' + self.read1.phantom_mate()
 
 # read in all introns
-introns = [Intron(line) for i, line in enumerate(open(sys.argv[1])) if i < 20]
+introns = [Intron(line) for line in open(sys.argv[1])]
 
 # read in all exons
 exons   = [Exon(line) for line in open(sys.argv[2])]
@@ -316,6 +325,7 @@ for intron in introns:
 	print intron.rs
 
 for intron in introns:
+	if not (intron.exon_start and  intron.exon_end): continue
 	for i in range(len(intron.rs)+1):
 		annotations.write(intron.get_annotations(i))
 
@@ -327,11 +337,13 @@ out = open("{}/reads.sam".format(sys.argv[4]), 'w')
 
 out.write('\t'.join(['@HD', 'VN:1.0', 'SO:unsorted']) + '\n')
 for intron in introns:
+	if not (intron.exon_start and  intron.exon_end): continue
 	for i in range(len(intron.rs)+1):
 		out.write(intron.get_header(i) + '\n')
 out.write('\t'.join(['@PG', 'ID:joe', 'PN:joe', 'VN:1.0']) + '\n')
 
 for intron in introns:
+	if not (intron.exon_start and  intron.exon_end): continue
 	for i in range(len(intron.rs)+1):
 		out.write('\n'.join(map(str, intron.assign_reads(i, samfile))) + '\n')
 

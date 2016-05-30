@@ -5,16 +5,18 @@ Other ideas...
 Number of outgoing reads, exon body read counts, score based on increasing read count,
 "null exon"
 """
-from intron_rs import IntronRS
+from intron_exon import IntronRS
 from load_genome import *
 from get_motifs import *
 
-sjr      = open('../data/rs_jxns/all.bed', 'r')
-sawtooth = open('../data/straddle.bed', 'r')
+sjr      = open('../data/rs_jxns/all_exons_counts.bed', 'r')
+sawtooth = open('../data/mcmc_peak_calls/all_merged_masked.bed', 'r')
 graveley = open('../data/graveley.bed', 'r')
+exons    = open('../data/exons.bed')
 
 seq = load_genome(open('../data/downloaded/dmel-all-chromosome-r5.57.fasta'))
 fp_pwm, tp_pwm= make_pwm('../data/anno.ss', seq)
+fp_min_score, fp_max_score = get_min_score(fp_pwm), get_max_score(fp_pwm)
 pwm = tp_pwm + fp_pwm
 min_score, max_score = get_min_score(pwm), get_max_score(pwm)
 
@@ -31,14 +33,35 @@ class Entry:
 		self.grav = 0
 		self.junc = [0] * 8
 		self.sawtooth = 0
+		self.sawtooth_prob = 0
 		self.intron_sjr = 0
-		self.motif_score = (score_motif(pwm, self.motif) - min_score) / (max_score - min_score)
+		self.motif_score = (score_motif(pwm, self.motif[5:5+28]) - min_score) / (max_score - min_score)
 		self.manual = 0
+		self.down_counts = [0] * 8
+		self.body_counts = [0] * 4
+		self.five_score = 0
+		self.putative_three = 0
+		self.putative_three_score = 0
+		self.annotated_three = 0
+
+	def add_auxillary_info(self, body_counts, down_counts, three):
+		self.body_counts = body_counts
+		self.down_counts = down_counts
+		self.putative_three = three
+		motif = seq[self.chrom][three - 8: three + 8]
+		if self.strand == '-': motif = revcomp(motif)
+		self.putative_three_score = (score_motif(fp_pwm, self.motif[-8:]) - fp_min_score) / (fp_max_score - fp_min_score)
+		motif = seq[self.chrom][self.rs - 8: self.rs + 8]
+		if self.strand == '-': motif = revcomp(motif)
+		self.five_score = (score_motif(fp_pwm, motif[-8:]) - fp_min_score) / (fp_max_score - fp_min_score)
+
+	def set_annotated_three(self, three):
+		self.annotated_three = three
 
 	def _get_motif(self):
-		motif = seq[self.chrom][self.rs - 20:self.rs + 20]
+		motif = seq[self.chrom][self.rs - 25:self.rs + 25]
 		if self.strand == '-': motif = revcomp(motif)
-		return motif[:28]
+		return motif[:37]
 
 	def set_intron_sjr(self, count):
 		self.intron_sjr = count
@@ -60,8 +83,9 @@ class Entry:
 	def set_three(self, three):
 		self.three = three
 
-	def add_sawtooth(self):
-		self.sawtooth = 1
+	def add_sawtooth(self, score, best_prob):
+		self.sawtooth = score
+		self.sawtooth_prob = best_prob
 
 	def add_graveley(self):
 		self.grav = 1
@@ -72,6 +96,9 @@ class Entry:
 	def _coords_str(self):
 		return "{}:{}-{}:{}".format(self.chrom, self.start(), self.end(), self.strand)
 
+	def recursive_index(self):
+		return (sum(self.junc)+1) / float(self.intron_sjr+1)
+
 	def __str__(self):
 		return '\t'.join(map(str, [
 			self._coords_str(),
@@ -79,9 +106,18 @@ class Entry:
 			self.grav,
 			CSV(self.junc),
 			self.sawtooth,
+			self.sawtooth_prob,
 			self.manual,
+			self.intron_sjr,
+			self.recursive_index(),
+			self.motif,
 			self.motif_score,
-			self.intron_sjr]))
+			CSV(self.down_counts),
+			CSV(self.body_counts),
+			self.five_score,
+			self.putative_three_score,
+			self.putative_three,
+			self.annotated_three]))
 
 entries = {}
 
@@ -90,19 +126,18 @@ for line in sjr:
 	key = (rs.chrom, rs.rs, rs.strand)
 	if key not in entries:
 		entries[key] = Entry(*key)
-		entries[key].set_intron_sjr(int(rs.intron))
 	entries[key].add_sjr(rs.counts)
 	entries[key].set_five(rs.five())
+	entries[key].add_auxillary_info(rs.body_counts, rs.down_counts, rs.put_three)
 
 for line in sawtooth:
-	chrom, rs, rs2, count, score, strand = line.strip().split()
+	chrom, rs, rs2, prob, score, strand = line.strip().split()
 
 	key = (chrom, int(rs), strand)
 
 	if key not in entries:
 		entries[key] = Entry(*key)
-		entries[key].set_intron_sjr(int(count))
-	entries[key].add_sawtooth()
+	entries[key].add_sawtooth(score, prob)
 
 for line in graveley:
 	chrom, start, end, a, count, strand = line.strip().split()
@@ -115,6 +150,16 @@ for line in graveley:
 	entries[key].add_graveley()
 	entries[key].set_five(five)
 
+for line in exons:
+	chrom, start, end, pos, count, strand = line.strip().split()
+	start, end = int(start), int(end)
+	for entry in entries.values():
+		if chrom == entry.chrom and strand == entry.strand:
+			if strand == '+' and entry.rs == start:
+				entry.set_annotated_three(end)
+			elif strand == '-' and entry.rs == end:
+				entry.set_annotated_three(start)
+
 """
 assigns intron by:
 
@@ -125,7 +170,9 @@ Overlooks introns shorted than 1000 bp (what ever is in intron file)
 """
 
 # PRINT HEADER
-print '\t'.join(['COORDS', 'RS', 'GRAV', 'SJR', 'SAW', 'MANUAL', 'MOTIF', 'SPANNING'])
+print '\t'.join(['COORDS', 'RS', 'GRAV', 'SJR', 'SAW_SCORE', 'MCMC_PROB', 'MANUAL', 'SPANNING',
+	             'RECURSIVE_INDEX' 'MOTIF', 'MOTIF_SCORE', 'DOWN', 'BODY', 'FIVE_SCORE', 'PUT_FIVE_SCORE',
+	             'PUT_THREE', 'ANNO_THREE'])
 
 introns = open('../data/all_merged.bed', 'r')
 
@@ -183,6 +230,7 @@ for entry in entries.values():
 						if three < best[0] or juncs > best[1]: best = (three, juncs)
 		if best[1] != -1:
 			entry.set_three(best[0])
+			entry.set_intron_sjr(best[1])
 			print entry
 		else:	
 			# introns less than 1000 not present in expression file

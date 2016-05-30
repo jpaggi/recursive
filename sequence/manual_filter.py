@@ -2,7 +2,7 @@ import sys
 import matplotlib.pyplot as plt
 from standard_table_reader import Entry
 
-expression = open('all_merged.bed', 'r')
+expression = open('../data/all_merged.bed', 'r')
 e = []
 good = open(sys.argv[2], 'w')
 
@@ -18,7 +18,7 @@ data = open(sys.argv[1], 'r')
 for line in data:
 	entry = Entry(line)
 
-	if not entry.good_motif(.9) or entry.manual:
+	if entry.manual or not entry.good_motif(.87):
 		good.write(str(entry) + '\n')
 		continue
 
@@ -30,6 +30,7 @@ for line in data:
 			break
 
 	if coverage != None:
+		print "{} {}".format(entry.chrom, entry.rs)
 		print entry.motif_score
 		if entry.strand == '-':
 			coverage = coverage[::-1]

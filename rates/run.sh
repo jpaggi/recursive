@@ -4,7 +4,7 @@
 # 4) output directory
 # 5) mean insert
 # 6) stddev
-
+# 7) read-len
 
 rm -rf $4
 mkdir $4
@@ -13,7 +13,7 @@ python paired_end.py $1 $2 $3 $4
 
 echo 'wrote sam plus annotations'
 
-samtools view -bS $4'/reads.sam' | samtools sort - -o $4'/reads.bam'
+samtools view -bS $4'/reads.sam' | samtools sort - $4'/reads'
 
 rm $4'/reads.sam'
 
@@ -27,7 +27,7 @@ index_gff --index $4'/annotations.gff' $4'/indexed/'
 
 echo 'indexed annotations'
 
-miso --run $4'/indexed/' $4'/reads.bam'  --paired-end $5 $6 --read-len 51 --output-dir $4'/miso'
+miso --run $4'/indexed/' $4'/reads.bam' --settings-filename miso_settings.txt --paired-end $5 $6 --read-len $7 --output-dir $4'/miso'
 
 echo 'ran miso'
 

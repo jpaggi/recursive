@@ -4,7 +4,7 @@ class PeakCall:
 		a = line.strip().split('\t')
 		self.chrom = a[0]
 		self.rs = int(a[1])
-		self.count = int(a[3])
+		self.best_prob = float(a[3])
 		self.score = float(a[4])
 		self.strand = a[5]
 
@@ -15,9 +15,10 @@ class PeakCall:
 
 	def merge(self, other):
 		self.score = max(self.score, other.score)
+		self.best_prob = max(self.best_prob, other.best_prob)
 
 	def __str__(self):
-		return '\t'.join(map(str, [self.chrom, self.rs, self.rs+1, self.count, self.score, self.strand]))
+		return '\t'.join(map(str, [self.chrom, self.rs, self.rs+1, self.best_prob, self.score, self.strand]))
 
 import sys
 cur = PeakCall(sys.stdin.readline())
