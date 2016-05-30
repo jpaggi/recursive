@@ -28,7 +28,6 @@ do
 	sh run.sh $1 $2 $4/$sample'.bam' $3/$sample 320 80 101
 done
 
-
 python extract_psi.py $3 $1 > $3/table.tsv
 
 

@@ -1,14 +1,12 @@
+
 import sys
 import pysam
 import matplotlib.pyplot as plt
 
 """
-Currently asserting that all introns are much 
-longer than the insert length
+Plots the coverage in transformed gene models.
 
-Don't take into account that straddling reads can come from
-other annotated introns... But relatively small problem
-especially for long introns, which is what we care about.
+Purely for debugging purposes.
 """
 
 inside = True

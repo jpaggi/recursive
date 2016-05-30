@@ -13,6 +13,7 @@ python paired_end.py $1 $2 $3 $4
 
 echo 'wrote sam plus annotations'
 
+# For some versions of samtools need to put "-o" in front of $4'/reads'
 samtools view -bS $4'/reads.sam' | samtools sort - $4'/reads'
 
 rm $4'/reads.sam'

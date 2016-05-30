@@ -1,5 +1,10 @@
 import sys
 
+"""
+Creates a table of all miso mean psi values + 
+identiy of intron and recursive segment being considered
+"""
+
 SAMPLES = ['5_repA', '5_repB', '5_repC', '10_repA', '10_repB', '10_repC',
 	       '20_repA', '20_repB', '20_repC', 'total_repA', 'total_repB']
 INDEX = lambda x: SAMPLES.index(x)
@@ -11,6 +16,7 @@ NAME = 'miso_summary/summary/miso.miso_summary'
 CSV = lambda x: ','.join(map(str, x))
 
 
+# example miso summary line
 #X:2536126-2563946:+.rs1	0.03	0.02	0.03	'X:2536126-2563946:+.rs1.mRNA.in.exon.1','X:2536126-2563946:+.rs1.mRNA.ex.exon.1_X:2536126-2563946:+.rs1.mRNA.ex.exon.2'
 #	(0,0):149,(0,1):77,(1,0):725,(1,1):144	0:728,1:218	X:2536126-2563946:+.rs1	+	1000,1000	17447,17447
 

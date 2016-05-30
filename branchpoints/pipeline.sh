@@ -15,7 +15,7 @@
 # python code/branchpoints/merge_alignments.py data/branchpoints/sorted_single_end2.sam > data/branchpoints/single_end_merged2.joe
 
 # separate out discordant and reads for which only one end aligns
-python code/branchpoints/merge_ends.py data/branchpoints/single_end_merged1.joe data/branchpoints/single_end_merged2.joe data/branchpoints/test_discordant.joe data/branchpoints/test1.fq data/branchpoints/test2.fq
+python code/branchpoints/merge_ends.py data/branchpoints/single_end_merged1.joe data/branchpoints/single_end_merged2.joe data/branchpoints/test_discordant.bed data/branchpoints/test1.fq data/branchpoints/test2.fq
 
 # align broken reads
 # hisat2 --rf --no-discordant  --no-mixed -x ~/Downloads/dmel-r5.57 -1 data/branchpoints/test1.fq -2 data/branchpoints/test2.fq -S data/branchpoints/pe_findbps_aligning.sam

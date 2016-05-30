@@ -73,8 +73,8 @@ for line1, line2 in zip(reads1, reads2):
                 if chrom1 != chrom2: continue
                 if strand1 == strand2: continue
                 
-                if strand1 == '+' and 0 < int(pos1) - int(pos2) < 2000000:
+                if strand1 == '-' and 0 < - int(pos1) + int(pos2) < 2000000:
                     discordant.write('\t'.join([chrom1, pos2, pos1, ID1, 'pair', strand1]) + '\n')
                 
-                if strand1 == '-' and 0 < int(pos2) - int(pos1) < 2000000:
+                if strand1 == '+' and 0 < - int(pos2) + int(pos1) < 2000000:
                     discordant.write('\t'.join([chrom1, pos1, pos2, ID1, 'pair', strand1]) + '\n')
