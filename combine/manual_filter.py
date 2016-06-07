@@ -2,7 +2,7 @@ import sys
 import matplotlib.pyplot as plt
 from standard_table_reader import Entry
 
-expression = open('../data/all_merged.bed', 'r')
+expression = open('../data/coverage/all_merged.bed', 'r')
 e = []
 good = open(sys.argv[2], 'w')
 
@@ -18,10 +18,6 @@ data = open(sys.argv[1], 'r')
 for line in data:
 	entry = Entry(line)
 
-	if entry.manual or not entry.good_motif(.87):
-		good.write(str(entry) + '\n')
-		continue
-
 	coverage = None
 	for chrom, start, end, strand, expression in e:
 		if chrom  == entry.chrom and start < entry.rs < end and strand == entry.strand:
@@ -31,16 +27,24 @@ for line in data:
 
 	if coverage != None:
 		print "{} {}".format(entry.chrom, entry.rs)
-		print entry.motif_score
+		print entry.motif_score, entry.log_or
+		print entry.junc
 		if entry.strand == '-':
 			coverage = coverage[::-1]
 		plt.plot(coverage)
 		plt.axvline(pos, c = 'r', linewidth=2)
 		plt.show(block = False)
 
-		a = raw_input('any key for yes')
-
-		if a: entry.add_manual()
+		while True:
+			a = raw_input('t for true, f for false, n for neutral')
+			if a in ['t', 'f', 'n']:
+				if a == 't':
+					entry.manual = 1
+				elif a == 'f':
+					entry.manual = -1
+				else:
+					entry.manual = 0
+				break
 		good.write(str(entry) + '\n')
 
 		plt.close()

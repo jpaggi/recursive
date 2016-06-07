@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 def main(entries):
 	introns = []
-	for line in open('../data/long_highly_expressed.bed'):
+	for line in open('../data/coverage/expressed.bed'):
 		chrom, start, end, name, counts, strand = line.strip().split('\t')[:6]
 		introns += [Intron(chrom, int(start), int(end), strand, int(counts))]
 
@@ -25,7 +25,7 @@ def main(entries):
 	print "Introns over 400000 with no RS"
 	for intron in not_rs:
 		if intron.length() > 40000:
-			print intron.chrom, intron.start, intron.endte
+			print intron.chrom, intron.start, intron.end
 
 	
 

@@ -317,20 +317,22 @@ exons   = [Exon(line) for line in open(sys.argv[2])]
 
 annotations = open("{}/annotations.gff".format(sys.argv[4]), 'w')
 
-# join exons to introns
+# join exons to introns.
 for intron in introns:
 	for exon in exons:
 		intron.maybe_add_exon(exon)
 	print intron
 	print intron.rs
 
+
+# write annotations.
 for intron in introns:
 	if not (intron.exon_start and  intron.exon_end): continue
 	for i in range(len(intron.rs)+1):
 		annotations.write(intron.get_annotations(i))
 
 
-
+# create sam file.
 samfile = pysam.AlignmentFile(sys.argv[3])
 
 out = open("{}/reads.sam".format(sys.argv[4]), 'w')

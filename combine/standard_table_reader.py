@@ -1,7 +1,5 @@
 CSV = lambda x: ','.join(map(str, list([x] if type(x) == int else x)))
-#COORDS', 'RS', 'GRAV', 'SJR', 'SAW_SCORE', 'MCMC_PROB', 'MANUAL', 'SPANNING',
-#	             'RECURSIVE_INDEX' 'MOTIF', 'MOTIF_SCORE', 'DOWN', 'BODY', 'FIVE_SCORE', 'PUT_FIVE_SCORE',
-#	             'PUT_THREE', 'ANNO_THREE'
+
 class Entry:
 	def __init__(self, line):
 		a = line.strip().split()
@@ -16,12 +14,14 @@ class Entry:
 		self.recursive_index = float(a[8])
 		self.motif = a[9]
 		self.motif_score = float(a[10])
-		self.down_counts = map(int, a[11].split(','))
-		self.body_counts = map(int, a[12].split(','))
-		self.five_score  = float(a[13])
-		self.put_five_score = float(a[14])
-		self.putative_three = int(a[15])
-		self.anno_three     = int(a[16])
+		self.log_or      = float(a[11])
+		self.down_counts = map(int, a[12].split(','))
+		self.body_counts = map(int, a[13].split(','))
+		self.five_score  = float(a[14])
+		self.put_five_score = float(a[15])
+		self.putative_three = int(a[16])
+		self.putative_five  = int(a[17])
+		self.anno_five     = int(a[18])
 
 	def _read_coords(self, coords):
 		chrom, index, strand = coords.split(':')
@@ -40,6 +40,10 @@ class Entry:
 	def set_intron_sjr(self, count):
 		self.intron_sjr = count
 
+	def set_putative(self, five, three, score):
+		self.putative_five = five
+		self.putative_three = three
+		self.put_five_score = score
 
 	def good_motif(self, thresh):
 		return self.motif_score > thresh
@@ -50,15 +54,6 @@ class Entry:
 	def three(self):
 		return self.end if self.strand =='+' else self.start
 
-	# def add_sjr(self, counts):
-	# 	self.junc = [i+j for i, j in zip(self.junc, counts)]
-
-	# def add_sawtooth(self):
-	# 	self.sawtooth = 1
-
-	# def add_graveley(self):
-	# 	self.grav = 1\
-
 	def recursive_index(self):
 		return sum(self.junc) / float(self.intron_sjr)
 
@@ -66,8 +61,13 @@ class Entry:
 		self.manual = 1
 
 	def decreasing_body_counts(self):
-		diffs = [i - j for i, j in  zip(self.body_counts[1:], self.body_counts[:-1])]
-		return len(filter(lambda x: x < 0, diffs)) > 2
+		diffs = [j-i for i, j in  zip(self.body_counts[1:], self.body_counts[:-1])]
+		return len(filter(lambda x: x >= 0, diffs)) > 1
+
+	def decreasing_junc_counts(self):
+		counts = [self.five_min(), self.ten_min(), self.twenty_min(), self.total_min()]
+		diffs = [j-i for i, j in  zip(counts[1:], counts[:-1])]
+		return len(filter(lambda x: x >= 0, diffs)) > 1
 
 	def _coords_str(self):
 		return "{}:{}-{}:{}".format(self.chrom, CSV(self.start), CSV(self.end), self.strand)
@@ -97,44 +97,30 @@ class Entry:
 			self.recursive_index,
 			self.motif,
 			self.motif_score,
+			self.log_or,
 			CSV(self.down_counts),
 			CSV(self.body_counts),
 			self.five_score,
 			self.put_five_score,
 			self.putative_three,
-			self.anno_three]))
+			self.putative_five,
+			self.anno_five]))
 
 if __name__ == '__main__':
 	import sys
-	import matplotlib.pyplot as plt
-
-	manual = []
-	other = []
 
 	for line in open(sys.argv[1]):
 		if line[:6] == 'COORDS': continue
 		entry = Entry(line)
-		# if not entry.good_motif(.83): continue
-		# if entry.manual:
-		# 	print entry
 
-		statistic = 2 * entry.total_min() + entry.twenty_min() - 2 * entry.five_min()  -  entry.ten_min()
+		sjr = entry.recursive_index > .05 and sum(entry.junc) and entry.log_or > 0
+		saw = entry.saw_score > .06
+		exon = sum(entry.down_counts) * 5 > sum(entry.junc) and not entry.decreasing_body_counts()
 
-		statistic = entry.motif_score
+		if not sjr and not saw: continue
+		if exon: continue
+		if entry.grav: continue
 
-		if entry.manual:
-			manual += [statistic]
-		else:
-			other += [statistic]
+		if entry.manual != -1: continue
 
-	print len(manual), len(filter(lambda x: x > .9, manual))
-
-	print len(other), len(filter(lambda x: x > .9, other))
-
-	plt.hist(manual, bins = 50)
-	plt.axvline(0)
-	plt.show()
-	plt.hist(other, bins = 50)
-	plt.axvline(0)
-	plt.show()
-
+		print entry

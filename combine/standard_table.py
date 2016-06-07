@@ -1,15 +1,8 @@
-"""
-coords   site   graveley   (# of reads in junctions)   sawtooth   manual    motif_score
-
-Other ideas...
-Number of outgoing reads, exon body read counts, score based on increasing read count,
-"null exon"
-"""
-from intron_exon import IntronRS
+from intron_rs import IntronRS
 from load_genome import *
 from get_motifs import *
 
-sjr      = open('../data/rs_jxns/all_exons_counts.bed', 'r')
+sjr      = open('../data/rs_jxns/all.bed', 'r')
 sawtooth = open('../data/mcmc_peak_calls/all_merged_masked.bed', 'r')
 graveley = open('../data/graveley.bed', 'r')
 exons    = open('../data/exons.bed')
@@ -37,26 +30,33 @@ class Entry:
 		self.intron_sjr = 0
 		self.motif_score = (score_motif(pwm, self.motif[5:5+28]) - min_score) / (max_score - min_score)
 		self.manual = 0
+		self.log_or = 0
+
+		# fields used to decide if actually an exon.
+		# leave all but annotated five null when initially creating the table.
+		# use define_exons to set putative three and putative five
+		# ... then use get_sjr to fill in body_counts and down_counts
 		self.down_counts = [0] * 8
 		self.body_counts = [0] * 4
-		self.five_score = 0
+		self.five_score = (score_motif(fp_pwm, self.motif[25:5+28]) - fp_min_score) / (fp_max_score- fp_min_score)
+		self.putative_five = 0
 		self.putative_three = 0
-		self.putative_three_score = 0
-		self.annotated_three = 0
+		self.putative_five_score = 0
+		self.annotated_five = 0
 
-	def add_auxillary_info(self, body_counts, down_counts, three):
-		self.body_counts = body_counts
-		self.down_counts = down_counts
-		self.putative_three = three
-		motif = seq[self.chrom][three - 8: three + 8]
-		if self.strand == '-': motif = revcomp(motif)
-		self.putative_three_score = (score_motif(fp_pwm, self.motif[-8:]) - fp_min_score) / (fp_max_score - fp_min_score)
-		motif = seq[self.chrom][self.rs - 8: self.rs + 8]
-		if self.strand == '-': motif = revcomp(motif)
-		self.five_score = (score_motif(fp_pwm, motif[-8:]) - fp_min_score) / (fp_max_score - fp_min_score)
+	# def add_auxillary_info(self, body_counts, down_counts, three):
+	# 	self.body_counts = body_counts
+	# 	self.down_counts = down_counts
+	# 	self.putative_three = three
+	# 	motif = seq[self.chrom][three - 8: three + 8]
+	# 	if self.strand == '-': motif = revcomp(motif)
+	# 	self.putative_three_score = (score_motif(fp_pwm, self.motif[-8:]) - fp_min_score) / (fp_max_score - fp_min_score)
+	# 	motif = seq[self.chrom][self.rs - 8: self.rs + 8]
+	# 	if self.strand == '-': motif = revcomp(motif)
+	# 	self.five_score = (score_motif(fp_pwm, motif[-8:]) - fp_min_score) / (fp_max_score - fp_min_score)
 
-	def set_annotated_three(self, three):
-		self.annotated_three = three
+	def set_annotated_five(self, five):
+		self.annotated_five = five
 
 	def _get_motif(self):
 		motif = seq[self.chrom][self.rs - 25:self.rs + 25]
@@ -112,12 +112,14 @@ class Entry:
 			self.recursive_index(),
 			self.motif,
 			self.motif_score,
+			self.log_or,
 			CSV(self.down_counts),
 			CSV(self.body_counts),
 			self.five_score,
-			self.putative_three_score,
+			self.putative_five_score,
 			self.putative_three,
-			self.annotated_three]))
+			self.putative_five,
+			self.annotated_five]))
 
 entries = {}
 
@@ -128,7 +130,6 @@ for line in sjr:
 		entries[key] = Entry(*key)
 	entries[key].add_sjr(rs.counts)
 	entries[key].set_five(rs.five())
-	entries[key].add_auxillary_info(rs.body_counts, rs.down_counts, rs.put_three)
 
 for line in sawtooth:
 	chrom, rs, rs2, prob, score, strand = line.strip().split()
@@ -156,9 +157,9 @@ for line in exons:
 	for entry in entries.values():
 		if chrom == entry.chrom and strand == entry.strand:
 			if strand == '+' and entry.rs == start:
-				entry.set_annotated_three(end)
+				entry.set_annotated_five(end)
 			elif strand == '-' and entry.rs == end:
-				entry.set_annotated_three(start)
+				entry.set_annotated_five(start)
 
 """
 assigns intron by:
@@ -171,8 +172,8 @@ Overlooks introns shorted than 1000 bp (what ever is in intron file)
 
 # PRINT HEADER
 print '\t'.join(['COORDS', 'RS', 'GRAV', 'SJR', 'SAW_SCORE', 'MCMC_PROB', 'MANUAL', 'SPANNING',
-	             'RECURSIVE_INDEX' 'MOTIF', 'MOTIF_SCORE', 'DOWN', 'BODY', 'FIVE_SCORE', 'PUT_FIVE_SCORE',
-	             'PUT_THREE', 'ANNO_THREE'])
+	             'RECURSIVE_INDEX' 'MOTIF', 'MOTIF_SCORE', 'LOG_OR' 'DOWN', 'BODY', 'FIVE_SCORE', 'PUT_FIVE_SCORE',
+	             'PUT_THREE', 'PUT_FIVE', 'ANNO_FIVE'])
 
 introns = open('../data/all_merged.bed', 'r')
 

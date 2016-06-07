@@ -1,21 +1,24 @@
 from math import sqrt
 
 class Intron:
-	def __init__(self, chrom, start, end, strand, expression):
+	def __init__(self, chrom, start, end, strand, expression, coverage = None):
 		self.chrom = chrom
 		self.strand = strand
 		self.start = start
 		self.end = end
 		self.rs = []
+		self.exon = []
 		self.expression = expression
+		self.coverage = coverage
 
 	def compatible(self, chrom, strand, rs):
 		return (self.chrom == chrom
 			and self.strand == strand
 			and self.start < rs < self.end)
 
-	def add(self, rs):
+	def add(self, rs, exon = False):
 		self.rs += [rs]
+		self.exon += [exon]
 
 	def num_rs(self):
 		return len(self.rs)
