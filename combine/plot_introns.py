@@ -26,9 +26,10 @@ def main(entries):
 				exon = sum(entry.down_counts) * 5 > sum(entry.junc) 
 				intron.add(rs, exon)
 
-    
+
 
 	for intron in introns:
+		if intron.chrom != '3L' or intron.start != 12021978: continue
 		print intron.chrom, intron.start, intron.end
 		seq = genome_seq[intron.chrom][intron.start:intron.end]
 		if intron.strand == '-':
@@ -51,8 +52,11 @@ def main(entries):
 			score = (score_motif(pwm, motif) - min_score) / (max_score - min_score)
 			if score > .8: plt.scatter([i], [1], marker = 'o', linewidths = [(score - .8) * 100], c = 'k')
 		plt.autoscale(tight = True)
+		plt.ylim([0, 20])
 		plt.show(block = False)
 		a = raw_input("enter to continue")
+
+		plt.savefig('../data/3L:12021978.png')
 		plt.close()
 
 

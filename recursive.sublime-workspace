@@ -4,8 +4,304 @@
 		"selected_items":
 		[
 			[
+				"RS",
+				"RS_STR"
+			],
+			[
+				"dec",
+				"decreasing_junc_counts"
+			],
+			[
+				"five",
+				"five_min"
+			],
+			[
+				"pu",
+				"put_five_score"
+			],
+			[
+				"tru",
+				"true_increase"
+			],
+			[
+				"true",
+				"true_motifs"
+			],
+			[
+				"random",
+				"random_increase"
+			],
+			[
+				"rand",
+				"random_increase"
+			],
+			[
+				"inn",
+				"inner_right"
+			],
+			[
+				"fp_",
+				"fp_min_score"
+			],
+			[
+				"score",
+				"score_motif"
+			],
+			[
+				"putat",
+				"putative_three"
+			],
+			[
+				"ann",
+				"anno_five"
+			],
+			[
+				"log_",
+				"log_sawtooth"
+			],
+			[
+				"p_saw",
+				"p_saw_minus"
+			],
+			[
+				"log",
+				"log_increase"
+			],
+			[
+				"radnom",
+				"random_log"
+			],
+			[
+				"ra",
+				"random_log"
+			],
+			[
+				"radn",
+				"random_motifs"
+			],
+			[
+				"p_mo",
+				"p_motif_minus"
+			],
+			[
+				"p_increas",
+				"p_increase_minus"
+			],
+			[
+				"p_incre",
+				"p_increase_plus"
+			],
+			[
+				"tr",
+				"true_increase"
+			],
+			[
+				"up",
+				"up_avg"
+			],
+			[
+				"sa",
+				"saw_score"
+			],
+			[
+				"body",
+				"body_counts"
+			],
+			[
+				"j",
+				"jxn"
+			],
+			[
+				"an",
+				"anno_three"
+			],
+			[
+				"p",
+				"putative_three"
+			],
+			[
+				"add",
+				"add_auxillary_info"
+			],
+			[
+				"down",
+				"down_count"
+			],
+			[
+				"sawtoo",
+				"sawtooth_prob"
+			],
+			[
+				"con",
+				"continue"
+			],
+			[
+				"exon_",
+				"exon_start"
+			],
+			[
+				"re",
+				"recursive_index"
+			],
+			[
+				"r_",
+				"r_peak_scores"
+			],
+			[
+				"peak",
+				"peak_scores"
+			],
+			[
+				"rea",
+				"real_file"
+			],
+			[
+				"first",
+				"first_len"
+			],
+			[
+				"get",
+				"get_blocks"
+			],
+			[
+				"read",
+				"read1"
+			],
+			[
+				"r",
+				"readline"
+			],
+			[
+				"ci",
+				"conditional"
+			],
+			[
+				"sam",
+				"sam_entry"
+			],
+			[
+				"tran",
+				"transfer_coords"
+			],
+			[
+				"assig",
+				"assign_reads_down"
+			],
+			[
+				"up_",
+				"up_end"
+			],
+			[
+				"exo",
+				"exon"
+			],
+			[
+				"start",
+				"start"
+			],
+			[
+				"exon",
+				"exon_start"
+			],
+			[
+				"summ",
+				"summarize_miso"
+			],
+			[
+				"test",
+				"test_miso"
+			],
+			[
+				"len",
+				"length"
+			],
+			[
+				"new",
+				"new_blocks"
+			],
+			[
+				"se",
+				"second_length"
+			],
+			[
+				"intron",
+				"intron_length"
+			],
+			[
+				"do",
+				"down_end"
+			],
+			[
+				"map",
+				"mapq"
+			],
+			[
+				"rs",
+				"rs_start"
+			],
+			[
+				"gene",
+				"gene_name"
+			],
+			[
+				"gen",
+				"gene_name"
+			],
+			[
+				"GTF_",
+				"GTF_MRNA"
+			],
+			[
+				"_",
+				"_get_name"
+			],
+			[
+				"motif",
+				"motif_score"
+			],
+			[
+				"set",
+				"set_intron_sjr"
+			],
+			[
+				"coo",
+				"_coords_str"
+			],
+			[
 				"in",
-				"increasing"
+				"intron_sjr"
+			],
+			[
+				"saw",
+				"sawtooth"
+			],
+			[
+				"inner",
+				"inner_left"
+			],
+			[
+				"f",
+				"f_max"
+			],
+			[
+				"max",
+				"max_score"
+			],
+			[
+				"all_sjr",
+				"all_sjr_groups"
+			],
+			[
+				"ma",
+				"max_score"
+			],
+			[
+				"l",
+				"_linear_search"
+			],
+			[
+				"s",
+				"short_ss"
 			],
 			[
 				"thre",
@@ -16,24 +312,8 @@
 				"motif_expression"
 			],
 			[
-				"tran",
-				"transcript_exons"
-			],
-			[
 				"mo",
 				"motif_cutoff"
-			],
-			[
-				"inner",
-				"inner_right"
-			],
-			[
-				"inn",
-				"inner_left"
-			],
-			[
-				"get",
-				"_get_downstream_end"
 			],
 			[
 				"is",
@@ -42,22 +322,6 @@
 			[
 				"temp",
 				"temp_long_exons"
-			],
-			[
-				"sa",
-				"sawtooth"
-			],
-			[
-				"peak",
-				"peak_footprint"
-			],
-			[
-				"rea",
-				"real_dists"
-			],
-			[
-				"rand",
-				"random_dists"
 			],
 			[
 				"grav",
@@ -100,24 +364,12 @@
 				"timepoints"
 			],
 			[
-				"len",
-				"lengths"
-			],
-			[
 				"Intr",
 				"IntronRS"
 			],
 			[
-				"intron",
-				"intronrs"
-			],
-			[
 				"mot",
 				"motif_str"
-			],
-			[
-				"motif",
-				"motif_score"
 			],
 			[
 				"data",
@@ -148,14 +400,6 @@
 				"THRESH"
 			],
 			[
-				"random",
-				"random_peaks"
-			],
-			[
-				"gen",
-				"genome_space"
-			],
-			[
 				"ran",
 				"random_peaks"
 			],
@@ -168,10 +412,6 @@
 				"x_vals"
 			],
 			[
-				"ma",
-				"max"
-			],
-			[
 				"prin",
 				"print_entry"
 			],
@@ -180,16 +420,8 @@
 				"_get_ss"
 			],
 			[
-				"five",
-				"five_insert"
-			],
-			[
 				"reduce",
 				"reduce_array"
-			],
-			[
-				"new",
-				"new_score"
 			],
 			[
 				"intr",
@@ -212,20 +444,8 @@
 				"blocks"
 			],
 			[
-				"score",
-				"max_score"
-			],
-			[
-				"fp_",
-				"fp_pwm"
-			],
-			[
 				"strand",
 				"strand_str"
-			],
-			[
-				"p",
-				"pnext"
 			],
 			[
 				"min",
@@ -246,10 +466,6 @@
 			[
 				"Sh",
 				"SHORT_READ_LENGTH"
-			],
-			[
-				"re",
-				"revcomp"
 			],
 			[
 				"extend_from",
@@ -298,42 +514,6 @@
 			[
 				"broe",
 				"broken_seq"
-			],
-			[
-				"read",
-				"read2"
-			],
-			[
-				"N",
-				"NUM_MEMO"
-			],
-			[
-				"cal",
-				"calculate_intercepts"
-			],
-			[
-				"clau",
-				"calculate_slope"
-			],
-			[
-				"calculate",
-				"calculate_squared_dev"
-			],
-			[
-				"st",
-				"strand"
-			],
-			[
-				"butter_lowpa",
-				"butter_lowpass_filter"
-			],
-			[
-				"lin",
-				"lin_regression"
-			],
-			[
-				"offs",
-				"offsets"
 			]
 		]
 	},
@@ -343,55 +523,62 @@
 			"file": "README.txt",
 			"settings":
 			{
-				"buffer_size": 2525,
+				"buffer_size": 3281,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "sequence/included_exons/pipeline.sh",
+			"file": "combine/plot_introns.py",
 			"settings":
 			{
-				"buffer_size": 1440,
+				"buffer_size": 2123,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "sequence/included_exons/filter.py",
+			"file": "sawtooth/dist_to_motifs.py",
 			"settings":
 			{
-				"buffer_size": 1701,
+				"buffer_size": 5500,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "sjr/plot_sjr.py",
+			"file": "sawtooth/mcmc_core/call_sites.py",
 			"settings":
 			{
-				"buffer_size": 3637,
+				"buffer_size": 3461,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "sequence/included_exons/motif_checker.py",
+			"file": "sawtooth/plot_distances_vs_random.py",
 			"settings":
 			{
-				"buffer_size": 547,
+				"buffer_size": 815,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "sequence/included_exons/merge_reps.py",
+			"file": "combine/standard_table.py",
 			"settings":
 			{
-				"buffer_size": 799,
+				"buffer_size": 6939,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "sequence/included_exons/merge_reps.sh",
+			"file": "combine/get_alt_ss.py",
 			"settings":
 			{
-				"buffer_size": 683,
+				"buffer_size": 658,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"settings":
+			{
+				"buffer_size": 0,
 				"line_ending": "Unix"
 			}
 		}
@@ -429,143 +616,138 @@
 	"expanded_folders":
 	[
 		"/Users/jpaggi/Documents/recursive_splicing/code",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/mcmc_core",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sequence",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/included_exons",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline"
+		"/Users/jpaggi/Documents/recursive_splicing/code/combine"
 	],
 	"file_history":
 	[
+		"/Users/jpaggi/Documents/recursive_splicing/code/combine/auto_filter.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/combine/intron.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/combine/plot_introns.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/rates/run_all.sh",
+		"/Users/jpaggi/Documents/recursive_splicing/code/combine/make_introns.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/combine/standard_table_reader.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/combine/manual_filter.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/combine/standard_table.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/combine/get_coverage_increase_background.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/coverage/get_introns.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/coverage/remove_exons.sh",
+		"/Users/jpaggi/Documents/recursive_splicing/code/combine/get_sjr.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/combine/define_exons.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/get_background.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/rates/paired_end.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/included_exons/define_exons.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/expressed.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/mask_repeats.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/rates/plot.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/rates/plot_transformed.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/rates/run.sh",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/robust_regression.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/rates/extract_psi.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/standard_table.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/branchpoints/pipeline.sh",
+		"/Users/jpaggi/Documents/recursive_splicing/code/branchpoints/merge_ends.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/branchpoints/parse_initial_mapping.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/intron_rs.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/included_exons/get_expression_rs.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/manual_filter.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/standard_table_reader.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/included_exons/filter.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/intron_exon.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/included_exons/motif_checker.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/included_exons/merge_reps.sh",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/included_exons/merge_reps.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/included_exons/merge.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/included_exons/filter_rs.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/included_exons/get_expression.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/included_exons/overlap_with_annotations.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/run.sh",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/run_all.sh",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/included_exons/pipeline.sh",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/included_exons/run.sh",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/included_exons/run_on_cluster.sh",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/included_exons/exons_to_bed.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/rates/miso_settings.txt",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/evaluate_peaks.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/merge_peak_calls.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/peaks.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/call_sites.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/standard_form.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/rates/match_to_introns.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/make_introns.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/rates/get_expression.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/dist_to_motifs.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/putative_ratchet_sjr.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/intron.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/README.txt",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/compare_to_sawtooth.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/graveley_to_bed.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/assign_five_three.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/auto_filter.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/manual_sjr_filter.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/straddle_jxn.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/get_motifs.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/assign_introns.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/get_anno_splices.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/process_sjr.sh",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/merge_sjr_reps.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/straddle_gem.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/split_reads.sh",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/straddle_reads.sh",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/merge_introns.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/anno_jxns.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/merge.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/intron_rs.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/group_introns.py",
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/get_introns.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/insert/get_const.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/insert/get_dist.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/plot_sjr.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/insert/get_long_exons.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/graveley_to_bed.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/graveley_expression.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/compare_to_sawtooth.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/included_exons/exons_to_bed.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/mcmc_core/plot_mcmc.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/included_exons/motif_checker.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/included_exons/get_expression.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/get_introns.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/straddle_gem.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/peaks_to_bed.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/search_for_missing.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/manual_sjr_filter.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/characterize.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/graveley_across_replicates.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/make_introns.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/intron_lengths.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/get_intron_expression.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/putative_ratchet_sjr.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/kallisto/kallisto.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/kallisto/run_kallisto.sh",
 		"/Users/jpaggi/Documents/recursive_splicing/code/plot_examples/extract_anno_jxns.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/manual_sawtooth_filter.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/write_to_intron.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/intron.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/intron_rs.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/write_in_rs.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/standard_form.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/compare_to_sawtooth_introns.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/get_anno_splices.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/recursive_index.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/compare_to_graveley.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/peaks.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/merge_peak_calls.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/call_sites.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/evaluate.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/expressed.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/compare_across_replicates.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/repeats.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/README.txt",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/filter.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/get_motifs.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/plot_peak_calling.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/merge_introns.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/run.sh",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/straddle_reads.sh",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/straddle_jxn.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/straddle_assign.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/intron_lengths.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/remove_exons.sh",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/mask_repeats.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/merge_subtracted.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/get_subtract_expression.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/assign_introns.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/join_introns.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/join.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/plot_repeats.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/mcmc_core/mcmc.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/split_reads.sh",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/mcmc_core/run_mcmc.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/run_all.sh",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/mcmc_core/mcmc2.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/plot_stats.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/straddle_motif.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/straddle_group.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/seq_for_groups.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/group_introns.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/robust_regression.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/get_background.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/tps_analysis.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/__init__.py",
 		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/const_slope_mcmc.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/share_ss.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/mcmc_core/plot_two.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/merge_similar.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/mcmc_core/share_ss.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/combine/sjr_to_mcmc.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/merge.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/combine/merge_sjr_expression.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/recursive.sublime-project",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/get_unique_non_overlapping_introns.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/combine/mcmc_to_sjr.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/motif_background.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/get_intron_expression.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/background_dist.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/plot_motif_strength.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/non_dected_graveley.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/plot_anno_motifs.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/anno_jxns.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/get_motifs.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/load_genome.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/get_motifs.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/plot_mcmc.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/mcmc.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/core_pipeline/load_genome.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/PIPELINE.txt",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/load_genome.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/group_introns.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/putative_ratchet_sjr.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/seq_for_groups.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/run.sh",
-		"/Users/jpaggi/Documents/recursive_splicing/code/branchpoints/sam_iter.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/branchpoints/separate.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/branchpoints/merge_ends.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/branchpoints/test_2.fq",
-		"/Users/jpaggi/Documents/recursive_splicing/code/branchpoints/test_1.fq",
-		"/Users/jpaggi/Documents/recursive_splicing/code/branchpoints/merge_alignments.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/branchpoints/parse_initial_mapping.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/branchpoints/pipeline.sh",
-		"/Users/jpaggi/Documents/recursive_splicing/code/branchpoints/make_seperate_fastq.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/branchpoints/load_genome.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/branchpoints/fastq_iter.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/get_expression.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/run_mcmc.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/ratio.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/broken_regression.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/gain_dp.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/plot_results.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/plot_merged.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/Plans/plans.txt",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/get_full_expression.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/create_ratchet_fasta.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/make_intron_bed.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sjr/get_anno_splices.py",
-		"/Users/jpaggi/Documents/recursive_splicing/code/sawtooth/classify.py"
+		"/Users/jpaggi/Documents/recursive_splicing/code/sequence/share_ss.py"
 	],
 	"find":
 	{
@@ -584,6 +766,25 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"vline",
+			"line",
+			"save",
+			"lim",
+			"axis",
+			"score_motif",
+			"search_motif",
+			".1",
+			"increa",
+			"print",
+			"intron",
+			"key",
+			"print",
+			"				\n",
+			"sjr",
+			"strand ",
+			"strand",
+			"end",
+			"\nmkdir $2\n\nsh split_reads.sh $1 $2 'sjr_'$3 $4 $5 $6",
 			"True",
 			"low_sparsity",
 			"sjr",
@@ -614,7 +815,7 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 6,
 			"sheets":
 			[
 				{
@@ -623,71 +824,44 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2525,
+						"buffer_size": 3281,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2524,
-								2524
+								3025,
+								3025
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 9.0,
+						"translation.y": 472.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 7,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "sequence/included_exons/pipeline.sh",
+					"file": "combine/plot_introns.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1440,
+						"buffer_size": 2123,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								626,
-								626
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/ShellScript/Shell-Unix-Generic.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "sequence/included_exons/filter.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1701,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1656,
-								1656
+								1280,
+								1280
 							]
 						],
 						"settings":
@@ -696,27 +870,27 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 143.0,
+						"translation.y": 232.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 6,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
-					"file": "sjr/plot_sjr.py",
-					"semi_transient": true,
+					"buffer": 2,
+					"file": "sawtooth/dist_to_motifs.py",
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3637,
+						"buffer_size": 5500,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1138,
-								998
+								3989,
+								3989
 							]
 						],
 						"settings":
@@ -726,56 +900,57 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 136.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
-					"file": "sequence/included_exons/motif_checker.py",
+					"buffer": 3,
+					"file": "sawtooth/mcmc_core/call_sites.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 547,
+						"buffer_size": 3461,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								86,
-								38
+								596,
+								621
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/Python/Python.sublime-syntax",
-							"translate_tabs_to_spaces": false
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 142.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
-					"file": "sequence/included_exons/merge_reps.py",
+					"buffer": 4,
+					"file": "sawtooth/plot_distances_vs_random.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 799,
+						"buffer_size": 815,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								10,
-								10
+								729,
+								729
 							]
 						],
 						"settings":
@@ -786,35 +961,93 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 6,
-					"file": "sequence/included_exons/merge_reps.sh",
+					"buffer": 5,
+					"file": "combine/standard_table.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 683,
+						"buffer_size": 6939,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								64,
-								64
+								82,
+								82
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/ShellScript/Shell-Unix-Generic.sublime-syntax"
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1809.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "combine/get_alt_ss.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 658,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"auto_name": "",
+							"syntax": "Packages/Python/Python.sublime-syntax"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"default_dir": "/Users/jpaggi/Documents/recursive_splicing/code/combine",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
 					"type": "text"
 				}
 			]
@@ -868,6 +1101,18 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"intron",
+				"combine/intron.py"
+			],
+			[
+				"manual_fi",
+				"combine/manual_filter.py"
+			],
+			[
+				"pea",
+				"sawtooth/peaks.py"
+			],
 			[
 				"plotmcmc",
 				"sawtooth/mcmc_core/plot_mcmc.py"
@@ -929,7 +1174,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 208.0,
+	"side_bar_width": 168.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
