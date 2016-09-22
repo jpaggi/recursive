@@ -1,14 +1,15 @@
 from intron_rs import IntronRS
 from load_genome import *
 from get_motifs import *
+import sys
 
-sjr      = open('../data/rs_jxns/all.bed', 'r')
-sawtooth = open('../data/mcmc_peak_calls/all_merged_masked.bed', 'r')
-graveley = open('../data/graveley.bed', 'r')
-exons    = open('../data/exons.bed')
+sjr      = open(sys.argv[1], 'r')
+sawtooth = open(sys.argv[2], 'r')
+graveley = open(sys.argv[3], 'r')
+exons    = open(sys.argv[4])
 
-seq = load_genome(open('../data/downloaded/dmel-all-chromosome-r5.57.fasta'))
-fp_pwm, tp_pwm= make_pwm('../data/anno.ss', seq)
+seq = load_genome(open(sys.argv[5]))
+fp_pwm, tp_pwm= make_pwm(sys.argv[6], seq)
 fp_min_score, fp_max_score = get_min_score(fp_pwm), get_max_score(fp_pwm)
 pwm = tp_pwm + fp_pwm
 min_score, max_score = get_min_score(pwm), get_max_score(pwm)
