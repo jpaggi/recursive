@@ -1,25 +1,29 @@
-ss="../genomes/dmel/long_introns.bed"
-fa="../genomes/dmel/downloaded/dmel-all-chromosome-r5.57.fasta"
-exp="../reads/coverage/all_merged.bed"
-short_ss="../genomes/dmel/dmel-splice-sites-r5.57.ss"
-DIR="../reads/junctions"
+ss=$1 # 1 long intron file #ss="../genomes/dmel/long_introns.bed"
+fa=$2 # 2 genome sequence fa="../genomes/dmel/downloaded/dmel-all-chromosome-r5.57.fasta"
+exp=$3 # 3 expression data #exp="../reads/coverage/all_merged.bed"
+short_ss=$4 # 4 splice site file #short_ss="../genomes/dmel/dmel-splice-sites-r5.57.ss"
+DIR=$5 # 5 output directory # DIR="../reads/junctions"
+IN_DIR=$6 # 6 input directory
+SUFFIX=$7
 
-samples='5_repA
-5_repB
-5_repC
-10_repA
-10_repB
-10_repC
-20_repA
-20_repB
-20_repC
-total_repA
-total_repB'
+
+# Adelman_4sU_RNA-seq_10min_rep1.sub0.2.bam
+
+samples='5min_rep1
+5min_rep2
+5min_rep3
+10min_rep1
+10min_rep2
+10min_rep3
+20min_rep1
+20min_rep2
+20min_rep3
+total_rep1
+total_rep2'
 
 for BAM in $samples
 do
-    echo run.sh ../reads/timecourse/$BAM.bam $DIR/$BAM $BAM $ss $fa $short_ss
-    sh   run.sh ../reads/timecourse/$BAM.bam $DIR/$BAM $BAM $ss $fa $short_ss &
+    sh   run.sh $IN_DIR/Adelman_4sU_RNA-seq_$BAM'.'$SUFFIX $DIR/$BAM $BAM $ss $fa $short_ss
 done
 wait
 

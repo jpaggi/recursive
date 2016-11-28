@@ -29,7 +29,7 @@ class Entry:
 		self.sawtooth = 0
 		self.sawtooth_prob = 0
 		self.intron_sjr = 0
-		self.motif_score = (score_motif(pwm, self.motif[5:5+28]) - min_score) / (max_score - min_score)
+		if self.motif: self.motif_score = (score_motif(pwm, self.motif[5:5+28]) - min_score) / (max_score - min_score)
 		self.manual = 0
 		self.log_or = 0
 
@@ -39,7 +39,7 @@ class Entry:
 		# ... then use get_sjr to fill in body_counts and down_counts
 		self.down_counts = [0] * 8
 		self.body_counts = [0] * 4
-		self.five_score = (score_motif(fp_pwm, self.motif[25:5+28]) - fp_min_score) / (fp_max_score- fp_min_score)
+		if self.motif: self.five_score = (score_motif(fp_pwm, self.motif[25:5+28]) - fp_min_score) / (fp_max_score- fp_min_score)
 		self.putative_five = 0
 		self.putative_three = 0
 		self.putative_five_score = 0
@@ -132,8 +132,10 @@ for line in sjr:
 	entries[key].add_sjr(rs.counts)
 	entries[key].set_five(rs.five())
 
+
+
 for line in sawtooth:
-	chrom, rs, rs2, prob, score, strand = line.strip().split()
+	chrom, rs, rs2, prob, score, strand = line.strip().split()[:6]
 
 	key = (chrom, int(rs), strand)
 
@@ -153,14 +155,15 @@ for line in graveley:
 	entries[key].set_five(five)
 
 for line in exons:
-	chrom, start, end, pos, count, strand = line.strip().split()
-	start, end = int(start), int(end)
+	chrom, source, feature, start, end, pos, strand = line.strip().split()[:7]
+	start, end = int(start)-1, int(end)
 	for entry in entries.values():
 		if chrom == entry.chrom and strand == entry.strand:
 			if strand == '+' and entry.rs == start:
 				entry.set_annotated_five(end)
 			elif strand == '-' and entry.rs == end:
 				entry.set_annotated_five(start)
+
 
 """
 assigns intron by:
@@ -176,7 +179,7 @@ print '\t'.join(['COORDS', 'RS', 'GRAV', 'SJR', 'SAW_SCORE', 'MCMC_PROB', 'MANUA
 	             'RECURSIVE_INDEX' 'MOTIF', 'MOTIF_SCORE', 'LOG_OR' 'DOWN', 'BODY', 'FIVE_SCORE', 'PUT_FIVE_SCORE',
 	             'PUT_THREE', 'PUT_FIVE', 'ANNO_FIVE'])
 
-introns = open('../data/all_merged.bed', 'r')
+introns = open(sys.argv[7], 'r')
 
 anno = {}
 for line in introns:
@@ -237,4 +240,3 @@ for entry in entries.values():
 		else:	
 			# introns less than 1000 not present in expression file
 			assert abs(f - rs) < 1000
-

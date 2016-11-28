@@ -39,6 +39,7 @@ def print_transcript(transcript_name, transcript_exons):
         print '\t'.join([transcript_exons[i].chrom, str(transcript_exons[i - 1].end), str(transcript_exons[i].start - 2), transcript_exons[i].transcript_name, 
                          transcript_exons[i].gene_name, transcript_exons[i].strand])
 
+processed = set()
 #if transcript not contiguous in input will miss introns!
 exons = sys.stdin
 transcript_name = ''
@@ -46,7 +47,9 @@ transcript_exons = []
 for line in exons:
     if line.split('\t')[2] != 'exon': continue
     cur_exon = Exon(line)
+    assert not cur_exon.transcript_name in processed
     if cur_exon.transcript_name != transcript_name:
+        processed.add(transcript_name)
         print_transcript(transcript_name, transcript_exons)
         transcript_exons = [cur_exon]
         transcript_name = cur_exon.transcript_name

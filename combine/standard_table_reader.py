@@ -108,10 +108,13 @@ class Entry:
 
 if __name__ == '__main__':
 	import sys
-
+	count = 0
 	for line in open(sys.argv[1]):
 		if line[:6] == 'COORDS': continue
 		entry = Entry(line)
+		if entry.motif[23:27] != 'AGGT':
+			print entry.junc
+			count += 1
 
 		sjr = entry.recursive_index > .05 and sum(entry.junc) and entry.log_or > 0
 		saw = entry.saw_score > .06
@@ -124,3 +127,4 @@ if __name__ == '__main__':
 		if entry.manual != -1: continue
 
 		print entry
+	print count

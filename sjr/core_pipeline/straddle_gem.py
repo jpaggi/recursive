@@ -11,7 +11,7 @@ from intron_rs import IntronRS
 4) genome fasta file
 """
 
-SAMPLES = ['sjr_5', 'pe_5', 'sjr_10', 'pe_10', 'sjr_20', 'pe_20', 'sjr_total', 'pe_total']
+SAMPLES = ['sjr_5min', 'pe_5min', 'sjr_10min', 'pe_10min', 'sjr_20min', 'pe_20min', 'sjr_total', 'pe_total']
 index = lambda x: SAMPLES.index(x)
 
 genome_seq = load_genome(open(sys.argv[3], 'r'))

@@ -6,8 +6,8 @@ from peaks import get_peaks
 from math import exp
 
 
-genome_seq = load_genome(open('../data/downloaded/dmel-all-chromosome-r5.57.fasta', 'r'))
-fp_pwm, tp_pwm = make_pwm('../data/anno.ss', genome_seq)
+genome_seq = load_genome(open(sys.argv[2], 'r'))
+fp_pwm, tp_pwm = make_pwm(sys.argv[3], genome_seq)
 pwm = tp_pwm + fp_pwm
 min_score, max_score = get_min_score(pwm), get_max_score(pwm)
 

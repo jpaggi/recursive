@@ -1,7 +1,7 @@
 import pysam
 from load_genome import *
 import sys
-MIN_INTRON_SIZE = 1000 
+MIN_INTRON_SIZE = 1000
 
 """
 Finds all reads in the given samfile that are broken and have a
@@ -28,17 +28,18 @@ def merge_blocks(blocks):
 
 def get_jxns(anno_file):
 	sites =  open(anno_file, 'r')
-	out = {}
+	out5, out3 = {}, {}
 	for line in sites:
 		chrom, start, end, strand = line.strip().split('\t')
 		if strand == '+':
-			five, three = int(start), int(end)
+			five, three = int(start)+1, int(end)
 		else:
-			three, five = int(start), int(end)
+			three, five = int(start), int(end)-1
 		chrom = chrom[3:]
-		key = (chrom, strand, three)
-		out[key] = out[key] + [five] if key in out else [five]
-	return out
+		out3[(chrom, strand, three)] = 1
+		out5[(chrom, strand, five)] = 1
+		
+	return out5, out3
 
 class Seq:
 	def __init__(self, seq):
@@ -59,7 +60,7 @@ class Seq:
 
 
 samfile = pysam.AlignmentFile(sys.argv[1], 'rb')
-ss = get_jxns(sys.argv[2])
+ss5, ss3 = get_jxns(sys.argv[2])
 seq = Seq(load_genome(open(sys.argv[3], 'r')))
 
 for read in samfile.fetch():
@@ -70,7 +71,7 @@ for read in samfile.fetch():
 			if strand:
 				five, three = blocks[i][1], blocks[i+1][0]
 			else:
-				three, five = blocks[i][1] - 1, blocks[i+1][0]
+				three, five = blocks[i][1] - 1, blocks[i+1][0] - 1
 
 			# Some insertion events align to 5'ss and cause false positives
 			if abs(five - three) < MIN_INTRON_SIZE: continue
@@ -78,9 +79,14 @@ for read in samfile.fetch():
 			chrom = samfile.getrname(read.reference_id)
 			strand_str = '+' if strand else '-'
 
-			if (chrom, strand_str, three) in ss:
-				intron_five = ss[(chrom, strand_str, three)]
-				if strand and five > min(intron_five) and five - 1 not in intron_five and seq.query(chrom, strand, five):
-					print '\t'.join(map(str, [chrom, five, three, read.query_name, blocks, strand_str]))
-				elif not strand and five < max(intron_five) and five not in intron_five and seq.query(chrom, strand, five):
-					print '\t'.join(map(str, [chrom, three, five+1, read.query_name, blocks, strand_str]))
+			if (chrom, strand_str, three) in ss3: continue
+			if (chrom, strand_str, five) in ss5: continue
+
+			if not strand: five, three = five + 1, three + 1
+			if not seq.query(chrom, strand, five): continue
+			if not seq.query(chrom, strand, three): continue
+			
+			if strand:
+				print '\t'.join(map(str, [chrom, five+1, three, read.query_name, blocks, strand_str]))
+			else:
+				print '\t'.join(map(str, [chrom, three, five+1, read.query_name, blocks, strand_str]))
