@@ -12,30 +12,20 @@ MCMC_DIR='../subsamples/mcmc/'$1
 GRAV='../annotations/dmel/graveley.bed'
 OUT='../subsamples/output/'$1
 
+cd coverage
+# < 20 minutes
+mkdir $EXPRESSION_DIR
+mkdir $DENSITY_DIR
+rm $EXPRESSION_DIR/*
+rm $DENSITY_DIR/*
 
-echo 'Did you actually upload the proper scripts to the server?'
+sh prepare_coverage.sh $LONG_INTRONS $BAM_DIR $EXONS $REPEATS $EXPRESSION_DIR $DENSITY_DIR $BAM_SUFFIX
 
-echo 'Are you starting with clean output directories?'
-
-echo 'Are you running few enough processes that you arent using swap?'
-
-echo 'Are you in /net/utr/data/atf/jpaggi/?'
-
-# youcan2itJoe!
-# cd coverage
-# # < 20 minutes
-# mkdir $EXPRESSION_DIR
-# mkdir $DENSITY_DIR
-# rm $EXPRESSION_DIR/*
-# rm $DENSITY_DIR/*
-
-# sh prepare_coverage.sh $LONG_INTRONS $BAM_DIR $EXONS $REPEATS $EXPRESSION_DIR $DENSITY_DIR $BAM_SUFFIX
-
-# cd ../sjr_pipeline
-# # < 10 minutes
-# mkdir $SJR_DIR
-# rm $SJR_DIR/*
-# sh run_all.sh $LONG_INTRONS $GENOME $EXPRESSION_DIR'/merged.bed' $SHORT_SS $SJR_DIR $BAM_DIR $BAM_SUFFIX
+cd ../sjr_pipeline
+# < 10 minutes
+mkdir $SJR_DIR
+rm $SJR_DIR/*
+sh run_all.sh $LONG_INTRONS $GENOME $EXPRESSION_DIR'/merged.bed' $SHORT_SS $SJR_DIR $BAM_DIR $BAM_SUFFIX
 
 cd mcmc_core
 mkdir $MCMC_DIR

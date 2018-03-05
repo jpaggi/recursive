@@ -1,22 +1,10 @@
-General Notes.
-	Some scripts have hardcoded paths, sorry about that.
+# Identification of recursive splice sites using metabolic labeling data
+
+## General Notes.
 	load_genome.py and get_motifs.py are used throughout
 	... must generally add sjr/core_pipeline to path or copy these files into working directory
-	/branchpoints and /simulations are probably not important
 
-Unsolved Mysteries.
-	New pipeline misses [('2R', '-', 6940011), ('3R', '-', 4918040)]
-	... first has an unmappable region, second is likely not actually used
-	... both only supported by pe r
-
-	strange splicing at 2L 20967746 21051772
-	... 3R 19890052 19932545 shows similar pattern
-
-	evidence of non-sequential splicing in 3R 27707593 27784755
-
-	Why do we miss 3L 20151768 20183756?
-
-Defining Intron Set.
+## Defining Intron Set.
 	Scripts to make introns from GTF file and get coverage data are in sequence/coverage.
 
 	get_introns.py parses the GTF file and outputs a bed file of long introns
@@ -28,7 +16,7 @@ Defining Intron Set.
 
 	expressed.py takes a sjr, min size and max size cutoff and prints the corresponding set of introns
 
-Preparing Coverage for MCMC.
+## Preparing Coverage for MCMC.
 	Still in sequence/coverage.
 
 	remove_exons.sh does everything... workflow is:
@@ -39,7 +27,7 @@ Preparing Coverage for MCMC.
 	  5) Merged all replicate expression levels together
 	  6) Mask repeats
 
-Running MCMC.
+## Running MCMC.
 	All scripts are in sawtooth/mcmc_core.
 
 	run_mcmc.py feeds coverage data into mcmc.py
@@ -50,21 +38,21 @@ Running MCMC.
 
 	merge_sites.py merges individual sites implicated by seperate peaks
 
-Running SJR pipeline.
+## Running SJR pipeline.
 	All necessary scripts are in sjr/core_pipeline/
 	Read run_all.sh and change hard coded inputs as appropriate.
 	This script will automatically run both the sjr and read pair pipeline
 	I honestly don't see why you would need to rerun this though.
 	There is the raw output of this on UTR/jpaggi/reads/sjr
 
-Motif Analysis.
+## Motif Analysis.
 	To prepare intron annotations follow directions above,
 	then use bedtools merge (this stops intervals from being double counted).
 	Then use sjr/get_background.py to get random motifs
 
 	Look in code for how to load in the 
 
-Rates.
+## Splicing Rates.
 	First use combine/standard_table_reader.py to extract the set of recursive sites that you want to use
 	Then, run sequence/make_introns.py with the return statement uncommented. This merges recursive sites
 	together into groups by intron.
@@ -73,7 +61,7 @@ Rates.
 	You can use plot.py with the summary table as an argument to plot the mean psi values
 	Use plot_transformed.py to plot coverage in transformed space (for QC)
 
-Combining Data.
+## Combining Data.
 	Use standard_table.py to create a combined table of graveley events, sawtooth events, and sjr detected sites
 	... read through to replace hardcoded file paths
 
