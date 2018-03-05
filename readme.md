@@ -63,14 +63,3 @@ Use combine/standard_table.py to create a combined table of graveley events, saw
 Call combine/define_introns.py followed by combine/get_sjr.py to fill in exon detection data.
 
 The combine directory contains several tools for visualizing expression levels in long introns.
-
-## Splicing rates.
-
-Splicing rates for individual recursive segments are obtained by mapping the reads onto a standard exon-intron-exon system and running MISO.
-
-1. Use combine/standard_table_reader.py to extract the set of recursive sites that you want to use
-2. Run sequence/make_introns.py with the return statement uncommented. This merges recursive sites together into groups by intron.
-3. Call rates/run_all.py with this file as an argument.
-4. You can use plot.py with the summary table as an argument to plot the mean psi values
-5. Use plot_transformed.py to plot coverage in transformed space (for QC)
-
