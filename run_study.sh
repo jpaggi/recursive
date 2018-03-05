@@ -12,12 +12,12 @@ MCMC_DIR='../subsamples/mcmc/'$1
 GRAV='../annotations/dmel/graveley.bed'
 OUT='../subsamples/output/'$1
 
+# This script was used to run our full pipeline on all subsets of the data.
+
 cd coverage
 # < 20 minutes
 mkdir $EXPRESSION_DIR
 mkdir $DENSITY_DIR
-rm $EXPRESSION_DIR/*
-rm $DENSITY_DIR/*
 
 sh prepare_coverage.sh $LONG_INTRONS $BAM_DIR $EXONS $REPEATS $EXPRESSION_DIR $DENSITY_DIR $BAM_SUFFIX
 

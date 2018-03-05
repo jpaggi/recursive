@@ -3,16 +3,6 @@ from load_genome import *
 import sys
 MIN_INTRON_SIZE = 1000 
 
-"""
-Finds all reads in the given samfile that are broken and have a
-5'ss aligning to a known 5'ss and a 3'ss aligning upstream of
-a known 3'ss for the given intron. And have an AGGT at 3' end.
-
-Constrains that abs(5' - 3') is greater than MIN_INTRON_SIZE.
-
-Need to tune expression for strand based on geometry of library.
-"""
-
 def merge_blocks(blocks):
 	"""
 	Removes short gaps in read that are likely indels
