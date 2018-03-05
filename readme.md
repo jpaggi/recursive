@@ -7,12 +7,12 @@ Three independent methods for identification of recursive splice sites from RNA-
 - RatchetScan, which infers recursive splice site locations from patterns in the read coverage of introns.
 
 ## General notes.
-- The scripts load_genome.py and get_motifs.py are used throughout, add sjr/core_pipeline to PYTHONPATH or copy these files into working directory
+- The scripts load_genome.py and get_motifs.py are used throughout, add RatchetJunction_RatchetPair/core_pipeline to your PYTHONPATH or copy these files into working directory
 - Code for aligning reads is not included in this repository. We used hisat2 with default settings in our study, but feel free to use your favorite *spliced-read* aligner.
 - Many of the high-level scripts are hardcoded with file names particular to our study. If you want to apply our method to a new dataset, you will need to change these.
 
 ## Defining the set of introns.
-Scripts to make introns from GTF file and get coverage data are in sequence/coverage.
+Scripts to make introns from GTF file and get coverage data are in intron_expression_processing/coverage.
 
 1. Download a gtf file for the organism you are studying.
 2. Extract just the 'exon' entries and sort them by transcript name.
@@ -21,7 +21,7 @@ Scripts to make introns from GTF file and get coverage data are in sequence/cove
 5. Merge coverage data from mulitple BAM files using merge.py.
 
 ## Preparing coverage for RatchetScan.
-Still in sequence/coverage.
+Still in intron_expression_processing/coverage.
 
 remove_exons.sh does everything, note that this script contains hardcoded paths, so you will have to edit it... workflow is:
 1. Extract reads in different size ranges.
@@ -32,7 +32,7 @@ remove_exons.sh does everything, note that this script contains hardcoded paths,
 6. Replace expression values in repeat regions with average of neighboring regions.
 
 ## Running RatchetScan.
-All scripts are in sawtooth/mcmc_core.
+All scripts are in RatchetScan/mcmc_core.
 
 run.sh will run all steps of the RatchetScan pipeline. Substeps are
 
@@ -45,7 +45,7 @@ RatchetJunction identifies recursive sites using reads that span a 5'SS - recurs
 
 RatchetPair uses paired end reads that have one read pair aligning upstream of a 5'SS and the other end aligning far into the intron to implicate recursive sites. This method relies on our nowldge of the distribution of distances between read pairs (commonly called insert lengths) and the expected sequence motif at ratchet sites. Using this information, RatchetPair uses a variant of the GEM algorithm to find a sparse set of recursive sites that can explain the recursive splice junction reads and putative recursive splice site straddling reads.
 
-All necessary scripts are in sjr/core_pipeline/.
+All necessary scripts are in RatchetJunction_RatchetPair/core_pipeline/.
 
 run_all.sh will run all steps of both pipelines. Substeps are
 
