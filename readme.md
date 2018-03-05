@@ -23,33 +23,33 @@ Scripts to make introns from GTF file and get coverage data are in sequence/cove
 Still in sequence/coverage.
 
 remove_exons.sh does everything, note that this script contains hardcoded paths, so you will have to edit it... workflow is:
-a. Extract reads in different size ranges.
-b. Use bedtools subtract to remove exonic regions
-c. Merge together intronic regions, summing the sjr counts
-d. Recompute coverage of each intronic segment for all replicates
-e. Merged all replicate expression levels together
-f. Replace expression values in repeat regions with average of neighboring regions.
+1. Extract reads in different size ranges.
+2. Use bedtools subtract to remove exonic regions
+3. Merge together intronic regions, summing the sjr counts
+4. Recompute coverage of each intronic segment for all replicates
+5. Merged all replicate expression levels together
+6. Replace expression values in repeat regions with average of neighboring regions.
 
 ## Running RatchetScan.
 All scripts are in sawtooth/mcmc_core.
 
 run.sh will run all steps of the RatchetScan pipeline. Substeps are
 
-a. run_mcmc.py feeds coverage data into mcmc.py. tunable parameters are set in run_mcmc.py, they are currently set as we used in our study.
-b. call_sites.py transforms the MCMC probabilities into RS predicitons. setting here to instead produce random peaks for FDR analysis
-c. merge_sites.py merges individual sites implicated by seperate peaks
+1. run_mcmc.py feeds coverage data into mcmc.py. tunable parameters are set in run_mcmc.py, they are currently set as we used in our study.
+2. call_sites.py transforms the MCMC probabilities into RS predicitons. setting here to instead produce random peaks for FDR analysis
+3. merge_sites.py merges individual sites implicated by seperate peaks
 
 ## Running RatchetJunction and RatchetPair.
 All necessary scripts are in sjr/core_pipeline/.
 
 run_all.sh will run all steps of both pipelines. Substeps are
 
-a. Extract reads that potentially straddle recursive splice junctions.
-b. Extract putative recursive splice junction reads
-c. Group putative recursive splice junction reads that have shared a 5'ss
-d. Merge together data from all timepoints and replicates
-e. Run RatchetPair algorithm (See straddle_gem.py).
-f. Assign groups of reads to an intron based on intron expression levels
+1. Extract reads that potentially straddle recursive splice junctions.
+2. Extract putative recursive splice junction reads
+3. Group putative recursive splice junction reads that have shared a 5'ss
+4. Merge together data from all timepoints and replicates
+5. Run RatchetPair algorithm (See straddle_gem.py).
+6. Assign groups of reads to an intron based on intron expression levels
 
 ## Combining output of methods
 Use combine/standard_table.py to create a combined table of graveley events, sawtooth events, and sjr detected sites
