@@ -1,68 +1,69 @@
 # Identification of recursive splice sites using metabolic labeling data
 
+Three independent methods for identification of recursive splice sites from RNA-seq data are developed:
+
+- RatchetJunction, A previously described method using splice junction reads,
+- RatchetPair, which uses paired end reads straddling a splice junction,
+- RatchetScan, which infers recursive splice site locations from patterns in the read coverage of introns.
+
 ## General Notes.
-	load_genome.py and get_motifs.py are used throughout
-	... must generally add sjr/core_pipeline to path or copy these files into working directory
+The scripts load_genome.py and get_motifs.py are used throughout, add sjr/core_pipeline to PYTHONPATH or copy these files into working directory
+Code for aligning reads is not included in this repository. We used hisat2 with default settings in our study, but feel free to use your favorite *spliced-read* aligner.
 
 ## Defining Intron Set.
-	Scripts to make introns from GTF file and get coverage data are in sequence/coverage.
+Scripts to make introns from GTF file and get coverage data are in sequence/coverage.
 
-	get_introns.py parses the GTF file and outputs a bed file of long introns
+1. Download a gtf file for the organism you are studying.
+2. Extract just the 'exon' entries and sort them by transcript name.
+3. Run "cat <file>.gtf | get_introns.py > introns.bed" to parse the GTF file into a bed file of 1000+ base pair introns
+4. Run "python get_intron_expression.py reads.bam introns.bed > intron_expression.bed" to obtain a pileup of coverage at each postion + number of sjr spanning intron
+5. Merge coverage data from mulitple BAM files using merge.py.
 
-	get_intron_expression.py takes the long intron file and a BAM file
-	... gives pileup of coverage at each postion + number of sjr spanning intron
+## Preparing Coverage for RatchetScan.
+Still in sequence/coverage.
 
-	merge.py sums coverage data from multiple BAM files
+remove_exons.sh does everything, note that this script contains hardcoded paths, so you will have to edit it... workflow is:
+a. Extract reads in different size ranges.
+b. Use bedtools subtract to remove exonic regions
+c. Merge together intronic regions, summing the sjr counts
+d. Recompute coverage of each intronic segment for all replicates
+e. Merged all replicate expression levels together
+f. Replace expression values in repeat regions with average of neighboring regions.
 
-	expressed.py takes a sjr, min size and max size cutoff and prints the corresponding set of introns
+## Running RatchetScan.
+All scripts are in sawtooth/mcmc_core.
 
-## Preparing Coverage for MCMC.
-	Still in sequence/coverage.
+run.sh will run all steps of the RatchetScan pipeline. Substeps are
 
-	remove_exons.sh does everything... workflow is:
-	  1) Extract reads in different size ranges.
-	  2) Use bedtools subtract to remove exonic regions
-	  3) Merge together intronic regions, summing the sjr counts
-	  4) Recompute coverage of each intronic segment for all replicates
-	  5) Merged all replicate expression levels together
-	  6) Mask repeats
+a. run_mcmc.py feeds coverage data into mcmc.py. tunable parameters are set in run_mcmc.py, they are currently set as we used in our study.
+b. call_sites.py transforms the MCMC probabilities into RS predicitons. setting here to instead produce random peaks for FDR analysis
+c. merge_sites.py merges individual sites implicated by seperate peaks
 
-## Running MCMC.
-	All scripts are in sawtooth/mcmc_core.
+## Running RatchetJunction and RatchetPair.
+All necessary scripts are in sjr/core_pipeline/.
 
-	run_mcmc.py feeds coverage data into mcmc.py
-	... tunable parameters are set in run_mcmc.py
+run_all.sh will run all steps of both pipelines. Substeps are
 
-	call_sites.py transforms the MCMC probabilities into RS predicitons
-	... setting here to instead produce random peaks for FDR analysis
+a. Extract reads that potentially straddle recursive splice junctions.
+b. Extract putative recursive splice junction reads
+c. Group putative recursive splice junction reads that have shared a 5'ss
+d. Merge together data from all timepoints and replicates
+e. Run RatchetPair algorithm (See straddle_gem.py).
+f. Assign groups of reads to an intron based on intron expression levels
 
-	merge_sites.py merges individual sites implicated by seperate peaks
+## Combining output of methods
+Use combine/standard_table.py to create a combined table of graveley events, sawtooth events, and sjr detected sites
+... read through to replace hardcoded file paths
 
-## Running SJR pipeline.
-	All necessary scripts are in sjr/core_pipeline/
-	Read run_all.sh and change hard coded inputs as appropriate.
-	This script will automatically run both the sjr and read pair pipeline
-	I honestly don't see why you would need to rerun this though.
-	There is the raw output of this on UTR/jpaggi/reads/sjr
+Call combine/define_introns.py followed by combine/get_sjr.py to fill in exon detection data.
 
-## Motif Analysis.
-	To prepare intron annotations follow directions above,
-	then use bedtools merge (this stops intervals from being double counted).
-	Then use sjr/get_background.py to get random motifs
-
-	Look in code for how to load in the 
+The combine directory contains several tools for visualizing expression levels in long introns.
 
 ## Splicing Rates.
-	First use combine/standard_table_reader.py to extract the set of recursive sites that you want to use
-	Then, run sequence/make_introns.py with the return statement uncommented. This merges recursive sites
-	together into groups by intron.
-	Finally, call rates/run_all.py with this file as an argument. ( you also need a gtf file of exons.. just use grep exons)
 
-	You can use plot.py with the summary table as an argument to plot the mean psi values
-	Use plot_transformed.py to plot coverage in transformed space (for QC)
+1. Use combine/standard_table_reader.py to extract the set of recursive sites that you want to use
+2. Run sequence/make_introns.py with the return statement uncommented. This merges recursive sites together into groups by intron.
+3. Call rates/run_all.py with this file as an argument.
+4. You can use plot.py with the summary table as an argument to plot the mean psi values
+5. Use plot_transformed.py to plot coverage in transformed space (for QC)
 
-## Combining Data.
-	Use standard_table.py to create a combined table of graveley events, sawtooth events, and sjr detected sites
-	... read through to replace hardcoded file paths
-
-	Call combine/define_introns.py followed by combine/get_sjr.py to fill in exon detection data
