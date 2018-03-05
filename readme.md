@@ -2,15 +2,16 @@
 
 Three independent methods for identification of recursive splice sites from RNA-seq data are developed:
 
-- RatchetJunction, A previously described method using splice junction reads,
+- RatchetJunction, a previously described method using splice junction reads,
 - RatchetPair, which uses paired end reads straddling a splice junction,
 - RatchetScan, which infers recursive splice site locations from patterns in the read coverage of introns.
 
-## General Notes.
-The scripts load_genome.py and get_motifs.py are used throughout, add sjr/core_pipeline to PYTHONPATH or copy these files into working directory
-Code for aligning reads is not included in this repository. We used hisat2 with default settings in our study, but feel free to use your favorite *spliced-read* aligner.
+## General notes.
+- The scripts load_genome.py and get_motifs.py are used throughout, add sjr/core_pipeline to PYTHONPATH or copy these files into working directory
+- Code for aligning reads is not included in this repository. We used hisat2 with default settings in our study, but feel free to use your favorite *spliced-read* aligner.
+- Many of the high-level scripts are hardcoded with file names particular to our study. If you want to apply our method to a new dataset, you will need to change these.
 
-## Defining Intron Set.
+## Defining the set of introns.
 Scripts to make introns from GTF file and get coverage data are in sequence/coverage.
 
 1. Download a gtf file for the organism you are studying.
@@ -19,7 +20,7 @@ Scripts to make introns from GTF file and get coverage data are in sequence/cove
 4. Run "python get_intron_expression.py reads.bam introns.bed > intron_expression.bed" to obtain a pileup of coverage at each postion + number of sjr spanning intron
 5. Merge coverage data from mulitple BAM files using merge.py.
 
-## Preparing Coverage for RatchetScan.
+## Preparing coverage for RatchetScan.
 Still in sequence/coverage.
 
 remove_exons.sh does everything, note that this script contains hardcoded paths, so you will have to edit it... workflow is:
@@ -40,6 +41,10 @@ run.sh will run all steps of the RatchetScan pipeline. Substeps are
 3. merge_sites.py merges individual sites implicated by seperate peaks
 
 ## Running RatchetJunction and RatchetPair.
+RatchetJunction identifies recursive sites using reads that span a 5'SS - recursve site splice junction. These reads directly implicate a recursive splice site in the same way that a standard splice junction read gives away the position of normal splice sites.
+
+RatchetPair uses paired end reads that have one read pair aligning upstream of a 5'SS and the other end aligning far into the intron to implicate recursive sites. This method relies on our nowldge of the distribution of distances between read pairs (commonly called insert lengths) and the expected sequence motif at ratchet sites. Using this information, RatchetPair uses a variant of the GEM algorithm to find a sparse set of recursive sites that can explain the recursive splice junction reads and putative recursive splice site straddling reads.
+
 All necessary scripts are in sjr/core_pipeline/.
 
 run_all.sh will run all steps of both pipelines. Substeps are
@@ -59,7 +64,9 @@ Call combine/define_introns.py followed by combine/get_sjr.py to fill in exon de
 
 The combine directory contains several tools for visualizing expression levels in long introns.
 
-## Splicing Rates.
+## Splicing rates.
+
+Splicing rates for individual recursive segments are obtained by mapping the reads onto a standard exon-intron-exon system and running MISO.
 
 1. Use combine/standard_table_reader.py to extract the set of recursive sites that you want to use
 2. Run sequence/make_introns.py with the return statement uncommented. This merges recursive sites together into groups by intron.
