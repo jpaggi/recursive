@@ -6,7 +6,7 @@ Three independent methods for identification of recursive splice sites from RNA-
 - RatchetPair, which uses paired end reads straddling a splice junction,
 - RatchetScan, which infers recursive splice site locations from patterns in the read coverage of introns.
 
-The results of our study are described [here](https://www.biorxiv.org/content/early/2017/02/13/107995).
+We applied these methods to identify recursive sites in Drosophila, but they could be applied to study recursive splicing in any organism. The results of our study are described [here](https://www.biorxiv.org/content/early/2017/02/13/107995).
 
 The script *run_all_methods.sh* was used to run all of these methods in our study.
 
