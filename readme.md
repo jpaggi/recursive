@@ -6,9 +6,13 @@ Three independent methods for identification of recursive splice sites from RNA-
 - RatchetPair, which uses paired end reads straddling a splice junction,
 - RatchetScan, which infers recursive splice site locations from patterns in the read coverage of introns.
 
+The results of our study are described [here](https://www.biorxiv.org/content/early/2017/02/13/107995).
+
+The script *run_all_methods.sh* was used to run all of these methods in our study.
+
 ## General notes.
 - The scripts load_genome.py and get_motifs.py are used throughout, add RatchetJunction_RatchetPair/core_pipeline to your PYTHONPATH or copy these files into working directory
-- Code for aligning reads is not included in this repository. We used hisat2 with default settings in our study, but feel free to use your favorite *spliced-read* aligner.
+- Code for aligning reads is not included in this repository. We used hisat2 with default settings in our study, but feel free to use your favorite *spliced*-read aligner.
 - Many of the high-level scripts are hardcoded with file names particular to our study. If you want to apply our method to a new dataset, you will need to change these.
 
 ## Defining the set of introns.
