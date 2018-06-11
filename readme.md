@@ -9,7 +9,7 @@ Three independent methods for identification of recursive splice sites from RNA-
 We applied these methods to identify recursive sites in Drosophila, but they could be applied to study recursive splicing in any organism. The results of our study are described [here](https://www.biorxiv.org/content/early/2017/02/13/107995). For a snapshot of our code at the time of this paper, please check out the branch 'drosophila', but I expect that the current code base will be much more useful for someone seaking to use our methods on a new dataset.
 
 Below, I go through an example application of our methods, which I hope will be straightfowardly adaptable to a new dataset. The example folder contains
-example input and output files.
+example input and output files (excluding the input reads files and results for all but chomosome 2L to meet githubs space restraints).
 
 ##  Procure Input Files
 
