@@ -172,8 +172,8 @@ The goal of these scripts is to tabulate the results of the above 3 methods and 
 
 ### Combine the output of all the methods into a single file
 ```
-python $CODE/utils/combine_results.py sjr/all.sjr_groups.bed sjr/all.straddle_gem.bed \
-       sawtooth/sites_temp.bed anno/dmel-all-chromosome-r6.21.fasta anno/introns.bed | sort -k1,1 -k2,3n
+python $CODE/utils/combine_results.py $SJR_DIR/all.sjr_groups.bed $SJR_DIR/all.straddle_gem.bed \
+       $SAWTOOTH_DIR/sites.bed $ANNO/$FASTA $ANNO/introns.bed | sort -k1,1 -k2,3n > results.bed
 ```
 
 ### Plot the results of RatchetScan, annotated with locations of strong motifs and splice junction reads.

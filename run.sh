@@ -71,3 +71,6 @@ python $CODE/RatchetScan/call_sites.py \
 sort -k1,1 -k2,3n $SAWTOOTH_DIR/sites.bed \
        | python $CODE/RatchetScan/merge_peak_calls.py > $SAWTOOTH_DIR/merged_sites.bed
 
+# Tabulate results
+python $CODE/utils/combine_results.py $SJR_DIR/all.sjr_groups.bed $SJR_DIR/all.straddle_gem.bed \
+       $SAWTOOTH_DIR/sites.bed $ANNO/$FASTA $ANNO/introns.bed | sort -k1,1 -k2,3n > results.bed
