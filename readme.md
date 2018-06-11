@@ -1,21 +1,30 @@
+# Identification of recursive splice sites using metabolic labeling data
 
-##############################################################################
-#################    Download Files, align reads, etc.   #####################
-##############################################################################
+Three independent methods for identification of recursive splice sites from RNA-seq data are developed:
 
-# Required software
-# HISAT2
-# SRA Toolkit
-# samtools
-# bedtools
+- RatchetJunction, a previously described method using splice junction reads,
+- RatchetPair, which uses paired end reads straddling a splice junction,
+- RatchetScan, which infers recursive splice site locations from patterns in the read coverage of introns.
+
+We applied these methods to identify recursive sites in Drosophila, but they could be applied to study recursive splicing in any organism. The results of our study are described [here](https://www.biorxiv.org/content/early/2017/02/13/107995). For a snapshot of our code at the time of this paper, please check out the branch 'drosophila', but I expect that the current code base will be much more useful for someone seaking to use our methods on a new dataset.
+
+
+##  Download Files, align reads, etc.
+
+Required software
+- HISAT2
+- SRA Toolkit
+- samtools
+- bedtools
 
 # Get Raw Data (SRA Toolkit scripts)
 prefetch -v SRX2500203
 fastq-dump --outdir reads/ --split-files /Users/jpaggi/ncbi/public/sra/SRX2500203.sra
-# dmel-all-r6.21.gtf              from ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/current/gtf/
-# dmel-all-chromosome-r6.21.fasta from ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/
-# dm6 (hisat2 index file)         from https://ccb.jhu.edu/software/hisat2/manual.shtml
-# dm6.fa.out -> dm6.repeats.txt   from http://www.repeatmasker.org/genomicDatasets/RMGenomicDatasets.html
+
+dmel-all-r6.21.gtf              from ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/current/gtf/
+dmel-all-chromosome-r6.21.fasta from ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/
+dm6 (hisat2 index file)         from https://ccb.jhu.edu/software/hisat2/manual.shtml
+dm6.fa.out -> dm6.repeats.txt   from http://www.repeatmasker.org/genomicDatasets/RMGenomicDatasets.html
 
 # Align reads
 hisat2 -x dm6/genome -1 SRX2500203_1.fastq -2 SRX2500203_2.fastq -p 2 -S SRX2500203.sam
@@ -23,9 +32,7 @@ samtools view -bS SRX2500203.sam > SRX2500203.bam
 samtools sort SRX2500203.bam -o SRX2500203_sorted.bam
 samtools index SRX2500203_sorted.bam SRX2500203_sorted.bai
 
-#############################################################################
-##################          Process annotations          ####################
-#############################################################################
+## Process annotations
 
 CODE=~/Documents/burge/recursive_example/recursive
 ANNO=anno
@@ -41,9 +48,7 @@ SAWTOOTH_DIR=sawtooth
 python $CODE/expression/get_introns.py $ANNO/$GTF | sort -k1,1 -k2,3n -u > $ANNO/introns.bed
 awk ' $3=="exon" {print $1"\t"$4"\t"$5"\t.\t.\t"$7}' $ANNO/$GTF | sort -k1,1 -k2,3n -u > $ANNO/exons.bed
 
-##############################################################################
-#################             RatchetJunction            #####################
-##############################################################################
+## RatchetJunction
 
 for LIB in $LIBRARIES; do
     python $CODE/RatchetJunction/putative_ratchet_sjr.py $READS_DIR/$LIB.bam $ANNO/introns.bed $ANNO/$FASTA > $SJR_DIR/$LIB.sjr.bed
@@ -52,9 +57,7 @@ done
 
 cat $SJR_DIR/*.sjr_groups.bed | sort -k1,1 -k2n,3n | python $CODE/RatchetJunction/merge_sjr_reps.py  > $SJR_DIR/all.sjr_groups.bed
 
-##############################################################################
-#################               RatchetPair              #####################
-##############################################################################
+## RatchetPair
 
 for LIB in $LIBRARIES; do
     python $CODE/RatchetPair/straddle_jxn.py $READS_DIR/$LIB.bam $ANNO/introns.bed $ANNO/$FASTA pe_$LIB > $SJR_DIR/$LIB.straddle.bed
@@ -63,44 +66,38 @@ cat $SJR_DIR/*.straddle.bed > $SJR_DIR/all.straddle.bed
 
 python $CODE/RatchetPair/straddle_gem.py $SJR_DIR/all.straddle.bed $SJR_DIR/all.sjr_groups.bed $ANNO/introns.bed $ANNO/$FASTA | sort -k1,1 -k2,4n > $SJR_DIR/all.straddle_gem.bed
 
-##############################################################################
-#################               RatchetScan                   ################
-##############################################################################
+## RatchetScan
 
-# Compute coverage in introns and number of junction spanning reads
+### Compute coverage in introns and number of junction spanning reads
 for LIB in $LIBRARIES; do python $CODE/RatchetScan/get_intron_expression.py $READS_DIR/$LIB.bam $ANNO/introns.bed > $EXPRESS_DIR/$LIB.full.bed; done;
 sort -k1,1 -k2,3n $EXPRESS_DIR/*.full.bed | python $CODE/RatchetScan/merge.py > $EXPRESS_DIR/all.full.bed
 awk '$5 > 0 && $3 - $2 > 8000' $EXPRESS_DIR/all.full.bed | cut -f 1-6 > $EXPRESS_DIR/expressed.full.bed  # $5 is junction read count
 
-# Get expression without exons
+###  Get expression without exons
 bedtools subtract -s -a $EXPRESS_DIR/expressed.full.bed -b $ANNO/exons.bed | sort -k1,1 -k2n,3n | python $CODE/RatchetScan/merge_subtracted.py > $ANNO/expressed_introns_no_exons.bed
 for LIB in $LIBRARIES; do
     python $CODE/RatchetScan/get_subtract_expression.py $READS_DIR/$LIB.bam $ANNO/expressed_introns_no_exons.bed > $EXPRESS_DIR/$LIB.noexon.bed
 done
 cat $EXPRESS_DIR/*.noexon.bed | sort -k1,1 -k2n,3n | python $CODE/RatchetScan/merge.py > $EXPRESS_DIR/all.noexon.bed
 
-# Mask repeats
+###  Mask repeats
 python $CODE/RatchetScan/mask_repeats.py $EXPRESS_DIR/all.noexon.bed $ANNO/$REPEATS > $EXPRESS_DIR/all.masked.bed
 
-# Core RatchetScan Algorithm
+### Core RatchetScan Algorithm
 
-# Note that this first script will have the longest runtime of the whole pipeline
-# It could trivially be parallelized by splitting the all.masked.bed file into
-# smaller files and then merging the results.
+*Note that this first script will have the longest runtime of the whole pipeline. It could trivially be parallelized by splitting the all.masked.bed file into smaller files and then merging the results.*
 
 python $CODE/RatchetScan/run_mcmc.py $EXPRESS_DIR/all.masked.bed > $SAWTOOTH_DIR/mcmc.bed
 python $CODE/RatchetScan/call_sites.py $SAWTOOTH_DIR/all.mcmc.bed $ANNO/$FASTA $ANNO/introns.bed > $SAWTOOTH_DIR/sites.bed
 sort -k1,1 -k2,3n $SAWTOOTH_DIR/sites.bed | python $CODE/RatchetScan/merge_peak_calls.py > $SAWTOOTH_DIR/merged_sites.bed
 
-##############################################################################
-#############     Post Processing / Visualization    #########################
-##############################################################################
-# The goal of these scripts is to tabulate the results of the above 3 methods
-# and visualize the results.
+##  Post Processing / Visualization
 
-# Combine the output of all the methods into a single file
+*The goal of these scripts is to tabulate the results of the above 3 methods and visualize the results.*
+
+### Combine the output of all the methods into a single file
 python $CODE/utils/combine_results.py sjr/all.sjr_groups.bed sjr/all.straddle_gem.bed sawtooth/sites_temp.bed anno/dmel-all-chromosome-r6.21.fasta anno/introns.bed | sort -k1,1 -k2,3n
 
-# Plot the results of RatchetScan, annotated with locations of strong motifs and splice junction reads.
+### Plot the results of RatchetScan, annotated with locations of strong motifs and splice junction reads.
 python $CODE/RatchetScan/plot_mcmc.py
 
