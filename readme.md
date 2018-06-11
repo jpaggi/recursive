@@ -41,25 +41,6 @@ SAWTOOTH_DIR=sawtooth
 python $CODE/expression/get_introns.py $ANNO/$GTF | sort -k1,1 -k2,3n -u > $ANNO/introns.bed
 awk ' $3=="exon" {print $1"\t"$4"\t"$5"\t.\t.\t"$7}' $ANNO/$GTF | sort -k1,1 -k2,3n -u > $ANNO/exons.bed
 
-#############################################################################
-##################    Compute Expression in Introns      ####################
-#############################################################################
-
-# Compute coverage in introns and number of junction spanning reads
-for LIB in $LIBRARIES; do python $CODE/expression/get_intron_expression.py $READS_DIR/$LIB.bam $ANNO/introns.bed > $EXPRESS_DIR/$LIB.full.bed; done;
-sort -k1,1 -k2,3n $EXPRESS_DIR/*.full.bed | python $CODE/expression/merge.py > $EXPRESS_DIR/all.full.bed
-awk '$5 > 0 && $3 - $2 > 8000' $EXPRESS_DIR/all.full.bed | cut -f 1-6 > $EXPRESS_DIR/expressed.full.bed  # $5 is junction read count
-
-# Get expression without exons
-bedtools subtract -s -a $EXPRESS_DIR/expressed.full.bed -b $ANNO/exons.bed | sort -k1,1 -k2n,3n | python $CODE/expression/merge_subtracted.py > $ANNO/expressed_introns_no_exons.bed
-for LIB in $LIBRARIES; do
-    python $CODE/expression/get_subtract_expression.py $READS_DIR/$LIB.bam $ANNO/expressed_introns_no_exons.bed > $EXPRESS_DIR/$LIB.noexon.bed
-done
-cat $EXPRESS_DIR/*.noexon.bed | sort -k1,1 -k2n,3n | python $CODE/expression/merge.py > $EXPRESS_DIR/all.noexon.bed
-
-# Mask repeats
-python $CODE/expression/mask_repeats.py $EXPRESS_DIR/all.noexon.bed $ANNO/$REPEATS > $EXPRESS_DIR/all.masked.bed
-
 ##############################################################################
 #################             RatchetJunction            #####################
 ##############################################################################
@@ -85,6 +66,24 @@ python $CODE/RatchetPair/straddle_gem.py $SJR_DIR/all.straddle.bed $SJR_DIR/all.
 ##############################################################################
 #################               RatchetScan                   ################
 ##############################################################################
+
+# Compute coverage in introns and number of junction spanning reads
+for LIB in $LIBRARIES; do python $CODE/RatchetScan/get_intron_expression.py $READS_DIR/$LIB.bam $ANNO/introns.bed > $EXPRESS_DIR/$LIB.full.bed; done;
+sort -k1,1 -k2,3n $EXPRESS_DIR/*.full.bed | python $CODE/RatchetScan/merge.py > $EXPRESS_DIR/all.full.bed
+awk '$5 > 0 && $3 - $2 > 8000' $EXPRESS_DIR/all.full.bed | cut -f 1-6 > $EXPRESS_DIR/expressed.full.bed  # $5 is junction read count
+
+# Get expression without exons
+bedtools subtract -s -a $EXPRESS_DIR/expressed.full.bed -b $ANNO/exons.bed | sort -k1,1 -k2n,3n | python $CODE/RatchetScan/merge_subtracted.py > $ANNO/expressed_introns_no_exons.bed
+for LIB in $LIBRARIES; do
+    python $CODE/RatchetScan/get_subtract_expression.py $READS_DIR/$LIB.bam $ANNO/expressed_introns_no_exons.bed > $EXPRESS_DIR/$LIB.noexon.bed
+done
+cat $EXPRESS_DIR/*.noexon.bed | sort -k1,1 -k2n,3n | python $CODE/RatchetScan/merge.py > $EXPRESS_DIR/all.noexon.bed
+
+# Mask repeats
+python $CODE/RatchetScan/mask_repeats.py $EXPRESS_DIR/all.noexon.bed $ANNO/$REPEATS > $EXPRESS_DIR/all.masked.bed
+
+# Core RatchetScan Algorithm
+
 # Note that this first script will have the longest runtime of the whole pipeline
 # It could trivially be parallelized by splitting the all.masked.bed file into
 # smaller files and then merging the results.
@@ -92,3 +91,16 @@ python $CODE/RatchetPair/straddle_gem.py $SJR_DIR/all.straddle.bed $SJR_DIR/all.
 python $CODE/RatchetScan/run_mcmc.py $EXPRESS_DIR/all.masked.bed > $SAWTOOTH_DIR/mcmc.bed
 python $CODE/RatchetScan/call_sites.py $SAWTOOTH_DIR/all.mcmc.bed $ANNO/$FASTA $ANNO/introns.bed > $SAWTOOTH_DIR/sites.bed
 sort -k1,1 -k2,3n $SAWTOOTH_DIR/sites.bed | python $CODE/RatchetScan/merge_peak_calls.py > $SAWTOOTH_DIR/merged_sites.bed
+
+##############################################################################
+#############     Post Processing / Visualization    #########################
+##############################################################################
+# The goal of these scripts is to tabulate the results of the above 3 methods
+# and visualize the results.
+
+# Combine the output of all the methods into a single file
+python $CODE/utils/combine_results.py sjr/all.sjr_groups.bed sjr/all.straddle_gem.bed sawtooth/sites_temp.bed anno/dmel-all-chromosome-r6.21.fasta anno/introns.bed | sort -k1,1 -k2,3n
+
+# Plot the results of RatchetScan, annotated with locations of strong motifs and splice junction reads.
+python $CODE/RatchetScan/plot_mcmc.py
+

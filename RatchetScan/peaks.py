@@ -1,5 +1,6 @@
 WINDOWS = 100
 from random import randrange
+import matplotlib.pyplot as plt
 class Peak:
     def __init__(self, start, end, best_prob, genome_space = False):
         self.best_prob = best_prob
@@ -46,8 +47,6 @@ def get_peaks(probs, z, THRESH):
     """
     Given probs in reduced space
     Return Peaks in genome space
-
-    Currently missing peaks that go all the way to end!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     """
     if THRESH == 0: return [Peak(0, len(probs), max(probs) / z)]
     peaks = []
