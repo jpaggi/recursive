@@ -8,12 +8,12 @@ Three independent methods for identification of recursive splice sites from RNA-
 
 We applied these methods to identify recursive sites in Drosophila, but they could be applied to study recursive splicing in any organism. The results of our study are described [here](https://www.biorxiv.org/content/early/2017/02/13/107995). For a snapshot of our code at the time of this paper, please check out the branch 'drosophila', but I expect that the current code base will be much more useful for someone seaking to use our methods on a new dataset.
 
-Below, I go through an example application of our methods, which should be straightfowardly adaptable to a new dataset. The example folder contains
+Below, I go through an example application of our methods, which I hope will be straightfowardly adaptable to a new dataset. The example folder contains
 example input and output files.
 
 ##  Procure Input Files
 
-For this example, we will use nacsent RNA-seq data from Drosophila S2 cells. You can get the reads
+For this example, we will use nascent RNA-seq data from Drosophila S2 cells. You can get the reads
 using tools from the SRA tool kit. Here we use hisat2 to align the reads (any spliced read aligner
 would do), then samtools to produce a sorted and indexed bam file.
 
@@ -51,7 +51,7 @@ SAWTOOTH_DIR=sawtooth
 ```
 
 Additionally, you will need to add the utils directory to your PYTHONPATH, which you can do by
-changing to the utils directory and executing "export PYTHONPATH=$PYTHONPATH:`pwd`".
+changing to the utils directory and executing "export PYTHONPATH=$PYTHONPATH:\`pwd\`".
 
 ## Process annotations
 
@@ -109,10 +109,10 @@ This algorithm recognizes the "sawtooth pattern" in RNA-seq read counts present 
 are recursively spliced. Generally, there is an approximately linear decay in read coverage between
 the 5'ss and the first recursive site, a jump in coverage at the recursive site, followed by another
 linear decay in coverage to the next recursive site, and so on. This pattern arises because the upstream
-end of introns exist longer before the intron is spliced and degraded, than the downstream end.
+end of introns exist longer before the intron is spliced and degraded than the downstream end.
 
 Our method detects this pattern by using a Markov Chain Monte Carlo (MCMC) algorithm to sample
-potential combinations of recursive sites and assess how well they explain the expression data.
+potential combinations of recursive sites and assess how well they explain the rna-seq coverage.
 This procedure is used to compute a probability that each position in an intron is a recursive site.
 Recursive sites are then called by finding a sites near peaks in probability with strong juxtaposed 3'ss - 5'ss motifs.
 
@@ -171,9 +171,13 @@ sort -k1,1 -k2,3n $SAWTOOTH_DIR/sites.bed \
 The goal of these scripts is to tabulate the results of the above 3 methods and visualize the results.
 
 ### Combine the output of all the methods into a single file
-`python $CODE/utils/combine_results.py sjr/all.sjr_groups.bed sjr/all.straddle_gem.bed \
-	sawtooth/sites_temp.bed anno/dmel-all-chromosome-r6.21.fasta anno/introns.bed | sort -k1,1 -k2,3n`
+```
+python $CODE/utils/combine_results.py sjr/all.sjr_groups.bed sjr/all.straddle_gem.bed \
+       sawtooth/sites_temp.bed anno/dmel-all-chromosome-r6.21.fasta anno/introns.bed | sort -k1,1 -k2,3n
+```
 
 ### Plot the results of RatchetScan, annotated with locations of strong motifs and splice junction reads.
-`python $CODE/RatchetScan/plot_mcmc.py`
-
+```
+python $CODE/RatchetScan/plot_mcmc.py \
+       $ANNO/$FASTA $ANNO/introns.bed $SAWTOOTH_DIR/mcmc.bed
+```
