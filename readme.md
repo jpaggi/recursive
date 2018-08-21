@@ -11,6 +11,12 @@ We applied these methods to identify recursive sites in Drosophila, but they cou
 Below, I go through an example application of our methods, which I hope will be straightfowardly adaptable to a new dataset. The example folder contains
 example input and output files (excluding the input reads files and results for all but chomosome 2L to meet githubs space restraints).
 
+(In practice, it may be best to run some of the analysis steps in parallel.
+In particular, anything that is performed for all input datasets can be run
+on a separate core (i.e. any expression wrapped in "for LIB in $LIBRARIES; do ... done").
+Additionally, RatchetScan can be parallelized by splitting the input file 
+($EXPRESS_DIR/all.masked.bed) into multiple files and running each separately.)
+
 ##  Procure Input Files
 
 For this example, we will use nascent RNA-seq data from Drosophila S2 cells. You can get the reads
